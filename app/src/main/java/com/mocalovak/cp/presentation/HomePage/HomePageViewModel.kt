@@ -1,4 +1,4 @@
-package com.mocalovak.cp.presentation.characterList
+package com.mocalovak.cp.presentation.HomePage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,12 +11,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CharacterListViewModel @Inject constructor(
+class HomePageViewModel @Inject constructor(
     private val getCharactersUseCase: GetCharacterListUseCase
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<CharacterListUiState>(CharacterListUiState.Loading)
-    val uiState: StateFlow<CharacterListUiState> = _uiState
+    private val _uiState = MutableStateFlow<HomePageUiState>(HomePageUiState.Loading)
+    val uiState: StateFlow<HomePageUiState> = _uiState
 
     init {
         loadCharacters()
@@ -25,9 +25,9 @@ class CharacterListViewModel @Inject constructor(
     private fun loadCharacters() {
         viewModelScope.launch {
             getCharactersUseCase()
-                .catch { _uiState.value = CharacterListUiState.Error("Ошибка загрузки") }
+                .catch { _uiState.value = HomePageUiState.Error("Ошибка загрузки") }
                 .collect { characters ->
-                    _uiState.value = CharacterListUiState.Success(characters)
+                    _uiState.value = HomePageUiState.Success(characters)
                 }
         }
     }

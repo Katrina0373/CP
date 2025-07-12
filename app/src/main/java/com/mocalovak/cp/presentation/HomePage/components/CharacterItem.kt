@@ -1,4 +1,4 @@
-package com.mocalovak.cp.presentation.characterList.components
+package com.mocalovak.cp.presentation.HomePage.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,7 +21,7 @@ fun CharacterItem(character: Character){
         Column(Modifier.padding(16.dp)) {
             Text(text = character.name, style = MaterialTheme.typography.titleLarge)
             Text(text = "Level: ${character.level}", style = MaterialTheme.typography.bodyMedium)
-            Text(text = "Class: ${character.characterClass}", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Class: ${character.classification}", style = MaterialTheme.typography.bodySmall)
         }
     }
 }
