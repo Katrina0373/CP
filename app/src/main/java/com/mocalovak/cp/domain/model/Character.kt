@@ -1,0 +1,26 @@
+package com.mocalovak.cp.domain.model
+
+data class Character(
+    val id:String,
+    val name:String,
+    val classification: String,
+    val profession1:String,
+    val profession2: String,
+    val race:String,
+    var level:Int,
+    var maxHP:Int,
+    var currentHP:Int,
+    var gold:Int,
+    var armorClass:Int,
+    var speed:Int,
+    //val languages:List<String>?,
+    //var equipment:List<EquipmentEntity>?,
+    val maxMana:Int,
+    val currentMana:Int,
+    val strength:Int,
+    val dexterity:Int,
+    val constitution:Int,
+    val intelligence:Int,
+    val wisdom:Int,
+    val charisma:Int,
+)

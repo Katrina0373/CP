@@ -14,7 +14,7 @@ data class SkillEntity(
     val accessLevel: Int,
     val check: Int, //значение проверки?????
     val recharge: String, //перезарядка
-    val damage: List<Int>, //урон
+    //val damage: List<Int>, //урон
     val actionTime: String,
     //val passiveEffect: PassiveEffect,
     val mana:Int,
@@ -22,6 +22,6 @@ data class SkillEntity(
 
 fun SkillEntity.toDomain(): Skill {
     return Skill(
-        name, description, type, source, accessLevel, check, recharge, damage, actionTime, mana
+        name, description, type, source, accessLevel, check, recharge, actionTime, mana
     )
 }

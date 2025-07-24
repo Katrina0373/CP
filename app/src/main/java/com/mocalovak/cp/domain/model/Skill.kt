@@ -8,7 +8,7 @@ data class Skill(
     val accessLevel: Int,
     val check: Int, //значение проверки?????
     val recharge: String, //перезарядка
-    val damage: List<Int>, //урон
+    //val damage: List<Int>, //урон
     val actionTime: String,
     //val passiveEffect: PassiveEffect,
     val mana:Int,

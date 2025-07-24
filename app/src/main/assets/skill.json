@@ -1,0 +1,35 @@
+[
+    {
+    "name": "Firebolt",
+    "description": "Shoots a small flame that burns the enemy.",
+    "type": "Magic",
+    "source": "Arcane",
+    "accessLevel": 1,
+    "check": 12,
+    "recharge": "1d6 rounds",
+    "actionTime": "1 action",
+    "mana": 5
+  },
+  {
+    "name": "Healing Word",
+    "description": "Heals a friendly target with a quick word.",
+    "type": "Divine",
+    "source": "Cleric",
+    "accessLevel": 2,
+    "check": 10,
+    "recharge": "Short rest",
+    "actionTime": "Bonus action",
+    "mana": 3
+  },
+  {
+    "name": "Shield Block",
+    "description": "Raises shield to block incoming damage.",
+    "type": "Physical",
+    "source": "Fighter",
+    "accessLevel": 1,
+    "check": 14,
+    "recharge": "Every turn",
+    "actionTime": "Reaction",
+    "mana": 0
+  }
+]

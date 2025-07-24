@@ -1,0 +1,24 @@
+[
+  {
+    "id": "char001",
+    "name": "Elandor",
+    "classification": "Wizard",
+    "profession1": "Fire Way",
+    "profession2": "Fire master",
+    "race": "Human",
+    "level": 5,
+    "maxHP": 40,
+    "currentHP": 40,
+    "gold": 150,
+    "armorClass": 13,
+    "speed": 5,
+    "maxMana": 10,
+    "currentMana": 10,
+    "strength": -1,
+    "dexterity": 0,
+    "constitution": 1,
+    "intelligence": 4,
+    "wisdom": 4,
+    "charisma": 0
+  }
+]
