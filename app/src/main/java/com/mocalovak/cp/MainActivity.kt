@@ -4,15 +4,19 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -84,10 +88,16 @@ fun BottomBar(navController: NavController) {
 
     NavigationBar {
         items.forEach { screen ->
+            val selected = currentRoute == screen.route
             NavigationBarItem(
-                icon = { Icon(screen.icon, contentDescription = screen.title) },
-                //label = { Text(screen.title) },
-                selected = currentRoute == screen.route,
+                icon = { Icon(
+                    painter = painterResource(
+                        id = if (selected) screen.activeIconRes else screen.notActiveIconRes
+                    ),
+                    contentDescription = screen.title,
+                    tint = Color.Unspecified // чтобы не затирало цвет из ресурса
+                ) },
+                selected = selected,
                 onClick = {
                     if (currentRoute != screen.route) {
                         navController.navigate(screen.route) {
@@ -96,7 +106,10 @@ fun BottomBar(navController: NavController) {
                             restoreState = true
                         }
                     }
-                }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = Color.Transparent // убираем фон выделения
+                )
             )
         }
     }

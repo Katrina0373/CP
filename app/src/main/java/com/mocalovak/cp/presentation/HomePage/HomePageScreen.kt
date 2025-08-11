@@ -56,9 +56,10 @@ fun CharacterListScreen(viewModel: HomePageViewModel = hiltViewModel()) {
 
 @Composable
 fun HomePage(characters: List<Character>?, errorCode: Int) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier.fillMaxSize()
+        .padding(8.dp)) {
         //SearchItem()
-        Text("Мои персонажи")
+        Text("Мои персонажи", modifier = Modifier.padding(5.dp))
         if(errorCode == 200) {
             CharacterItem(characters!![0])
             if(characters.size > 1){
@@ -66,13 +67,18 @@ fun HomePage(characters: List<Character>?, errorCode: Int) {
                 TextButton(onClick = {}) {
                     Text("смотреть все")
                 }
+
+                Spacer(modifier = Modifier.height(10.dp))
+            }
+            else {
+                Spacer(modifier = Modifier.height(130.dp))
             }
         }
         else {
             Text("Персонажи не найдены")
-            Image(Icons.Default.PlayArrow, "")
+
+            Spacer(modifier = Modifier.height(260.dp))
         }
-        Spacer(modifier = Modifier.height(100.dp))
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()

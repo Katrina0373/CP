@@ -26,7 +26,10 @@ private val LightColorScheme = lightColorScheme(
     surfaceContainerHigh = topContainer,
     surfaceContainer = button2,
     background = backColor,
-    onBackground = Color.White
+    onBackground = halfAppWhite,
+    surfaceContainerHighest = topContainer,
+    onSurface = hptems,
+
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
     surface = Color(0xFFFFFBFE),

@@ -1,15 +1,15 @@
 package com.mocalovak.cp.presentation.nav
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.annotation.DrawableRes
+import com.mocalovak.cp.R
 
-sealed class Screen(val route: String, val title: String, val icon:ImageVector){
-    object HomePage: Screen("main", "main", Icons.Default.Home)
-    object Search : Screen("characters", "Characters", Icons.Default.Search)
-    object Rules : Screen("rules", "Rules", Icons.Default.Info)
-    object Character: Screen("character", "Character", Icons.Default.Person)
+sealed class Screen(val route: String,
+                    val title: String,
+                    @DrawableRes val activeIconRes: Int,
+                    @DrawableRes val notActiveIconRes:Int
+){
+    object HomePage: Screen("main", "main", R.drawable.home_active, R.drawable.home_not_active)
+    object Search : Screen("characters", "Characters", R.drawable.search_active, R.drawable.search_not_active)
+    object Rules : Screen("rules", "Rules", R.drawable.book_not_active, R.drawable.book_active)
+    object Character: Screen("character", "Character", R.drawable.character_active, R.drawable.character_not_active)
 }
