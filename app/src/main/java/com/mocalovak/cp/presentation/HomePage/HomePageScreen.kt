@@ -24,14 +24,20 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
+import androidx.navigation.NavController
 import com.mocalovak.cp.R
 import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.presentation.HomePage.components.CharacterItem
@@ -44,41 +50,63 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun CharacterListScreen(viewModel: HomePageViewModel = hiltViewModel()) {
+fun HomeScreen(viewModel: HomePageViewModel = hiltViewModel(),  onShowAllClick: () -> Unit, onShowCharClick: (String) -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
+
+
 
     when (uiState) {
         is HomePageUiState.Loading -> CircularProgressIndicator()
-        is HomePageUiState.Success -> HomePage((uiState as HomePageUiState.Success).characters, 200)
-        is HomePageUiState.Error -> HomePage(emptyList(), 404)
+        is HomePageUiState.Success -> HomePage((uiState as HomePageUiState.Success).characters,
+            onShowAllClick, onShowCharClick)
+        is HomePageUiState.Error -> HomePage(emptyList(), onShowAllClick, onShowCharClick)
     }
 }
 
 @Composable
-fun HomePage(characters: List<Character>?, errorCode: Int) {
+fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowCharClick: (String) -> Unit) {
+
+//    val lifecycleOwner = LocalLifecycleOwner.current
+//
+//    // Ловим события навигации
+//    LaunchedEffect(key1 = true) {
+//        viewModel.uiEvent
+//            .flowWithLifecycle(lifecycleOwner.lifecycle)
+//            .collect {route ->
+//                navController.navigate(route) {
+//                    popUpTo(navController.graph.startDestinationId) { inclusive = false }
+//                    launchSingleTop = true
+//                    restoreState = true
+//                }
+//            }
+//    }
+
     Column(modifier = Modifier.fillMaxSize()
         .padding(8.dp)) {
         //SearchItem()
-        Text("Мои персонажи", modifier = Modifier.padding(5.dp))
-        if(errorCode == 200) {
-            CharacterItem(characters!![0])
-            if(characters.size > 1){
-                CharacterItem(characters[1])
-                TextButton(onClick = {}) {
-                    Text("смотреть все")
+            if(characters.isNotEmpty()) {
+                Text("Мои персонажи", modifier = Modifier.padding(5.dp))
+                CharacterItem(characters[0]) { onShowCharClick(characters[0].id) }
+                if(characters.size > 1){
+                    CharacterItem(characters[1]) { onShowCharClick(characters[1].id) }
+                    TextButton(onClick = {
+                        onShowAllClick()
+                    }) {
+                        Text(
+                            "Смотреть все",
+                            textAlign = TextAlign.Right)
+                    }
+                    Spacer(modifier = Modifier.height(5.dp))
                 }
-
-                Spacer(modifier = Modifier.height(10.dp))
+                else {
+                    Spacer(modifier = Modifier.height(130.dp))
+                }
             }
             else {
-                Spacer(modifier = Modifier.height(130.dp))
+                Text("Персонажи не найдены")
+                Spacer(modifier = Modifier.height(200.dp))
             }
-        }
-        else {
-            Text("Персонажи не найдены")
 
-            Spacer(modifier = Modifier.height(260.dp))
-        }
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -187,5 +215,5 @@ fun ScrollableCardRow() {
 @Preview
 @Composable
 fun PrevHome(){
-    HomePage(emptyList(), 100)
+    //HomePage(emptyList())
 }

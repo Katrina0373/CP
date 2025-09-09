@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "ab785602bb0b5cab3c1af64cfc601430",
+    "identityHash": "9c43476cb295218a3fbfd980f130c114",
     "entities": [
       {
         "tableName": "characters",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `classification` TEXT NOT NULL, `profession1` TEXT NOT NULL, `profession2` TEXT NOT NULL, `race` TEXT NOT NULL, `level` INTEGER NOT NULL, `maxHP` INTEGER NOT NULL, `currentHP` INTEGER NOT NULL, `gold` INTEGER NOT NULL, `armorClass` INTEGER NOT NULL, `speed` INTEGER NOT NULL, `maxMana` INTEGER NOT NULL, `currentMana` INTEGER NOT NULL, `strength` INTEGER NOT NULL, `dexterity` INTEGER NOT NULL, `constitution` INTEGER NOT NULL, `intelligence` INTEGER NOT NULL, `wisdom` INTEGER NOT NULL, `charisma` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `classification` TEXT NOT NULL, `profession1` TEXT NOT NULL, `profession2` TEXT NOT NULL, `race` TEXT NOT NULL, `imagePath` TEXT, `level` INTEGER NOT NULL, `maxHP` INTEGER NOT NULL, `currentHP` INTEGER NOT NULL, `gold` INTEGER NOT NULL, `armorClass` INTEGER NOT NULL, `speed` INTEGER NOT NULL, `maxMana` INTEGER NOT NULL, `currentMana` INTEGER NOT NULL, `strength` INTEGER NOT NULL, `dexterity` INTEGER NOT NULL, `constitution` INTEGER NOT NULL, `intelligence` INTEGER NOT NULL, `wisdom` INTEGER NOT NULL, `charisma` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -43,6 +43,11 @@
             "columnName": "race",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "imagePath",
+            "columnName": "imagePath",
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "level",
@@ -205,7 +210,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ab785602bb0b5cab3c1af64cfc601430')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9c43476cb295218a3fbfd980f130c114')"
     ]
   }
 }

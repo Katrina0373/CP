@@ -1,5 +1,6 @@
 package com.mocalovak.cp.domain.usecase
 
+import androidx.compose.runtime.collectAsState
 import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.domain.repository.CharacterRepository
 import kotlinx.coroutines.flow.Flow

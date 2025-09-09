@@ -12,7 +12,7 @@ import com.mocalovak.cp.data.local.entity.SkillEntity
 @Database(entities = [
     CharacterEntity::class,
     SkillEntity::class,
-], version = 2, exportSchema = true)
+], version = 3, exportSchema = true)
 abstract class AppDatabase: RoomDatabase(){
     abstract fun characterDao():CharacterDao
     abstract fun skillDao():SkillDao

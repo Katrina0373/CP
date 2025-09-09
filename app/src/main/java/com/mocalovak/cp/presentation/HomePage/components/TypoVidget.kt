@@ -39,7 +39,7 @@ fun TypoVidget(picture: Painter, title:String, description:String, buttonText:St
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .width(200.dp)
-            .height(250.dp)
+            .height(230.dp)
             .padding(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = button2)
@@ -71,7 +71,6 @@ fun TypoVidget(picture: Painter, title:String, description:String, buttonText:St
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
-                Spacer(modifier = Modifier.height(12.dp))
 
                 Box(modifier = Modifier.fillMaxSize().align(Alignment.End)) {
                     Button(

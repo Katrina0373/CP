@@ -6,3 +6,8 @@ sealed class HomePageUiState {
     data class Success(val characters: List<Character>) : HomePageUiState()
     data class Error(val message: String) : HomePageUiState()
 }
+
+sealed class UiEvent {
+    data class Navigate(val route: String) : UiEvent()
+    object NavigateUp : UiEvent()
+}

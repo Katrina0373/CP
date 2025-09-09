@@ -12,7 +12,8 @@ class CharacterRepositoryImpl @Inject constructor(
     private val dao:CharacterDao
 ): CharacterRepository{
     override fun getCharacters(): Flow<List<Character>> {
-        return dao.getAll().map { list -> list.map { it.toDomain() } }
+        var listic = dao.getAll()
+        return listic.map { list -> list.map { it.toDomain() } }
     }
 
     override fun getCharacter(id: String): Flow<Character> {

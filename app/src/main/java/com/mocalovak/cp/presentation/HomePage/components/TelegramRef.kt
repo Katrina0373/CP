@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mocalovak.cp.R
+import com.mocalovak.cp.ui.theme.topContainer
 
 @Composable
 fun TelegramRef(modifier: Modifier = Modifier){
@@ -45,14 +46,14 @@ fun TelegramRef(modifier: Modifier = Modifier){
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color(0xFF171E48) // фон карточки
+            containerColor = topContainer // фон карточки
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)){
         Row(modifier = Modifier
             .padding(12.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween) {
-            Column() {
+            Column {
                 Text("Наш Telegram", color = Color.White)
                 Text("Новости и вопросы авторам", color = MaterialTheme.colorScheme.onSurface)
             }

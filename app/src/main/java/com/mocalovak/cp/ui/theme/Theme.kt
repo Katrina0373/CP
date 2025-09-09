@@ -29,6 +29,7 @@ private val LightColorScheme = lightColorScheme(
     onBackground = halfAppWhite,
     surfaceContainerHighest = topContainer,
     onSurface = hptems,
+    primaryContainer = topContainer,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

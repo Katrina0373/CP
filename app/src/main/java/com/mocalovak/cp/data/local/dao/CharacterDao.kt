@@ -19,7 +19,7 @@ interface CharacterDao{
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(characters: List<CharacterEntity>)
 
-    @Delete()
+    @Delete
     suspend fun deleteOne(character: CharacterEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
