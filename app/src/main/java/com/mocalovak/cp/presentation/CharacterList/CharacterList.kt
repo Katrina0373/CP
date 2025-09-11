@@ -31,7 +31,9 @@ fun CharacterList(vm: HomePageViewModel = hiltViewModel(), onCharacterClick: (St
             .padding(3.dp),)
         {
             items(characters) { character ->
-                CharacterItem(character, { onCharacterClick(character.id) })
+                CharacterItem(character, {
+                    vm.updateLastCharacter(character.id)
+                    onCharacterClick(character.id) })
             }
         }
     }

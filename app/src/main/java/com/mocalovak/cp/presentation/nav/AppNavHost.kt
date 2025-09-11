@@ -8,11 +8,13 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.mocalovak.cp.presentation.Character.CharacterView
 import com.mocalovak.cp.presentation.CharacterList.CharacterList
 import com.mocalovak.cp.presentation.HomePage.HomeScreen
 
 @Composable
 fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifier){
+    println("Character route = ${Screen.Character.route}")
     NavHost(
         navController = navHostController,
         startDestination = Screen.HomePage.route,
@@ -31,29 +33,29 @@ fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifi
         composable(Screen.Rules.route){
             //CharacterListScreen()
         }
-        composable(route = Screen.Character.route,
-            arguments = listOf(navArgument("characterId") {type = NavType.StringType})
-        ){ backStackEntry ->
+        composable(Screen.Character.route)
+        { backStackEntry ->
+            println("route: $route")
             val characterId = backStackEntry.arguments?.getString("characterId")
+            println("character id = $characterId")
             if(characterId.equals("all"))
                 CharacterList(onCharacterClick = { characterId ->
                     navHostController.navigateSingleTopTo(Screen.Character.createRoute(characterId))
                 })
             else
-                CharacterList(onCharacterClick = { characterId ->
-                    navHostController.navigateSingleTopTo(Screen.Character.createRoute(characterId))
-                })
+                CharacterView()
         }
     }
 }
 
 fun NavController.navigateSingleTopTo(route: String) {
+    val hasArguments = route.contains("/")
     this.navigate(route) {
         popUpTo(this@navigateSingleTopTo.graph.startDestinationId) {
             saveState = true
         }
-        launchSingleTop = true
-        restoreState = true
+        launchSingleTop = !hasArguments
+        restoreState = !hasArguments
     }
 }
 

@@ -2,21 +2,28 @@ package com.mocalovak.cp.presentation.HomePage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mocalovak.cp.data.local.preferences.PreferenceManager
 import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.domain.usecase.GetCharacterListUseCase
 import com.mocalovak.cp.presentation.nav.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomePageViewModel @Inject constructor(
-    private val getCharactersUseCase: GetCharacterListUseCase
+    private val getCharactersUseCase: GetCharacterListUseCase,
+    private val preferenceManager: PreferenceManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<HomePageUiState>(HomePageUiState.Loading)
@@ -40,6 +47,22 @@ class HomePageViewModel @Inject constructor(
     init {
         loadCharacters()
     }
+
+    fun updateLastCharacter(id:String){
+        viewModelScope.launch(Dispatchers.IO) {
+             preferenceManager.setLastCharacterId(id)
+        }
+    }
+
+    fun removeLastCharacterId(){
+        viewModelScope.launch(Dispatchers.IO) {
+            preferenceManager.deleteLastCharacterId()
+        }
+    }
+
+    val lastCharacterId: StateFlow<String> = preferenceManager.lastCharacterId
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "null")
+
 
     private fun loadCharacters() {
         viewModelScope.launch {

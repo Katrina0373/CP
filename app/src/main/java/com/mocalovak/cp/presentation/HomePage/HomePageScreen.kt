@@ -64,7 +64,9 @@ fun HomeScreen(viewModel: HomePageViewModel = hiltViewModel(),  onShowAllClick: 
 }
 
 @Composable
-fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowCharClick: (String) -> Unit) {
+fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowCharClick: (String) -> Unit,
+             viewModel: HomePageViewModel = hiltViewModel()
+){
 
 //    val lifecycleOwner = LocalLifecycleOwner.current
 //
@@ -86,10 +88,15 @@ fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowChar
         //SearchItem()
             if(characters.isNotEmpty()) {
                 Text("Мои персонажи", modifier = Modifier.padding(5.dp))
-                CharacterItem(characters[0]) { onShowCharClick(characters[0].id) }
+                CharacterItem(characters[0]) {
+                    viewModel.updateLastCharacter(characters[0].id)
+                    onShowCharClick(characters[0].id) }
                 if(characters.size > 1){
-                    CharacterItem(characters[1]) { onShowCharClick(characters[1].id) }
+                    CharacterItem(characters[1]) {
+                        viewModel.updateLastCharacter(characters[1].id)
+                        onShowCharClick(characters[1].id) }
                     TextButton(onClick = {
+                        viewModel.removeLastCharacterId()
                         onShowAllClick()
                     }) {
                         Text(

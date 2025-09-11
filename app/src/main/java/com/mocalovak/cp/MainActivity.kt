@@ -33,6 +33,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.mocalovak.cp.data.local.importer.CharacterImporterEntryPoint
 import com.mocalovak.cp.data.local.importer.SkillImporterEntryPoint
+import com.mocalovak.cp.data.local.preferences.PreferenceManager
+import com.mocalovak.cp.presentation.Scaffold.MainScreen
 import com.mocalovak.cp.presentation.nav.AppNavHost
 import com.mocalovak.cp.presentation.nav.Screen
 import com.mocalovak.cp.presentation.nav.navigateSingleTopTo
@@ -69,87 +71,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
-
-@Composable
-fun MainScreen() {
-
-    val context = LocalContext.current
-    val window = (context as Activity).window
-
-    SideEffect {
-        window.statusBarColor = topContainer.toArgb()
-        window.navigationBarColor = topContainer.toArgb()
-        WindowCompat.getInsetsController(window, window.decorView).apply {
-            isAppearanceLightStatusBars = false // светлые иконки
-            isAppearanceLightNavigationBars = false
-        }
-
-    }
-
-    val navController = rememberNavController()
-    Scaffold(
-        bottomBar = {
-            BottomBar(navController = navController)
-        }
-    ) { padding ->
-        AppNavHost(
-            navHostController = navController,
-            modifier = Modifier.padding(padding)
-        )
-    }
-}
-
-@Composable
-fun BottomBar(navController: NavController) {
-    val items = listOf(Screen.HomePage, Screen.Rules, Screen.Search, Screen.Character)
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        shadowElevation = 8.dp
-    ) {
-        NavigationBar(containerColor = topContainer) {
-            items.forEach { screen ->
-                val selected = currentRoute == screen.route
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            painter = painterResource(
-                                id = if (selected) screen.activeIconRes else screen.notActiveIconRes
-                            ),
-                            contentDescription = screen.title,
-                            tint = Color.Unspecified // чтобы не затирало цвет из ресурса
-                        )
-                    },
-                    selected = selected,
-                    onClick = {
-                        if (currentRoute != screen.route) {
-                            if(screen is Screen.Character)
-                                navController.navigateSingleTopTo(screen.createRoute("all"))
-                            else
-                                navController.navigateSingleTopTo(screen.route)
-                        }
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = Color.Transparent // убираем фон выделения
-                    )
-                )
-            }
-        }
-    }
-}
-
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
 }
 
 @Preview(showBackground = true)
