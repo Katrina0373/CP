@@ -26,6 +26,6 @@ val button2 = Color(0xFF3405B6)
 
 val gradientButton = Brush.linearGradient(
     colors = listOf(Color(0xFF3103AF), Color(0xFF9805B6)),
-    start = Offset(0f, 0f),
-    end = Offset(1000f, 1000f)
+    //start = Offset(0f, 0f),
+    //end = Offset(1000f, 1000f)
 )

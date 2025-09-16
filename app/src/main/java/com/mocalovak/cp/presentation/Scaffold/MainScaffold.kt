@@ -87,6 +87,7 @@ fun BottomBar(navController: NavController, scaffoldVM: ScaffoldViewModel = hilt
                     selected = selected,
                     onClick = {
                         val id = scaffoldVM.lastCharacterId.value
+                        println("id scaffold: $id")
                         if (currentRoute != screen.route) {
                             if(screen is Screen.Character) {
                                 if (id != "null") {

@@ -11,6 +11,13 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.mocalovak.cp.R
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -26,7 +33,7 @@ private val LightColorScheme = lightColorScheme(
     surfaceContainerHigh = topContainer,
     surfaceContainer = button2,
     background = backColor,
-    onBackground = halfAppWhite,
+    onBackground = Color.White,
     surfaceContainerHighest = topContainer,
     onSurface = hptems,
     primaryContainer = topContainer,

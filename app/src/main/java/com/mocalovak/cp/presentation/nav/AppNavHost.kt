@@ -4,10 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import com.mocalovak.cp.presentation.Character.CharacterScreen
 import com.mocalovak.cp.presentation.Character.CharacterView
 import com.mocalovak.cp.presentation.CharacterList.CharacterList
 import com.mocalovak.cp.presentation.HomePage.HomeScreen
@@ -43,7 +42,7 @@ fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifi
                     navHostController.navigateSingleTopTo(Screen.Character.createRoute(characterId))
                 })
             else
-                CharacterView()
+                CharacterScreen(characterId = characterId!!) { }
         }
     }
 }
