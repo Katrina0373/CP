@@ -18,13 +18,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -34,6 +39,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
@@ -41,11 +49,14 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,15 +65,19 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,6 +85,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.mocalovak.cp.R
@@ -83,7 +99,6 @@ import com.mocalovak.cp.ui.theme.numBack
 import com.mocalovak.cp.ui.theme.otherContainer
 import com.mocalovak.cp.ui.theme.subTextColor
 import com.mocalovak.cp.ui.theme.topContainer
-import com.mocalovak.cp.utils.GradientButton
 import kotlinx.coroutines.launch
 import kotlin.math.exp
 
@@ -111,60 +126,113 @@ fun CharacterView(
 
 
     Scaffold(topBar = {TopBarCharacter( character)}, modifier = Modifier.fillMaxSize()) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(5.dp).padding(padding)) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(5.dp)
+            .padding(padding),
+            ) {
+
             ExpandableBox(character = character)
-            Spacer(modifier = Modifier.height(5.dp))
+
             CharacterStatsCard(character)
-            Box(modifier = Modifier.weight(1f)) {
+
+            Box(contentAlignment = Alignment.TopStart,
+                modifier = Modifier.fillMaxWidth()
+                    .padding(7.dp)
+                    .background(color = containerColor,
+                        shape = RoundedCornerShape(cornerRadius)
+                    )
+                    .padding(vertical = 13.dp, horizontal = 20.dp)) {
                 Text("Языки:" )
             }
+            BottomActionButtons(onCheckClick = {
 
-            Box(modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.BottomCenter) {
+            },
+                onAttackClick = {
 
-                Row(modifier = Modifier.fillMaxWidth()
-                    .padding(10.dp).height(40.dp),
-                    horizontalArrangement = Arrangement.Center) {
+                })
 
-                    Button(onClick = {},
-                        colors = ButtonDefaults.buttonColors(containerColor = button2),
-                        shape = RoundedCornerShape(cornerRadius),
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                            Text("Проверка")
-                            Spacer(Modifier.width(5.dp))
-                            Icon(painter = painterResource(R.drawable.d20_icon), contentDescription = "d20")
-                        }
-                    }
-
-                    GradientButton(
-                        gradientColors = gradientColors,
-                        cornerRadius = cornerRadius,
-                        roundedCornerShape = RoundedCornerShape(cornerRadius),
-                        hasRipple = false,
-                        onClick = {},
-                        modifier = Modifier.weight(1f).fillMaxHeight(),
-                        contentButton = {
-                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                                Text("Атака")
-                                Spacer(Modifier.width(5.dp))
-                                Icon(painter = painterResource(R.drawable.swords_icon), contentDescription = "d20")
-                            }
-                        }
-                    )
-                }
-            }
         }
     }
 }
 
 @Composable
-fun ExpandableBox(
+fun BottomActionButtons(
+    onCheckClick: () -> Unit,
+    onAttackClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = 72.dp), // чтобы было над BottomBar
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            GradientButton(
+                text = "Проверка",
+                icon = painterResource(id = R.drawable.d20_icon), // 🎲 твоя иконка
+                gradient = Brush.horizontalGradient(
+                    listOf(button2, button2)
+                ),
+                modifier = Modifier.weight(1f).padding(end = 8.dp),
+                onClick = onCheckClick
+            )
+
+            GradientButton(
+                text = "Атака",
+                icon = painterResource(id = R.drawable.swords_icon), // ⚔️ твоя иконка
+                gradient = gradientButton,
+                modifier = Modifier.weight(1f).padding(start = 8.dp),
+                onClick = onAttackClick
+            )
+        }
+    }
+}
+
+@Composable
+fun GradientButton(
+    text: String,
+    icon: Painter? = null,
+    gradient: Brush,
     modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = modifier
+            .height(48.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(gradient)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        ) {
+            Text(text, color = Color.White, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.width(8.dp))
+            if(icon != null)
+                Icon(
+                    painter = icon,
+                    contentDescription = text,
+                    tint = Color.White
+                )
+        }
+    }
+}
+
+
+@Composable
+fun ExpandableBox(
     isExpanded: Boolean = true,
     character: Character
-
     ) {
     var expanded by remember { mutableStateOf(isExpanded) }
 
@@ -175,11 +243,23 @@ fun ExpandableBox(
 
     Box(
         modifier = Modifier
+            .padding(5.dp)
             .fillMaxWidth()
-            .background(color = topContainer, shape = RoundedCornerShape(8.dp))
+            .background(color = containerColor,
+                shape = RoundedCornerShape(cornerRadius))
             .padding(5.dp)
 
     ) {
+        Box(contentAlignment = Alignment.TopEnd,
+            modifier = Modifier.fillMaxWidth()
+                .padding(10.dp)){
+            Icon(
+                painter = painterResource(R.drawable.row_up_icon),
+                contentDescription = "row",
+                modifier = Modifier.rotate(rotationState)
+                    .clickable(onClick = {expanded = !expanded})
+            )
+        }
 
         if(expanded){
             Column(modifier = Modifier.padding(13.dp)) {
@@ -210,11 +290,13 @@ fun ExpandableBox(
                     }
                 }
                 Spacer(Modifier.height(20.dp))
-                Row(modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly) {
+                Row(modifier = Modifier.fillMaxWidth()
+                    .padding(start = 37.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom) {
                     Box(contentAlignment = Alignment.Center){
                         Column(horizontalAlignment = Alignment.CenterHorizontally){
-                            Text("${character.currentHP}",
+                            Text("${character.gold}",
                                 textAlign = TextAlign.Center,
                                 maxLines = 1,
                                 modifier = Modifier.background(color = numBack,
@@ -227,34 +309,77 @@ fun ExpandableBox(
                                 modifier = Modifier.padding(top = 4.dp))
                         }
                     }
-                    Box(contentAlignment = Alignment.Center) {
+                    Box(contentAlignment = Alignment.BottomCenter) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("${character.armorClass}")
+                            Text("${character.level}", fontSize = 23.sp)
                             Icon(painterResource(R.drawable.arrow_up_icon),
+                                tint = Color.White,
                                 contentDescription = "levelup",
-                                modifier = Modifier.padding(start = 3.dp))
+                                modifier = Modifier.padding(start = 7.dp)
+                                    .clickable(onClick = {}))
                         }
-                            Text("Уровень")
+                            Text("Уровень",
+                                color = subTextColor,
+                                fontSize = 14.sp)
                          }
                     }
-                    Box() {
-                        Text("${character.speed}") }
+                    Box(
+                        contentAlignment = Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Row(verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(bottom = 4.dp)) {
+                                Icon(painter = painterResource(R.drawable.minus_icon),
+                                    contentDescription = "minus",
+                                    modifier = Modifier.padding(end = 5.dp))
+
+                                Text("${character.currentMana}",
+                                    textAlign = TextAlign.Center,
+                                    maxLines = 1,
+                                    modifier = Modifier.background(color = numBack,
+                                        shape = RoundedCornerShape(8.dp))
+                                        .padding(2.dp)
+                                        .sizeIn(minWidth = 40.dp, maxWidth = 80.dp))
+
+                                Icon(painter = painterResource(R.drawable.plus_icon),
+                                    contentDescription = "plus",
+                                    modifier = Modifier.padding(start = 5.dp))
+
+                            }
+                            Text("Мана",
+                                color = subTextColor,
+                                fontSize = 14.sp)
+                        }
+
+                    }
                 }
             }
-            Box(contentAlignment = Alignment.TopEnd,
-                modifier = Modifier.fillMaxWidth()){
-                IconButton(
-                    onClick = { expanded = !expanded }
-                ) { Icon(
-                    painter = painterResource(R.drawable.row_up_icon),
-                    contentDescription = "row",
-                    modifier = Modifier.rotate(rotationState)
-                ) }
-            }
-        }
-        else{
 
+        }
+        else {
+            Row(modifier = Modifier.padding(5.dp)){
+                Icon(painter = painterResource(R.drawable.heart_icon),
+                    contentDescription = "health icon",
+                    modifier = Modifier.size(25.dp))
+                Spacer(modifier = Modifier.width(9.dp))
+                Text("${character.currentHP}")
+
+                Spacer(modifier = Modifier.width(18.dp))
+
+                Icon(painter = painterResource(R.drawable.sheildicon),
+                    contentDescription = "shield icon",
+                    modifier = Modifier.size(25.dp))
+                Spacer(modifier = Modifier.width(9.dp))
+                Text("${character.armorClass}")
+
+                Spacer(modifier = Modifier.width(18.dp))
+
+                Icon(painter = painterResource(R.drawable.speedicon),
+                    contentDescription = "speed icon",
+                    modifier = Modifier.size(25.dp))
+                Spacer(modifier = Modifier.width(9.dp))
+                Text("${character.speed}")
+            }
         }
     }
 }
@@ -322,7 +447,7 @@ fun StatsContent(character: Character) {
         modifier = Modifier
             .background(color = containerColor)
             .height(200.dp)
-            .padding(10.dp)
+            .padding(vertical = 10.dp, horizontal = 20.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -373,6 +498,160 @@ fun StatsContent(character: Character) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun HealthDialog(
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit,
+    character: Character
+) {
+    var increaseValue by remember { mutableStateOf("0") }
+    var decreaseValue by remember { mutableStateOf("0") }
+    Dialog(onDismissRequest = onDismiss) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(10.dp)) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = topContainer
+                )
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // 🔹 Иконка здоровья
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.heart_icon), // твоя иконка сердца
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(32.dp)
+                        )
+
+                        Text("Здоровье", color = Color.White, fontSize = 18.sp)
+
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Закрыть",
+                                tint = Color.White,
+                                modifier = Modifier.clickable(onClick = onDismiss)
+                            )
+
+                    }
+
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // 🔹 Поля для изменения
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(5.dp),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(top = 23.dp)) {
+                            Text(
+                                "${character.currentHP}/${character.maxHP} ", color = Color.White,
+                                modifier = Modifier
+                                    //.height(30.dp)
+                                    .background(color = numBack, shape = RoundedCornerShape(8.dp))
+                                    .padding(horizontal = 10.dp),
+                                textAlign = TextAlign.Center
+                            )
+                            Text("Текущие", color = subTextColor)
+                        }
+
+                        Box() {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    painterResource(R.drawable.minus_ic),
+                                    contentDescription = "minus",
+                                    tint = Color.Red,
+                                    modifier = Modifier.padding(end = 9.dp)
+                                )
+                                OutlinedTextField(
+                                    value = decreaseValue,
+                                    onValueChange = { newValue ->
+                                        decreaseValue = newValue
+                                    },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier.size(width = 30.dp, height = 30.dp)
+                                        .background(
+                                            color = numBack,
+                                            shape = RoundedCornerShape(8.dp)
+                                        ),
+                                    shape = MaterialTheme.shapes.extraSmall,
+                                    maxLines = 1,
+                                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                                        containerColor = Color.Transparent,
+                                        focusedBorderColor = Color.Transparent,
+                                        unfocusedBorderColor = Color.Transparent
+                                    ),
+                                    placeholder = { Text(decreaseValue) },
+
+                                    )
+                            }
+                        }
+
+                        Box(contentAlignment = Alignment.Center) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    painterResource(R.drawable.plus_ic),
+                                    contentDescription = "plus",
+                                    tint = Color.Green,
+                                    modifier = Modifier.padding(end = 9.dp)
+                                )
+                                OutlinedTextField(
+                                    value = increaseValue,
+                                    onValueChange = { newValue ->
+                                        increaseValue = newValue
+                                    },
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                    modifier = Modifier.size(width = 30.dp, height = 30.dp)
+                                        .background(
+                                            color = numBack,
+                                            shape = RoundedCornerShape(8.dp)
+                                        ),
+                                    shape = MaterialTheme.shapes.extraSmall,
+                                    maxLines = 1,
+                                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                                        containerColor = Color.Transparent,
+                                        focusedBorderColor = Color.Transparent,
+                                        unfocusedBorderColor = Color.Transparent
+                                    ),
+                                    placeholder = { Text(increaseValue) },
+
+                                    )
+                            }
+                        }
+                    }
+
+                }
+            }
+            Spacer(Modifier.height(10.dp))
+            // 🔹 Кнопка Подтвердить
+            GradientButton(
+                text = "Подтвердить",
+                gradient = gradientButton,
+                onClick = onConfirm,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+
+
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -384,14 +663,23 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
         title = {
             Column(modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(character.name, color = Color.White)
+                Text(character.name,
+                    color = Color.White,
+                    fontSize = 20.sp)
                 Text("${character.classification} ${character.profession1 ?: ""} ${character.race}",
-                    )
+                    fontSize = 16.sp
+                )
             }},
         navigationIcon = {
             IconButton(
                 onClick = {},
-                content = {Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, contentDescription = "IconBack")}
+                content = {
+                    Icon(painter = painterResource(R.drawable.row_up_icon),
+                    contentDescription = "IconBack",
+                        modifier = Modifier.rotate(-90f),
+                        tint = Color.White
+                        )
+                }
                 ) },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = topContainer)
         )
@@ -402,14 +690,14 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
 @Composable
 fun PrevChar(){
     CPTheme {
-        ExpandableBox(
+        HealthDialog({}, {},
             character = Character(
             "char001",
-            "Llos",
-            "Warrior",
-            "Mage Fire",
+            "Марсиль",
+            "Воин",
+            "Варвар",
             "Master Fire",
-            "god",
+            "Орк",
             level = 20,
             maxHP = 100,
                 imagePath = null,

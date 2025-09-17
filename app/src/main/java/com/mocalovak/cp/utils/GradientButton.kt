@@ -25,43 +25,43 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.foundation.shape.RoundedCornerShape
 
-@Composable
-fun GradientButton(
-    gradientColors: List<Color>,
-    cornerRadius: Dp,
-    contentButton:  @Composable() (BoxScope.() -> Unit),
-    roundedCornerShape: Shape,
-    isEnabled: Boolean = true,
-    hasRipple: Boolean = true,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    (if (!hasRipple) remember { MutableInteractionSource() } else null)?.let {
-        Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            //.padding(start = 32.dp, end = 32.dp),
-            .then(modifier),
-        onClick = onClick,
-        contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Transparent,
-            disabledContainerColor = Color.Gray
-        ),
-        shape = roundedCornerShape,
-        enabled = isEnabled,
-        interactionSource = it
-    ) {
-        Box(
-            modifier = Modifier
-                .background(
-                    brush = Brush.linearGradient(colors = gradientColors),
-                    shape = roundedCornerShape
-                )
-                .then(modifier),
-            contentAlignment = Alignment.Center,
-            content = contentButton
-        )
-    }
-    }
-}
+//@Composable
+//fun GradientButton(
+//    gradientColors: List<Color>,
+//    cornerRadius: Dp,
+//    contentButton:  @Composable() (BoxScope.() -> Unit),
+//    roundedCornerShape: Shape,
+//    isEnabled: Boolean = true,
+//    hasRipple: Boolean = true,
+//    onClick: () -> Unit,
+//    modifier: Modifier = Modifier
+//) {
+//    (if (!hasRipple) remember { MutableInteractionSource() } else null)?.let {
+//        Button(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            //.padding(start = 32.dp, end = 32.dp),
+//            .then(modifier),
+//        onClick = onClick,
+//        contentPadding = PaddingValues(),
+//        colors = ButtonDefaults.buttonColors(
+//            containerColor = Color.Transparent,
+//            disabledContainerColor = Color.Gray
+//        ),
+//        shape = roundedCornerShape,
+//        enabled = isEnabled,
+//        interactionSource = it
+//    ) {
+//        Box(
+//            modifier = Modifier
+//                .background(
+//                    brush = Brush.linearGradient(colors = gradientColors),
+//                    shape = roundedCornerShape
+//                )
+//                .then(modifier),
+//            contentAlignment = Alignment.Center,
+//            content = contentButton
+//        )
+//    }
+//    }
+//}
