@@ -23,12 +23,14 @@ import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
@@ -71,6 +73,8 @@ import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -99,11 +103,11 @@ import com.mocalovak.cp.ui.theme.numBack
 import com.mocalovak.cp.ui.theme.otherContainer
 import com.mocalovak.cp.ui.theme.subTextColor
 import com.mocalovak.cp.ui.theme.topContainer
+import com.mocalovak.cp.utils.loadImageFromAssets
 import kotlinx.coroutines.launch
 import kotlin.math.exp
 
 val cornerRadius = 14.dp
-val gradientColors = listOf(Color(0xFF3103AF), Color(0xFF9805B6))
 
 @Composable
 fun CharacterScreen(charVM: CharacterViewModel = hiltViewModel(),
@@ -216,7 +220,7 @@ fun GradientButton(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
-            Text(text, color = Color.White, fontWeight = FontWeight.Bold)
+            Text(text, color = Color.White)
             Spacer(modifier = Modifier.width(8.dp))
             if(icon != null)
                 Icon(
@@ -234,6 +238,7 @@ fun ExpandableBox(
     isExpanded: Boolean = true,
     character: Character
     ) {
+
     var expanded by remember { mutableStateOf(isExpanded) }
 
     val rotationState by animateFloatAsState(
@@ -271,7 +276,8 @@ fun ExpandableBox(
                     Box(contentAlignment = Alignment.Center){
                         Image(painterResource(R.drawable.heart_icon),
                             contentDescription = "background",
-                            modifier = Modifier.padding(top = 5.dp))
+                            modifier = Modifier.padding(top = 5.dp)
+                                .clickable {  })
 
                         Text(text = "${character.currentHP}", fontSize = 20.sp)
                     }
@@ -566,7 +572,9 @@ fun HealthDialog(
                                     .padding(horizontal = 10.dp),
                                 textAlign = TextAlign.Center
                             )
-                            Text("Текущие", color = subTextColor)
+                            Text("Текущие",
+                                color = subTextColor,
+                                modifier = Modifier.padding(top = 4.dp))
                         }
 
                         Box() {
@@ -658,16 +666,35 @@ fun HealthDialog(
 fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
                     character: Character
 ){
-
+    val context = LocalContext.current
     TopAppBar(
         title = {
-            Column(modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(character.name,
-                    color = Color.White,
-                    fontSize = 20.sp)
-                Text("${character.classification} ${character.profession1 ?: ""} ${character.race}",
-                    fontSize = 16.sp
+
+                Column(modifier = Modifier.fillMaxWidth().
+                    padding(end = 30.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text(
+                        character.name,
+                        color = Color.White,
+                        fontSize = 20.sp
+                    )
+                    Text(
+                        "${character.classification} ${character.profession1 ?: ""} ${character.race}",
+                        fontSize = 16.sp
+                    )
+
+                }
+            Box(modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterEnd){
+                val painter = loadImageFromAssets(context, character.imagePath) ?:  rememberVectorPainter(Icons.Default.AccountCircle)
+                Image(
+                    painter = painter,
+                    contentDescription = "View",
+                    modifier = Modifier
+                        .padding(3.dp)
+                        .size(65.dp)
+                        .clip(CircleShape)
+                        .padding(2.dp)
                 )
             }},
         navigationIcon = {
@@ -681,7 +708,7 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
                         )
                 }
                 ) },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = topContainer)
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = topContainer),
         )
 
 }
@@ -690,7 +717,7 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
 @Composable
 fun PrevChar(){
     CPTheme {
-        HealthDialog({}, {},
+        CharacterView({},
             character = Character(
             "char001",
             "Марсиль",

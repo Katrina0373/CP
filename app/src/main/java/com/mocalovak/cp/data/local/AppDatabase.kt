@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.mocalovak.cp.data.local.dao.CharacterDao
 import com.mocalovak.cp.data.local.dao.SkillDao
 import com.mocalovak.cp.data.local.entity.CharacterEntity
@@ -12,7 +13,8 @@ import com.mocalovak.cp.data.local.entity.SkillEntity
 @Database(entities = [
     CharacterEntity::class,
     SkillEntity::class,
-], version = 3, exportSchema = true)
+], version = 4, exportSchema = true)
+@TypeConverters(Converters::class)
 abstract class AppDatabase: RoomDatabase(){
     abstract fun characterDao():CharacterDao
     abstract fun skillDao():SkillDao
