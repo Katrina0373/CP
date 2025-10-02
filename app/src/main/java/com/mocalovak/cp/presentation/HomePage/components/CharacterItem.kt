@@ -103,8 +103,10 @@ fun PrevCharCard(){
             dexterity = 0,
             constitution = 5,
             intelligence = 2,
-            wisdom = 3,
+            magic = 3,
             charisma = -1,
+            perception = 2,
+            languages = emptyList()
         ),
         openCharacter = {}
     )

@@ -473,7 +473,7 @@ fun StatsContent(character: Character) {
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 10.dp))
-            Text("${character.wisdom}", color = Color.White,
+            Text("${character.perception}", color = Color.White,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 10.dp))
@@ -488,7 +488,7 @@ fun StatsContent(character: Character) {
             Text("Харизма", color = Color.White)
         }
         Column(verticalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxHeight()) {
-            Text("${character.charisma}", color = Color.White,
+            Text("${character.magic}", color = Color.White,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 10.dp))
@@ -738,8 +738,10 @@ fun PrevChar(){
                 dexterity = 10,
                 constitution = 10,
                 intelligence = 20,
-                wisdom = 20,
+                magic = 20,
                 charisma = 10,
+                perception = 20,
+                languages = emptyList()
         ))
     }
 }
