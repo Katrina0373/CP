@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.mocalovak.cp.data.local.entity.CharacterEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface CharacterDao{
@@ -14,7 +15,7 @@ interface CharacterDao{
     fun getAll(): Flow<List<CharacterEntity>>
 
     @Query("select * from characters as Ch where Ch.id = :id")
-    fun getCharacterId(id: String): Flow<CharacterEntity>
+    fun getCharacterId(id: String): Flow<CharacterEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(characters: List<CharacterEntity>)

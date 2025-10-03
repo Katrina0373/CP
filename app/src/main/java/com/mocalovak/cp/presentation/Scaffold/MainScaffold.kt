@@ -1,6 +1,7 @@
 package com.mocalovak.cp.presentation.Scaffold
 
 import android.app.Activity
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -71,7 +72,9 @@ fun BottomBar(navController: NavController, scaffoldVM: ScaffoldViewModel = hilt
         shape = RoundedCornerShape(24.dp),
         shadowElevation = 8.dp
     ) {
-        NavigationBar(containerColor = topContainer) {
+        NavigationBar(
+            containerColor = topContainer
+        ) {
             items.forEach { screen ->
                 val selected = currentRoute == screen.route
                 NavigationBarItem(

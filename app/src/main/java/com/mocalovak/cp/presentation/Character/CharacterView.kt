@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,6 +23,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -46,6 +49,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
@@ -95,6 +99,7 @@ import androidx.navigation.compose.rememberNavController
 import com.mocalovak.cp.R
 import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.ui.theme.CPTheme
+import com.mocalovak.cp.ui.theme.backColor
 import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.gradientButton
@@ -165,13 +170,18 @@ fun BottomActionButtons(
     onCheckClick: () -> Unit,
     onAttackClick: () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 72.dp), // чтобы было над BottomBar
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize(),
+//            //.padding(bottom = 72.dp), // чтобы было над BottomBar
+//        verticalArrangement = Arrangement.Bottom,
+//        horizontalAlignment = Alignment.CenterHorizontally
+
+    Box(
+        modifier = Modifier.fillMaxHeight( ),
+        contentAlignment = Alignment.BottomEnd
+    ){
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -218,7 +228,7 @@ fun GradientButton(
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            //modifier = Modifier.padding(horizontal = 16.dp)
         ) {
             Text(text, color = Color.White)
             Spacer(modifier = Modifier.width(8.dp))
@@ -299,7 +309,7 @@ fun ExpandableBox(
                 Row(modifier = Modifier.fillMaxWidth()
                     .padding(start = 37.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Bottom) {
+                    verticalAlignment = Alignment.Top) {
                     Box(contentAlignment = Alignment.Center){
                         Column(horizontalAlignment = Alignment.CenterHorizontally){
                             Text("${character.gold}",
@@ -315,7 +325,7 @@ fun ExpandableBox(
                                 modifier = Modifier.padding(top = 4.dp))
                         }
                     }
-                    Box(contentAlignment = Alignment.BottomCenter) {
+                    Box(contentAlignment = Alignment.TopCenter) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text("${character.level}", fontSize = 23.sp)
@@ -410,14 +420,15 @@ fun CharacterStatsCard(character: Character) {
         ),
         shape = RoundedCornerShape(cornerRadius)
     ) {
-        Column() {
+        Column(modifier = Modifier.background(color = containerColor)) {
             ScrollableTabRow(
                 selectedTabIndex = pagerState.currentPage,
-                containerColor = topContainer,
+                containerColor = otherContainer,
                 contentColor = Color.White,
                 divider = {},
                 indicator = { },
-                edgePadding = 0.dp
+                edgePadding = 0.dp,
+                modifier = Modifier.height(40.dp)
             ) {
                 tabs.forEachIndexed { index, title ->
                     Tab(
@@ -430,14 +441,26 @@ fun CharacterStatsCard(character: Character) {
                                },
                         modifier = Modifier
                             .background(
-                            color = if (pagerState.currentPage == index) containerColor else otherContainer
+                            color = if (pagerState.currentPage == index) containerColor else otherContainer,
+                                shape = RoundedCornerShape(
+                                    topEnd = cornerRadius,
+                                    bottomStart =
+                                    if(pagerState.currentPage == index - 1)
+                                        cornerRadius
+                                    else 0.dp,
+                                    bottomEnd =
+                                    if(pagerState.currentPage == index + 1)
+                                        cornerRadius
+                                    else 0.dp,
+                                    topStart = cornerRadius
+                                )
                         )
-                            .padding(6.dp)
+                            //.padding(2.dp)
                     )
                 }
             }
 
-            // 🔹 Содержимое вкладки
+            //Cодержимое вкладки
             when (pagerState.currentPage) {
                 0 -> StatsContent(character)
                 1 -> Text("Навыки", modifier = Modifier.padding(16.dp), color = Color.White)
@@ -452,7 +475,7 @@ fun StatsContent(character: Character) {
     Row(
         modifier = Modifier
             .background(color = containerColor)
-            .height(200.dp)
+            .height(170.dp)
             .padding(vertical = 10.dp, horizontal = 20.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -486,6 +509,7 @@ fun StatsContent(character: Character) {
             Text("Магия", color = Color.White)
             Text("Интеллект", color = Color.White)
             Text("Харизма", color = Color.White)
+            Text("")
         }
         Column(verticalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxHeight()) {
             Text("${character.magic}", color = Color.White,
@@ -500,6 +524,7 @@ fun StatsContent(character: Character) {
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 10.dp))
+            Text("")
         }
     }
 }
@@ -668,11 +693,12 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
 ){
     val context = LocalContext.current
     TopAppBar(
+        windowInsets = WindowInsets(0,4,0,0),
         title = {
-
                 Column(modifier = Modifier.fillMaxWidth().
                     padding(end = 30.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Top) {
                     Text(
                         character.name,
                         color = Color.White,
@@ -692,7 +718,7 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
                     contentDescription = "View",
                     modifier = Modifier
                         .padding(3.dp)
-                        .size(65.dp)
+                        .size(55.dp)
                         .clip(CircleShape)
                         .padding(2.dp)
                 )
@@ -713,7 +739,7 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
 
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun PrevChar(){
     CPTheme {

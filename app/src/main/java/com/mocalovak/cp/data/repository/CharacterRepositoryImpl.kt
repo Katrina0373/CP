@@ -5,6 +5,7 @@ import com.mocalovak.cp.data.local.entity.toDomain
 import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.domain.repository.CharacterRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -16,7 +17,7 @@ class CharacterRepositoryImpl @Inject constructor(
         return listic.map { list -> list.map { it.toDomain() } }
     }
 
-    override fun getCharacter(id: String): Flow<Character> {
-        return dao.getCharacterId(id).map { it.toDomain() }
+    override fun getCharacter(id: String): Flow<Character?> {
+        return dao.getCharacterId(id).map { it?.toDomain() }
     }
 }

@@ -10,10 +10,12 @@ import com.mocalovak.cp.data.local.preferences.PreferenceManager
 import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.domain.usecase.GetCharacterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,20 +30,20 @@ class CharacterViewModel @Inject constructor(
 
     private val characterId: String = savedStateHandle["characterId"] ?: ""
 
-    private val _character = MutableStateFlow<Character?>(null)
-    val character:StateFlow<Character?> = _character
+    private val _character = getCharacterUseCase(characterId)
+    val character: StateFlow<Character?> = _character.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        null
+    )
 
-    init{
-
-    }
-
-    fun updateHP(newHP:Int){
-        _character.value = character.value?.copy(currentHP = newHP)
-    }
-
-    fun updateGold(newGold:Int){
-        _character.value = character.value?.copy(gold = newGold)
-    }
+//    fun updateHP(newHP:Int){
+//        _character.value?.currentHP = newHP
+//    }
+//
+//    fun updateGold(newGold:Int){
+//        _character.value?.gold = newGold
+//    }
 
 //    fun saveCharacter(){
 //        viewModelScope.launch {

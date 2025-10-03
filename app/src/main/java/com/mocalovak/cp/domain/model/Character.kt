@@ -19,10 +19,11 @@ data class Character(
     val languages:List<String>?,
     val maxMana:Int,
     val currentMana:Int,
-    val strength:Int,
+    var strength:Int,
     val dexterity:Int,
     val constitution:Int,
     val intelligence:Int,
-    val wisdom:Int,
+    val magic:Int,
     val charisma:Int,
+    val perception:Int
 )

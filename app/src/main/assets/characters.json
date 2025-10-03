@@ -13,14 +13,16 @@
     "gold": 150,
     "armorClass": 13,
     "speed": 5,
+    "languages": null,
     "maxMana": 10,
     "currentMana": 10,
     "strength": -1,
     "dexterity": 0,
     "constitution": 1,
     "intelligence": 4,
-    "wisdom": 4,
-    "charisma": 0
+    "magic": 4,
+    "charisma": 0,
+    "perception": 1
   },
   {
     "id": "char002",
@@ -36,13 +38,15 @@
     "gold": 150,
     "armorClass": 13,
     "speed": 5,
+    "languages": null,
     "maxMana": 10,
     "currentMana": 10,
     "strength": -1,
     "dexterity": 0,
     "constitution": 1,
     "intelligence": 4,
-    "wisdom": 4,
-    "charisma": 0
+    "magic": 4,
+    "charisma": 0,
+    "perception": 1
   }
 ]
