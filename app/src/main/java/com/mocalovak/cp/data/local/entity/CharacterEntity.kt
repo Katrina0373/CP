@@ -32,9 +32,9 @@ data class CharacterEntity(
     val dexterity:Int,
     val constitution:Int,
     val intelligence:Int,
-    val wisdom:Int,
+    val magic:Int,
     val charisma:Int,
-    //var passiveEffects: List<PassiveEffect>?,
+    val perception:Int
     )
 
 fun CharacterEntity.toDomain(): Character {
@@ -59,8 +59,9 @@ fun CharacterEntity.toDomain(): Character {
     dexterity,
     constitution,
     intelligence,
-    wisdom,
+    magic,
     charisma,
+    perception
     )
 }
 

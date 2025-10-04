@@ -10,18 +10,17 @@ import com.mocalovak.cp.domain.model.Skill
 @Entity(tableName = "skills")
 data class SkillEntity(
     @PrimaryKey(autoGenerate = true)
-    val id:String,
+    val id:Int,
     val name: String,
     val description: String,
-    val type: String,
-    val source: String,
+    val type: String, //active_passive
     val accessLevel: Int,
-    val check: Int, //значение проверки?????
-    val recharge: String, //перезарядка
-    //val damage: List<Int>, //урон
-    val actionTime: String,
+    val check: String?, //checking value magic, strength, and else
+    val recharge: String?, //перезарядка
+    val damage: String?, //урон
+    val actionTime: String?,
     //val passiveEffect: PassiveEffect,
-    val mana:Int,
+    val mana:Int?,
 )
 
 @Entity(
@@ -45,11 +44,11 @@ data class SkillEntity(
 )
 data class SkillCharacterCrossRef(
     val characterId:String,
-    val skillId:String
+    val skillId: Int
 )
 
 fun SkillEntity.toDomain(): Skill {
     return Skill(
-        name, description, type, source, accessLevel, check, recharge, actionTime, mana
+        id,name, description, type, accessLevel, check, recharge, damage, actionTime, mana
     )
 }
