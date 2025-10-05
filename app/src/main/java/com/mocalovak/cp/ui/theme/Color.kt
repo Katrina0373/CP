@@ -23,6 +23,9 @@ val halfAppWhite = Color(0x80FFFFFF)
 val topContainer = Color(0xFF191D52)
 val otherContainer = Color(0xFF2C1176)
 val button2 = Color(0xFF3405B6)
+val filterButtonBack = Color(0xFF464864)
+val BrightPurple = Color(0xFF7C4DFF)
+val LightGreen = Color(0xFF00CE7F)
 
 val gradientButton = Brush.linearGradient(
     colors = listOf(Color(0xFF3103AF), Color(0xFF9805B6)),

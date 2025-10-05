@@ -1,5 +1,6 @@
 package com.mocalovak.cp.data.local.entity
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Ignore
@@ -29,10 +30,13 @@ data class EquipmentEntity(
     val effect:String? = null,
     val chance:Float? = null,
     val passiveEffects: List<PassiveEffect>? = null,
-
-    @Ignore
-    val isEquipped: Boolean = false
 )
+
+data class EquipmentWithStatus(
+    @Embedded val equipment: EquipmentEntity,
+    val isEquipped: Boolean
+)
+
 
 @Entity(
     tableName = "character_equipment_cross_ref",
@@ -77,7 +81,7 @@ fun EquipmentEntity.toDomain(): Equipment {
             description = description,
             slot = slot.map { it!! },
             passiveEffects = passiveEffects,
-            isEquipped = isEquipped,
+            //isEquipped = isEquipped,
             armorWeight = weight
         )
         EquipType.Potion -> Equipment.Potion(
@@ -99,5 +103,16 @@ fun EquipmentEntity.toDomain(): Equipment {
             description
         )
     }
+}
+
+fun EquipmentWithStatus.toDomain():Equipment {
+    val baseEquipment = equipment.toDomain()
+
+    if(baseEquipment is Equipment.Weapon)
+        baseEquipment.isEquipped = isEquipped
+    else if(baseEquipment is Equipment.Clother)
+        baseEquipment.isEquipped = isEquipped
+
+    return baseEquipment
 }
 

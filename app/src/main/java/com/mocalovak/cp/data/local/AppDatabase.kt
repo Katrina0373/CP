@@ -9,11 +9,15 @@ import com.mocalovak.cp.data.local.dao.CharacterDao
 import com.mocalovak.cp.data.local.dao.EquipmentDao
 import com.mocalovak.cp.data.local.dao.SkillDao
 import com.mocalovak.cp.data.local.entity.CharacterEntity
+import com.mocalovak.cp.data.local.entity.CharacterEquipmentCrossRef
+import com.mocalovak.cp.data.local.entity.EquipmentEntity
 import com.mocalovak.cp.data.local.entity.SkillEntity
 
 @Database(entities = [
     CharacterEntity::class,
     SkillEntity::class,
+    EquipmentEntity::class,
+    CharacterEquipmentCrossRef::class,
 ], version = 5, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class AppDatabase: RoomDatabase(){

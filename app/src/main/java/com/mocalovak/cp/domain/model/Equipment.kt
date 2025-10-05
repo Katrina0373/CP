@@ -26,7 +26,7 @@ sealed class Equipment {
         override val description: String,
         val damage: String,
         val slot: List<BodyPart>,
-        val isEquipped: Boolean = false,
+        var isEquipped: Boolean = false,
         val passiveEffects: List<PassiveEffect>?,
         val activeEffect: String?, //активируется во время атаки
         val chance: Float? //шанс активации эффекта
@@ -37,7 +37,7 @@ sealed class Equipment {
         override val name: String,
         override val description: String,
         val slot: List<BodyPart>,
-        val isEquipped: Boolean = false,
+        var isEquipped: Boolean = false,
         val passiveEffects: List<PassiveEffect>?,
         val armorWeight: ArmorWeight?
     ) : Equipment()
