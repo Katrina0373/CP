@@ -11,6 +11,7 @@ import com.mocalovak.cp.domain.model.ArmorWeight
 import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.domain.model.Equipment
+import com.mocalovak.cp.domain.usecase.GetAllEquipment
 import com.mocalovak.cp.domain.usecase.GetCharacterUseCase
 import com.mocalovak.cp.domain.usecase.GetCharactersEquipment
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,6 +29,7 @@ import javax.inject.Inject
 class CharacterViewModel @Inject constructor(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getCharactersEquipment: GetCharactersEquipment,
+    private val getAllEquipment: GetAllEquipment,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -44,7 +46,7 @@ class CharacterViewModel @Inject constructor(
     )
 
 
-    private val _equipment = getCharactersEquipment(characterId)
+    private val _equipment = getAllEquipment()
     private val _equipType = MutableStateFlow<EquipType?>(null)
     val equipType: StateFlow<EquipType?> = _equipType
     private val _armorWeight = MutableStateFlow<ArmorWeight?>(null)

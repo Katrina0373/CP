@@ -8,7 +8,7 @@ enum class EquipType{
 }
 
 enum class BodyPart {
-    Head, LeftHand, RightHand, Body, Legs, Foots
+    Head, LeftHand, RightHand, Body, Legs, Foots, Hands
 }
 
 enum class ArmorWeight {

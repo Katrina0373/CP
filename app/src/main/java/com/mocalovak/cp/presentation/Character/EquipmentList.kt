@@ -2,6 +2,9 @@ package com.mocalovak.cp.presentation.Character
 
 import android.widget.Space
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,12 +13,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -26,6 +33,7 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -36,6 +44,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.LineBreak
@@ -48,10 +58,13 @@ import com.mocalovak.cp.domain.model.ArmorWeight
 import com.mocalovak.cp.domain.model.BodyPart
 import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.domain.model.Equipment
+import com.mocalovak.cp.domain.model.PassiveEffect
+import com.mocalovak.cp.domain.model.takeString
 import com.mocalovak.cp.ui.theme.BrightPurple
 import com.mocalovak.cp.ui.theme.LightGreen
 import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.filterButtonBack
+import com.mocalovak.cp.ui.theme.halfAppWhite
 import com.mocalovak.cp.ui.theme.hptems
 import com.mocalovak.cp.ui.theme.otherContainer
 import com.mocalovak.cp.utils.NameConverter
@@ -118,6 +131,11 @@ fun ExpandableEquipmentCard(
 ) {
     var expanded by remember { mutableStateOf(true) }
 
+    val rotationState by animateFloatAsState(
+        targetValue = if (!expanded) 90f else 180f,
+        label = "arrowRotation"
+    )
+
     Card(
         colors = CardDefaults.cardColors(containerColor = containerColor),
         modifier = Modifier
@@ -137,8 +155,6 @@ fun ExpandableEquipmentCard(
 //                        .clip(RoundedCornerShape(12.dp))
 //                )
 
-                Spacer(Modifier.width(12.dp))
-
                 Column(Modifier.weight(1f)) {
                     Text(equipment.name, color = Color.White, fontSize = 18.sp)
                     Text(
@@ -149,18 +165,18 @@ fun ExpandableEquipmentCard(
                             is Equipment.Potion -> "Зелье"
                             is Equipment.Other -> "Другое"
                         },
-                        color = hptems,
+                        color = halfAppWhite,
                         fontSize = 14.sp
                     )
                 }
 
-                IconButton(onClick = { expanded = !expanded }) {
-                    Icon(
-                        painter = if (expanded) painterResource(R.drawable.row_up_icon) else painterResource(R.drawable.row_up_icon),
-                        contentDescription = null,
-                        tint = Color.White
-                    )
-                }
+                Icon(
+                    painter = painterResource(R.drawable.row_up_icon),
+                    contentDescription = "row",
+                    modifier = Modifier.rotate(rotationState)
+                        .clickable(onClick = {expanded = !expanded}),
+                    tint = Color.White
+                )
             }
 
             if (expanded) {
@@ -173,37 +189,35 @@ fun ExpandableEquipmentCard(
                         Column(
                             modifier = Modifier.fillMaxWidth()
                         ) {
-                            Row(modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween) {
-                                Text("Урон", color = Color.Gray, fontSize = 13.sp)
-                                Text(equipment.damage, color = Color.White, fontSize = 15.sp)
-                            }
+                            ParameterView("Урон", equipment.damage)
+                            Spacer(Modifier.height(5.dp))
 
                             equipment.chance?.let {
-                                Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween) {
-                                    Text("Шанс", color = Color.Gray, fontSize = 13.sp)
-                                    Text("${(it * 100).toInt()}%", color = Color.White, fontSize = 15.sp)
-                                }
+                                    ParameterView("Шанс", "${(it * 100).toInt()}%")
                             }
                         }
                     }
 
                     is Equipment.Clother -> {
                         Column {
-                            Text("Тип брони: ${equipment.armorWeight?.name ?: "—"}", color = Color.White)
-                            if (equipment.isEquipped)
-                                Text("✅ Надето", color = Color(0xFF4CAF50))
+
+                            ParameterView("Тип брони: ",
+                                NameConverter(equipment.armorWeight ?: "—")
+                            )
+                            Spacer(Modifier.height(5.dp))
+                            ParameterView("Пассивные эффекты: ",
+                                equipment.passiveEffects?.takeString() ?: "—"
+                            )
+
                         }
                     }
 
                     is Equipment.Artifact -> {
-                        Text("Артефакт содержит пассивные эффекты", color = Color.White)
+                        ParameterView("Пассивный эффект: ", equipment.passiveEffects.takeString())
                     }
 
                     is Equipment.Potion -> {
-                        Text("Эффект: ${equipment.effect}", color = Color.White)
+                        ParameterView("Эффект: ", equipment.effect)
                     }
 
                     else -> {}
@@ -211,35 +225,44 @@ fun ExpandableEquipmentCard(
 
                 Spacer(Modifier.height(10.dp))
 
-                // 🔹 Кнопки "Надеть / Снять"
+                //Кнопки "Надеть / Снять"
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    val label: String
                     if (equipment is Equipment.Clother || equipment is Equipment.Weapon) {
                         if ((equipment as? Equipment.Weapon)?.isEquipped == true ||
                             (equipment as? Equipment.Clother)?.isEquipped == true
                         ) {
-                            Text("✅ Надето", color = LightGreen)
-                            Button(
-                                onClick = onUnequipClick,
-                                colors = ButtonDefaults.buttonColors(containerColor = otherContainer),
-                                shape = RoundedCornerShape(38.dp)
-                            ) {
-                                Text("Снять")
-                            }
+                            Icon(
+                                imageVector = Icons.Outlined.Check,
+                                contentDescription = "",
+                                tint = LightGreen,
+                                modifier = Modifier.size(15.dp)
+                            )
+                            Text("Надето", color = LightGreen,
+                                )
+                            Text(text = "Снять",
+                                modifier = Modifier.padding(8.dp)
+                                    .clip(RoundedCornerShape(38.dp))
+                                    .background(otherContainer)
+                                    .padding(horizontal = 20.dp, vertical = 5.dp)
+                                    .clickable {  },
+                                color = Color.White)
+
                         } else {
                             Text("В багаже", color = BrightPurple)
-                            Button(
-                                onClick = onEquipClick,
-                                colors = ButtonDefaults.buttonColors(containerColor = otherContainer),
-                                shape = RoundedCornerShape(38.dp),
-                            ) {
-                                Text("Надеть")
-                            }
+                            Text(text = "Надеть",
+                            modifier = Modifier.padding(8.dp)
+                                .clip(RoundedCornerShape(38.dp))
+                                .background(otherContainer)
+                                .padding(horizontal = 20.dp, vertical = 5.dp)
+                                .clickable {  },
+                            color = Color.White)
                         }
                     }
+                    else
+                        Text("В багаже", color = BrightPurple)
                 }
             }
         }
@@ -256,6 +279,23 @@ private fun Equipment.matchesType(type: EquipType): Boolean {
     }
 }
 
+
+@Composable
+fun ParameterView(parameter:String, description:String){
+
+    Row(modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ){
+
+        Text(text = parameter, color = halfAppWhite)
+        Spacer(Modifier.width(20.dp))
+        Text(text = description, color = Color.White)
+
+    }
+
+}
+
 @Preview
 @Composable
 fun EquipListPreview(){
@@ -263,7 +303,7 @@ fun EquipListPreview(){
         Equipment.Weapon(
             id = "lol",
             name = "Кинжал",
-            description = "Лёгкий кинжал наносит 1к4 урона",
+            description = "атака d4, легко метнуть, шанс на критическую атаку 10%",
             damage = "1d4",
             slot = listOf(BodyPart.RightHand),
             isEquipped = false,
@@ -277,8 +317,28 @@ fun EquipListPreview(){
             description = "Лёгкие перчатки для воришек и лазутчиков",
             slot = listOf(BodyPart.RightHand),
             isEquipped = true,
-            passiveEffects = null,
+            passiveEffects = listOf(PassiveEffect("armorClass", 1, "+1 к КБ")),
             armorWeight = ArmorWeight.Light
+        ),
+        Equipment.Potion(
+            id = "pop",
+            name = "Зелье лечения",
+            description = "Бутолычка с заветной красной жидкостью",
+            effect = "Восстанавливает 2к6 хитов"
+        ),
+        Equipment.Artifact(
+            id = "kok",
+            name = "Кольцо сметения",
+            description = "Золотое колечко как раз по вашему пальцу",
+            passiveEffects = listOf(PassiveEffect(
+                "intellegence",
+                1,
+                "Заставляет ваших противников сомневаться в своей правоте"))
+        ),
+        Equipment.Other(
+            id = "bruh",
+            name = "Какая-то бумажка",
+            description = "Написано на неизвестном языке"
         )
     )
 

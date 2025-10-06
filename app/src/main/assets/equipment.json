@@ -1,0 +1,73 @@
+
+[
+  {
+    "id": "char001",
+    "name": "Кинжал",
+    "type": "Weapon",
+    "slot": ["RightHand"],
+    "description": "атака d4, легко метнуть, шанс на критическую атаку 10%",
+    "weight": "Light",
+
+    "damage": "1d4",
+    "distance": null,
+    "effect": "Критическая атака",
+    "chance": 0.1,
+    "passiveEffects": null
+  },
+  {
+    "id": "char002",
+    "name": "Перчатки",
+    "type": "Armor",
+    "slot": ["RightHand"],
+    "description": "Лёгкие перчатки для воришек и лазутчиков",
+    "weight": "Light",
+
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "char003",
+    "name": "Зелье лечения",
+    "type": "Potion",
+    "slot": [],
+    "description": "Бутолычка с заветной красной жидкостью",
+    "weight": null,
+
+    "damage": null,
+    "distance": null,
+    "effect": "Восстанавливает 2к6 хитов",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "char004",
+    "name": "Кольцо сметения",
+    "type": "Artifact",
+    "slot": [],
+    "description": "Золотое колечко как раз по вашему пальцу",
+    "weight": null,
+
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "char005",
+    "name": "Какая-то бумажка",
+    "type": "Other",
+    "slot": [],
+    "description": "Написано на неизвестном языке",
+    "weight": null,
+
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  }
+]

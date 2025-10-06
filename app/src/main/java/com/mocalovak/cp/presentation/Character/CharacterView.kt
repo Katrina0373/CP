@@ -406,10 +406,7 @@ fun CharacterStatsCard(character: Character) {
     val tabs = listOf("Характеристики", "Навыки", "Инвентарь")
 
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(
-        initialPage = 0,
-        pageCount = {tabs.size}
-    )
+    var tabIndex by remember { mutableStateOf(0) }
 
     Card(
         modifier = Modifier
@@ -422,7 +419,7 @@ fun CharacterStatsCard(character: Character) {
     ) {
         Column(modifier = Modifier.background(color = containerColor)) {
             ScrollableTabRow(
-                selectedTabIndex = pagerState.currentPage,
+                selectedTabIndex = tabIndex,
                 containerColor = otherContainer,
                 contentColor = Color.White,
                 divider = {},
@@ -432,24 +429,24 @@ fun CharacterStatsCard(character: Character) {
             ) {
                 tabs.forEachIndexed { index, title ->
                     Tab(
-                        selected = index == pagerState.currentPage,
+                        selected = index == tabIndex,
                         onClick = { scope.launch {
-                            pagerState.animateScrollToPage(index)
+                            tabIndex = index
                         } },
                         text = {
                             Text(title, maxLines = 1)
                                },
                         modifier = Modifier
                             .background(
-                            color = if (pagerState.currentPage == index) containerColor else otherContainer,
+                            color = if (tabIndex == index) containerColor else otherContainer,
                                 shape = RoundedCornerShape(
                                     topEnd = cornerRadius,
                                     bottomStart =
-                                    if(pagerState.currentPage == index - 1)
+                                    if(tabIndex == index - 1)
                                         cornerRadius
                                     else 0.dp,
                                     bottomEnd =
-                                    if(pagerState.currentPage == index + 1)
+                                    if(tabIndex == index + 1)
                                         cornerRadius
                                     else 0.dp,
                                     topStart = cornerRadius
@@ -461,9 +458,9 @@ fun CharacterStatsCard(character: Character) {
             }
 
             //Cодержимое вкладки
-            when (pagerState.currentPage) {
+            when (tabIndex) {
                 0 -> StatsContent(character)
-                1 -> Text("Навыки", modifier = Modifier.padding(16.dp), color = Color.White)
+                1 -> EquipmentList()
                 2 -> Text("Инвентарь", modifier = Modifier.padding(16.dp), color = Color.White)
             }
         }

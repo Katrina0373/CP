@@ -12,9 +12,9 @@ fun NameConverter(name: Any):String {
         EquipType.Potion -> "Зелья"
         EquipType.Artifact -> "Артефакты"
         EquipType.Other -> "Прочее"
-        ArmorWeight.Magic -> "Магическое"
-        ArmorWeight.Heavy -> "Тяжёлое"
-        ArmorWeight.Light -> "Лёгкое"
+        ArmorWeight.Magic -> "Магическая"
+        ArmorWeight.Heavy -> "Тяжёлая"
+        ArmorWeight.Light -> "Лёгкая"
         else -> "Прочее"
     }
 }

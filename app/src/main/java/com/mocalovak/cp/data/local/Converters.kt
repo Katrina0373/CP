@@ -29,8 +29,8 @@ class Converters {
     }
 
     @TypeConverter
-    fun toPassiveEffectList(data: String): List<PassiveEffect> {
-        if (data.isEmpty()) return emptyList()
+    fun toPassiveEffectList(data: String?): List<PassiveEffect>? {
+        if (data.isNullOrEmpty()) return emptyList()
         val type = object : TypeToken<List<PassiveEffect>>() {}.type
         return gson.fromJson(data, type)
     }

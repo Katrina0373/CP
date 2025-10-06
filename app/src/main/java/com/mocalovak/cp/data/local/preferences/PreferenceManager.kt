@@ -22,6 +22,7 @@ class PreferenceManager @Inject constructor(
     companion object{
         private val IS_CHARACTER_IMPROVED = booleanPreferencesKey("is_character_improved")
         private val IS_SKILLS_IMPORTED = booleanPreferencesKey("is_skills_imported")
+        private val IS_EQUIPMENT_IMPORTED = booleanPreferencesKey("is_equipment_imported")
         private var LAST_CHARACTER_ID = stringPreferencesKey("last_character_id")
     }
 
@@ -49,6 +50,15 @@ class PreferenceManager @Inject constructor(
     suspend fun setSkillsImported(){
         context.dataStore.edit { prefs->
             prefs[IS_SKILLS_IMPORTED] = true
+        }
+    }
+
+    val isEquipmentImported: Flow<Boolean> = context.dataStore.data
+        .map{prefs -> prefs[IS_EQUIPMENT_IMPORTED] ?: false}
+
+    suspend fun setEquipmentImported(){
+        context.dataStore.edit { prefs->
+            prefs[IS_EQUIPMENT_IMPORTED] = true
         }
     }
 
