@@ -24,6 +24,7 @@ val topContainer = Color(0xFF191D52)
 val otherContainer = Color(0xFF2C1176)
 val button2 = Color(0xFF3405B6)
 val filterButtonBack = Color(0xFF464864)
+val unfocusedFilterButtonBack = Color(0xFF3A3B48)
 val BrightPurple = Color(0xFF7C4DFF)
 val LightGreen = Color(0xFF00CE7F)
 

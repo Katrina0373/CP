@@ -1,6 +1,7 @@
 package com.mocalovak.cp.presentation.Character
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.lifecycle.SavedStateHandle
@@ -16,12 +17,19 @@ import com.mocalovak.cp.domain.usecase.GetCharacterUseCase
 import com.mocalovak.cp.domain.usecase.GetCharactersEquipment
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,32 +55,44 @@ class CharacterViewModel @Inject constructor(
 
 
     private val _equipment = getAllEquipment()
-    private val _equipType = MutableStateFlow<EquipType?>(null)
-    val equipType: StateFlow<EquipType?> = _equipType
-    private val _armorWeight = MutableStateFlow<ArmorWeight?>(null)
-    val armorWeight: StateFlow<ArmorWeight?> = _armorWeight
+
+    val _filters = MutableStateFlow(
+        mapOf<Any, Boolean>(
+            EquipType.Armor to false,
+            EquipType.Weapon to false,
+            EquipType.Potion to false,
+            EquipType.Artifact to false,
+            EquipType.Other to false,
+            ArmorWeight.Heavy to false,
+            ArmorWeight.Light to false,
+            ArmorWeight.Magic to false
+        )
+    )
+    val filters: StateFlow<Map<Any, Boolean>> = _filters
 
     val filteredEquipment: StateFlow<List<Equipment>> =
-        combine(_equipment, _equipType, _armorWeight) { equip, type, weight ->
+        combine(_equipment, _filters) { equip, filt ->
+            val activeTypes = filt.filter { it.value }.keys.filterIsInstance<EquipType>()
+            val activeWeights = filt.filter { it.value }.keys.filterIsInstance<ArmorWeight>()
+
+            // Если фильтры не выбраны — показываем всё
+            if (activeTypes.isEmpty() && activeWeights.isEmpty()) return@combine equip
+
             equip.filter { item ->
-                // фильтр по типу
-                val typeMatches = when (type) {
-                    null -> true // если тип не выбран — показываем всё
-                    EquipType.Weapon -> item is Equipment.Weapon
-                    EquipType.Armor -> item is Equipment.Clother
-                    EquipType.Potion -> item is Equipment.Potion
-                    EquipType.Artifact -> item is Equipment.Artifact
-                    EquipType.Other -> item is Equipment.Other
+                val typeMatch = when (item) {
+                    is Equipment.Weapon -> EquipType.Weapon in activeTypes
+                    is Equipment.Clother -> EquipType.Armor in activeTypes
+                    is Equipment.Potion -> EquipType.Potion in activeTypes
+                    is Equipment.Artifact -> EquipType.Artifact in activeTypes
+                    is Equipment.Other -> EquipType.Other in activeTypes
                 }
 
-                // фильтр по весу брони
-                val weightMatches = when {
-                    weight == null -> true
-                    item is Equipment.Clother -> item.armorWeight == weight
-                    else -> true // не броня → не фильтруем по весу
+                val weightMatch = when (item) {
+                    is Equipment.Clother -> activeWeights.isEmpty() || (item.armorWeight in activeWeights)
+                    else -> true
                 }
 
-                typeMatches && weightMatches
+                typeMatch && weightMatch
             }
         }.stateIn(
             viewModelScope,
@@ -80,12 +100,16 @@ class CharacterViewModel @Inject constructor(
             emptyList()
         )
 
-    fun updateWeightFilter(weight: ArmorWeight?){
-        _armorWeight.value = weight
+    fun updateFilter(filter: Any){
+        _filters.update { current ->
+            current.toMutableMap().apply {
+                this[filter] = !(this[filter] ?: false)
+            }
+        }
     }
 
-    fun updateTypeFilter(type: EquipType?){
-        _equipType.value = type
+    fun isFilterSelected(filter:Any):Boolean{
+        return filters.value[filter]!!
     }
 
 

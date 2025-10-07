@@ -3,10 +3,16 @@ package com.mocalovak.cp.presentation.Character
 import android.widget.Space
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.ScrollableDefaults
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +25,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -38,6 +45,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -67,12 +75,13 @@ import com.mocalovak.cp.ui.theme.filterButtonBack
 import com.mocalovak.cp.ui.theme.halfAppWhite
 import com.mocalovak.cp.ui.theme.hptems
 import com.mocalovak.cp.ui.theme.otherContainer
+import com.mocalovak.cp.ui.theme.unfocusedFilterButtonBack
 import com.mocalovak.cp.utils.NameConverter
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EquipmentList(vm: CharacterViewModel = hiltViewModel()){
     val equipment by vm.filteredEquipment.collectAsState()
-    var selectedFilter by remember { mutableStateOf<Any?>(null) }
 
     val filters: List<Any> = listOf(
         EquipType.Armor,
@@ -85,37 +94,50 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel()){
         ArmorWeight.Magic
     )
 
+    val selectedFilters by vm.filters.collectAsState()
+
     Column {
-        LazyRow(
+        Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
         ){
-            items(filters) { filter ->
+            filters.forEach { filter ->
                 FilterChip(
-                    selected = filter == selectedFilter,
+                    selected = selectedFilters.getValue(filter),
                     onClick = {
-                        selectedFilter = filter
-                        if(selectedFilter is EquipType)
-                            vm.updateTypeFilter(selectedFilter as EquipType)
-                        else if(selectedFilter is ArmorWeight)
-                            vm.updateWeightFilter(selectedFilter as ArmorWeight)
+                        vm.updateFilter(filter)
                     },
                     label = { Text(
                         text = NameConverter(filter),
-                        color = if (selectedFilter == filter) Color.White else Color.LightGray
+                        color = if (selectedFilters[filter]!!) Color.White else Color.LightGray
                         )},
                     colors = FilterChipDefaults.filterChipColors(
-                        containerColor = filterButtonBack
+                        containerColor = unfocusedFilterButtonBack,
+                        selectedContainerColor = filterButtonBack
                     )
                 )
             }
         }
         Spacer(Modifier.height(5.dp))
 
+
+
+        val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
+
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxSize()) {
-            items(equipment) { equip ->
-                ExpandableEquipmentCard(equip, {}, {})
+            items(items = equipment, key = {it.id}) { equip ->
+                val expanded = expandedStates[equip.id] ?: false
+                ExpandableEquipmentCard(
+                    equipment = equip,
+                    expanded = expanded,
+                    onExpandChange = { newState ->
+                        expandedStates[equip.id] = newState
+                    },
+                    onEquipClick = {},
+                    onUnequipClick = {}
+                )
             }
         }
     }
@@ -126,10 +148,11 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel()){
 @Composable
 fun ExpandableEquipmentCard(
     equipment: Equipment,
+    expanded: Boolean,
+    onExpandChange: (Boolean) -> Unit,
     onEquipClick: () -> Unit,
     onUnequipClick: () -> Unit
 ) {
-    var expanded by remember { mutableStateOf(true) }
 
     val rotationState by animateFloatAsState(
         targetValue = if (!expanded) 90f else 180f,
@@ -141,6 +164,7 @@ fun ExpandableEquipmentCard(
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize()
+            .clickable(onClick = {onExpandChange(!expanded)})
     ) {
         Column(Modifier.padding(20.dp)) {
             Row(
@@ -158,13 +182,7 @@ fun ExpandableEquipmentCard(
                 Column(Modifier.weight(1f)) {
                     Text(equipment.name, color = Color.White, fontSize = 18.sp)
                     Text(
-                        text = when (equipment) {
-                            is Equipment.Weapon -> "Оружие"
-                            is Equipment.Clother -> "Броня"
-                            is Equipment.Artifact -> "Артефакт"
-                            is Equipment.Potion -> "Зелье"
-                            is Equipment.Other -> "Другое"
-                        },
+                        text = NameConverter(equipment),
                         color = halfAppWhite,
                         fontSize = 14.sp
                     )
@@ -173,8 +191,7 @@ fun ExpandableEquipmentCard(
                 Icon(
                     painter = painterResource(R.drawable.row_up_icon),
                     contentDescription = "row",
-                    modifier = Modifier.rotate(rotationState)
-                        .clickable(onClick = {expanded = !expanded}),
+                    modifier = Modifier.rotate(rotationState),
                     tint = Color.White
                 )
             }
@@ -341,6 +358,7 @@ fun EquipListPreview(){
             description = "Написано на неизвестном языке"
         )
     )
+    val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
 
-    ExpandableEquipmentCard(equipList[0], {} ,{ })
+    ExpandableEquipmentCard(equipList[0], true, {}, {} ,{ })
 }

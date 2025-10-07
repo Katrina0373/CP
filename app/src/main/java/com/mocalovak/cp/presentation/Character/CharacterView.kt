@@ -460,8 +460,8 @@ fun CharacterStatsCard(character: Character) {
             //Cодержимое вкладки
             when (tabIndex) {
                 0 -> StatsContent(character)
-                1 -> EquipmentList()
-                2 -> Text("Инвентарь", modifier = Modifier.padding(16.dp), color = Color.White)
+                1 -> Text("Навыки")
+                2 -> EquipmentList()
             }
         }
     }
