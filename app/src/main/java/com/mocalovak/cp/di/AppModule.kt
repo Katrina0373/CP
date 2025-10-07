@@ -4,12 +4,15 @@ import android.content.Context
 import androidx.room.Room
 import com.mocalovak.cp.data.local.AppDatabase
 import com.mocalovak.cp.data.local.dao.CharacterDao
+import com.mocalovak.cp.data.local.dao.EquipmentCharacterRefDao
 import com.mocalovak.cp.data.local.dao.EquipmentDao
+import com.mocalovak.cp.data.local.dao.SkillCharacterRefDao
 import com.mocalovak.cp.data.local.dao.SkillDao
 import com.mocalovak.cp.data.local.preferences.PreferenceManager
 import com.mocalovak.cp.data.repository.CharacterRepositoryImpl
 import com.mocalovak.cp.data.repository.EquipmentRepositoryImpl
 import com.mocalovak.cp.data.repository.SkillRepositoryImpl
+import com.mocalovak.cp.domain.model.Equipment
 import com.mocalovak.cp.domain.repository.CharacterRepository
 import com.mocalovak.cp.domain.repository.EquipmentRepository
 import com.mocalovak.cp.domain.repository.SkillRepository
@@ -40,6 +43,12 @@ object AppModule {
     @Provides
     fun provideEquipmentDao(db: AppDatabase): EquipmentDao = db.equipmentDao()
 
+    @Provides
+    fun provideSkillCharacterRefDao(db: AppDatabase): SkillCharacterRefDao = db.skillCharacterRefDao()
+
+    @Provides
+    fun provideEquipmentCharacterRefDao(db: AppDatabase): EquipmentCharacterRefDao = db.equipmentCharacterRefDao()
+
     //Repository
     @Provides
     fun provideCharacterRepository(
@@ -55,6 +64,7 @@ object AppModule {
     fun provideEquipmentRepository(
         dao: EquipmentDao
     ): EquipmentRepository = EquipmentRepositoryImpl(dao)
+
 
     @Provides
     @Singleton

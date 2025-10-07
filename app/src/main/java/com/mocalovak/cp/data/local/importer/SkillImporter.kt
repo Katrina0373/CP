@@ -34,6 +34,6 @@ class SkillImporter @Inject constructor(
         val skills: List<SkillEntity> = gson.fromJson(json, listType)
 
         skillDao.insertAll(skills)
-        preferenceManager.setCharacterImproved()
+        preferenceManager.setSkillsImported()
     }
 }

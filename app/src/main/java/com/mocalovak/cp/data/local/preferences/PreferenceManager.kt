@@ -12,59 +12,50 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-// At the top level of your kotlin file:
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
 class PreferenceManager @Inject constructor(
-    @ApplicationContext private val context: Context
-){
+    @ApplicationContext val context: Context
+) {
 
-    companion object{
-        private val IS_CHARACTER_IMPROVED = booleanPreferencesKey("is_character_improved")
-        private val IS_SKILLS_IMPORTED = booleanPreferencesKey("is_skills_imported")
-        private val IS_EQUIPMENT_IMPORTED = booleanPreferencesKey("is_equipment_imported")
-        private var LAST_CHARACTER_ID = stringPreferencesKey("last_character_id")
+    private object Keys {
+        val IS_CHARACTER_IMPORTED = booleanPreferencesKey("is_character_imported")
+        val IS_SKILLS_IMPORTED = booleanPreferencesKey("is_skills_imported")
+        val IS_EQUIPMENT_IMPORTED = booleanPreferencesKey("is_equipment_imported")
+        val IS_ECREFS_IMPORTED = booleanPreferencesKey("is_equipment_characters_refs_imported")
+        val IS_SCREFS_IMPORTED = booleanPreferencesKey("is_skill_character_refs_imported")
+        val LAST_CHARACTER_ID = stringPreferencesKey("last_character_id")
     }
 
-    val isCharactersImproved: Flow<Boolean> = context.dataStore.data
-        .map {prefs -> prefs[IS_CHARACTER_IMPROVED] ?: false}
+    // ---------- Универсальные функции ----------------------------------------
 
-    var lastCharacterId: Flow<String> = context.dataStore.data
-        .map { prefs -> prefs[LAST_CHARACTER_ID] ?: "null" }
+    inline fun <reified T> getPreferenceFlow(
+        key: Preferences.Key<T>,
+        default: T
+    ): Flow<T> = context.dataStore.data.map { it[key] ?: default }
 
-    suspend fun setCharacterImproved(){
-        context.dataStore.edit {prefs ->
-            prefs[IS_CHARACTER_IMPROVED] = true
-        }
+    suspend fun <T> setPreference(key: Preferences.Key<T>, value: T) {
+        context.dataStore.edit { prefs -> prefs[key] = value }
     }
 
-    suspend fun setLastCharacterId(id:String) {
-        context.dataStore.edit { prefs ->
-            prefs[LAST_CHARACTER_ID] = id
-        }
-    }
+    // ---------- Готовые поля --------------------------------------------------
 
-    val isSkillsImported: Flow<Boolean> = context.dataStore.data
-        .map{prefs -> prefs[IS_SKILLS_IMPORTED] ?: false}
+    val isCharacterImported = getPreferenceFlow(Keys.IS_CHARACTER_IMPORTED, false)
+    val isSkillsImported = getPreferenceFlow(Keys.IS_SKILLS_IMPORTED, false)
+    val isEquipmentImported = getPreferenceFlow(Keys.IS_EQUIPMENT_IMPORTED, false)
+    val isECRefsImported = getPreferenceFlow(Keys.IS_ECREFS_IMPORTED, false)
+    val isSCRefsImported = getPreferenceFlow(Keys.IS_SCREFS_IMPORTED, false)
 
-    suspend fun setSkillsImported(){
-        context.dataStore.edit { prefs->
-            prefs[IS_SKILLS_IMPORTED] = true
-        }
-    }
+    val lastCharacterId = getPreferenceFlow(Keys.LAST_CHARACTER_ID, "null")
 
-    val isEquipmentImported: Flow<Boolean> = context.dataStore.data
-        .map{prefs -> prefs[IS_EQUIPMENT_IMPORTED] ?: false}
+    // ---------- Готовые методы ------------------------------------------------
 
-    suspend fun setEquipmentImported(){
-        context.dataStore.edit { prefs->
-            prefs[IS_EQUIPMENT_IMPORTED] = true
-        }
-    }
+    suspend fun setCharacterImported() = setPreference(Keys.IS_CHARACTER_IMPORTED, true)
+    suspend fun setSkillsImported() = setPreference(Keys.IS_SKILLS_IMPORTED, true)
+    suspend fun setEquipmentImported() = setPreference(Keys.IS_EQUIPMENT_IMPORTED, true)
+    suspend fun setECRefsImported() = setPreference(Keys.IS_ECREFS_IMPORTED, true)
+    suspend fun setSCRefsImported() = setPreference(Keys.IS_SCREFS_IMPORTED, true)
 
-    suspend fun deleteLastCharacterId() {
-        context.dataStore.edit { prefs ->
-            prefs[LAST_CHARACTER_ID] = "null"
-        }
-    }
+    suspend fun setLastCharacterId(id: String) = setPreference(Keys.LAST_CHARACTER_ID, id)
+    suspend fun deleteLastCharacterId() = setPreference(Keys.LAST_CHARACTER_ID, "null")
 }
