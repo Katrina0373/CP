@@ -460,7 +460,7 @@ fun CharacterStatsCard(character: Character) {
             //Cодержимое вкладки
             when (tabIndex) {
                 0 -> StatsContent(character)
-                1 -> Text("Навыки")
+                1 -> SkillsList()
                 2 -> EquipmentList()
             }
         }

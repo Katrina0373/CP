@@ -1,6 +1,7 @@
 package com.mocalovak.cp.presentation.Scaffold
 
 import android.app.Activity
+import androidx.annotation.RestrictTo
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,6 +31,7 @@ import com.mocalovak.cp.presentation.nav.AppNavHost
 import com.mocalovak.cp.presentation.nav.Screen
 import com.mocalovak.cp.presentation.nav.navigateSingleTopTo
 import com.mocalovak.cp.ui.theme.topContainer
+import kotlinx.coroutines.coroutineScope
 
 @Composable
 fun MainScreen() {

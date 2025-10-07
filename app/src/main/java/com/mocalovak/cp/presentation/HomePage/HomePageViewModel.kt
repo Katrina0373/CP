@@ -29,6 +29,7 @@ class HomePageViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomePageUiState>(HomePageUiState.Loading)
     val uiState: StateFlow<HomePageUiState> = _uiState
 
+
 //    private val _uiEvent = MutableSharedFlow<String>()
 //    val uiEvent = _uiEvent.asSharedFlow()
 //
@@ -48,21 +49,17 @@ class HomePageViewModel @Inject constructor(
         loadCharacters()
     }
 
-    fun updateLastCharacter(id:String){
+    fun updateLastCharacter(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-             preferenceManager.setLastCharacterId(id)
+            preferenceManager.setLastCharacterId(id)
         }
     }
 
-    fun removeLastCharacterId(){
+    fun removeLastCharacterId() {
         viewModelScope.launch(Dispatchers.IO) {
             preferenceManager.deleteLastCharacterId()
         }
     }
-
-    val lastCharacterId: StateFlow<String> = preferenceManager.lastCharacterId
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "null")
-
 
     private fun loadCharacters() {
         viewModelScope.launch {

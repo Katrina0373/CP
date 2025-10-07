@@ -6,8 +6,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mocalovak.cp.data.local.preferences.PreferenceManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,12 +20,21 @@ class ScaffoldViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager
 ):ViewModel()
 {
-    val lastCharacterId: StateFlow<String> = preferenceManager.lastCharacterId
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), "null")
+    private val _lastCharacterId = MutableStateFlow("null")
+    val lastCharacterId: StateFlow<String> = _lastCharacterId
 
-    fun removeLastCharacterId(){
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            preferenceManager.lastCharacterId.collect { id ->
+                _lastCharacterId.value = id
+            }
+        }
+    }
+
+    fun removeLastCharacterId() {
         viewModelScope.launch(Dispatchers.IO) {
             preferenceManager.deleteLastCharacterId()
+            _lastCharacterId.value = "null"
         }
     }
 }

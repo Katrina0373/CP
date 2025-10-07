@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface SkillRepository {
     fun getSkills(): Flow<List<Skill>>
+
+    fun getCharactersSkills(characterId:String): Flow<List<Skill>>
 }

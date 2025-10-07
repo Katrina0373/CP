@@ -14,4 +14,8 @@ class SkillRepositoryImpl @Inject constructor(
     override fun getSkills(): Flow<List<Skill>> {
         return dao.getAll().map { list -> list.map { it.toDomain() } }
     }
+
+    override fun getCharactersSkills(characterId:String): Flow<List<Skill>> {
+        return dao.getCharactersSkills(characterId).map { list -> list.map { it.toDomain() }}
+    }
 }

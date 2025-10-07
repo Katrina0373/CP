@@ -5,7 +5,12 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import androidx.room.util.TableInfo
+import com.mocalovak.cp.domain.model.ActivePassive
+import com.mocalovak.cp.domain.model.CombatMagic
+import com.mocalovak.cp.domain.model.PassiveEffect
 import com.mocalovak.cp.domain.model.Skill
+import com.mocalovak.cp.domain.model.Source
+import org.intellij.lang.annotations.MagicConstant
 
 @Entity(tableName = "skills")
 data class SkillEntity(
@@ -13,14 +18,16 @@ data class SkillEntity(
     val id:Int,
     val name: String,
     val description: String,
-    val type: String, //active_passive
+    val type: ActivePassive, //active_passive
+    val useType: CombatMagic,
+    val source: Source,
     val accessLevel: Int,
     val check: String?, //checking value magic, strength, and else
     val recharge: String?, //перезарядка
     val damage: String?, //урон
     val actionTime: String?,
-    //val passiveEffect: PassiveEffect,
-    val mana:Int?,
+    val passiveEffect: List<PassiveEffect>?,
+    val mana :Int?,
 )
 
 @Entity(
@@ -49,6 +56,6 @@ data class SkillCharacterCrossRef(
 
 fun SkillEntity.toDomain(): Skill {
     return Skill(
-        id,name, description, type, accessLevel, check, recharge, damage, actionTime, mana
+        id,name, description, type, useType, source, accessLevel, check, recharge, damage, actionTime, passiveEffect, mana
     )
 }

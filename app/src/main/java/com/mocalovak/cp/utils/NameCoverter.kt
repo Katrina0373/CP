@@ -1,9 +1,13 @@
 package com.mocalovak.cp.utils
 
+import com.mocalovak.cp.domain.model.ActivePassive
 import com.mocalovak.cp.domain.model.ArmorWeight
+import com.mocalovak.cp.domain.model.CombatMagic
 import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.domain.model.Equipment
+import com.mocalovak.cp.domain.model.Source
 import com.mocalovak.cp.presentation.Character.EquipmentList
+import java.util.SortedMap
 
 fun NameConverter(name: Any):String {
 
@@ -21,6 +25,13 @@ fun NameConverter(name: Any):String {
         is Equipment.Artifact -> "Артефакт"
         is Equipment.Potion -> "Зелье"
         is Equipment.Other -> "Другое"
+        ActivePassive.Active -> "Активный"
+        ActivePassive.Passive -> "Пассивный"
+        CombatMagic.Combat -> "Боевой"
+        CombatMagic.Magic -> "Магический"
+        Source.Race -> "Расовый"
+        Source.Common -> "Общий"
+        Source.Profession -> "Классовый"
         else -> "Прочее"
     }
 }

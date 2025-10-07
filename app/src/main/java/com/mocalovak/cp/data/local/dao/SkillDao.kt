@@ -13,8 +13,17 @@ interface SkillDao {
     @Query("select * from skills")
     fun getAll():Flow<List<SkillEntity>>
 
+    @Query("""select * from skills s
+        inner join skill_character_cross_ref sc
+        on s.id = sc.skillId
+        where sc.characterId == :characterId
+    """)
+    fun getCharactersSkills(characterId: String): Flow<List<SkillEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(skills: List<SkillEntity>)
+
+
 }
 
 @Dao

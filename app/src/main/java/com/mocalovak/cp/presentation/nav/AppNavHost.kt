@@ -34,15 +34,15 @@ fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifi
         }
         composable(Screen.Character.route)
         { backStackEntry ->
-            println("route: $route")
+            //println("route: $route")
             val characterId = backStackEntry.arguments?.getString("characterId")
-            println("character id = $characterId")
+            //println("character id = $characterId")
             if(characterId.equals("all"))
                 CharacterList(onCharacterClick = { characterId ->
                     navHostController.navigateSingleTopTo(Screen.Character.createRoute(characterId))
                 })
             else
-                CharacterScreen(characterId = characterId!!) { }
+                CharacterScreen(characterId = characterId!!, onBackClick = { navHostController.popBackStack() })
         }
     }
 }
