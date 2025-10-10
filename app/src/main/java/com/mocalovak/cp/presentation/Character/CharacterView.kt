@@ -1,5 +1,6 @@
 package com.mocalovak.cp.presentation.Character
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
@@ -134,16 +135,18 @@ fun CharacterView(
     ){
 
 
-    Scaffold(topBar = {TopBarCharacter( character)}, modifier = Modifier.fillMaxSize()) { padding ->
+    Scaffold(topBar = {TopBarCharacter(character, onBackClick)}, modifier = Modifier.fillMaxSize()) { padding ->
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(5.dp)
-            .padding(padding),
+            .padding(top = padding.calculateTopPadding(), bottom = 5.dp),
             ) {
 
-            ExpandableBox(character = character)
+            var isCommonInfoBoxExpanded by remember { mutableStateOf(true) }
 
-            CharacterStatsCard(character)
+            ExpandableBox(character = character, isExpanded = isCommonInfoBoxExpanded)
+
+            CharacterStatsCard(character) {isCommonInfoBoxExpanded = false}
 
             Box(contentAlignment = Alignment.TopStart,
                 modifier = Modifier.fillMaxWidth()
@@ -263,7 +266,7 @@ fun ExpandableBox(
             .background(color = containerColor,
                 shape = RoundedCornerShape(cornerRadius))
             .padding(5.dp)
-
+            .animateContentSize()
     ) {
         Box(contentAlignment = Alignment.TopEnd,
             modifier = Modifier.fillMaxWidth()
@@ -402,7 +405,7 @@ fun ExpandableBox(
 
 
 @Composable
-fun CharacterStatsCard(character: Character) {
+fun CharacterStatsCard(character: Character, closeExpanedeBox: () -> Unit) {
     val tabs = listOf("Характеристики", "Навыки", "Инвентарь")
 
     val scope = rememberCoroutineScope()
@@ -432,6 +435,9 @@ fun CharacterStatsCard(character: Character) {
                         selected = index == tabIndex,
                         onClick = { scope.launch {
                             tabIndex = index
+                            if(index != 0){
+                                closeExpanedeBox
+                            }
                         } },
                         text = {
                             Text(title, maxLines = 1)
@@ -686,7 +692,8 @@ fun HealthDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
-                    character: Character
+                    character: Character,
+                    onBackClick: () -> Unit
 ){
     val context = LocalContext.current
     TopAppBar(
@@ -722,7 +729,7 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
             }},
         navigationIcon = {
             IconButton(
-                onClick = {},
+                onClick = onBackClick,
                 content = {
                     Icon(painter = painterResource(R.drawable.row_up_icon),
                     contentDescription = "IconBack",

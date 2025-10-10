@@ -24,9 +24,10 @@ val topContainer = Color(0xFF191D52)
 val otherContainer = Color(0xFF2C1176)
 val button2 = Color(0xFF3405B6)
 val filterButtonBack = Color(0xFF464864)
-val unfocusedFilterButtonBack = Color(0xFF3A3B48)
+val unfocusedFilterButtonBack = Color(0x80464864)
 val BrightPurple = Color(0xFF7C4DFF)
 val LightGreen = Color(0xFF00CE7F)
+var dropMenuBackColor = Color(0xff272C6D)
 
 val gradientButton = Brush.linearGradient(
     colors = listOf(Color(0xFF3103AF), Color(0xFF9805B6)),

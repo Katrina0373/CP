@@ -40,7 +40,7 @@ class CharacterListViewModel @Inject constructor(
         _searchQuery.value = query
     }
 
-    fun updateLastCharacter(id:String){
+    fun updateLastCharacter(id: String){
         viewModelScope.launch(Dispatchers.IO) {
             preferenceManager.setLastCharacterId(id)
         }

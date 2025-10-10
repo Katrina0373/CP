@@ -22,11 +22,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,6 +57,7 @@ import com.mocalovak.cp.domain.model.PassiveEffect
 import com.mocalovak.cp.domain.model.takeString
 import com.mocalovak.cp.ui.theme.BrightPurple
 import com.mocalovak.cp.ui.theme.LightGreen
+import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.filterButtonBack
 import com.mocalovak.cp.ui.theme.halfAppWhite
@@ -96,8 +101,10 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel()){
                         )},
                     colors = FilterChipDefaults.filterChipColors(
                         containerColor = unfocusedFilterButtonBack,
-                        selectedContainerColor = filterButtonBack
-                    )
+                        selectedContainerColor = filterButtonBack,
+                    ),
+                    shape = RoundedCornerShape(cornerRadius),
+                    border = null
                 )
             }
         }
@@ -108,7 +115,9 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel()){
         val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxSize()) {
+            modifier = Modifier.fillMaxSize()
+                .padding(bottom = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
             items(items = equipment, key = {it.id}) { equip ->
                 val expanded = expandedStates[equip.id] ?: false
                 ExpandableEquipmentCard(
@@ -120,6 +129,11 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel()){
                     onEquipClick = {},
                     onUnequipClick = {}
                 )
+            }
+            item{
+                Button(onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = button2)) {
+                    Text("Добавить из библиотеки", color= Color.White )
+                }
             }
         }
     }
@@ -260,12 +274,38 @@ fun ExpandableEquipmentCard(
                             color = Color.White)
                         }
                     }
-                    else
-                        Text("В багаже", color = BrightPurple)
+                    else if(equipment is Equipment.Potion){
+                        Text(text = "Применить",
+                            modifier = Modifier.padding(8.dp)
+                                .clip(RoundedCornerShape(38.dp))
+                                .background(otherContainer)
+                                .padding(horizontal = 20.dp, vertical = 5.dp)
+                                .clickable {  },
+                            color = Color.White)
+                    }
                 }
             }
+
+            HorizontalDivider(modifier = Modifier.padding(top = 10.dp))
         }
     }
+}
+
+@Composable
+fun SmallButton(modifier: Modifier = Modifier,
+                label: String,
+                onClick: () -> Unit){
+    
+    Button(
+        modifier = Modifier.size(height = 35.dp, width = 70.dp)
+            .then(modifier),
+        onClick = onClick
+    ) {
+        Text(text = label, color = Color.White)
+    }
+    
+    
+    
 }
 
 private fun Equipment.matchesType(type: EquipType): Boolean {

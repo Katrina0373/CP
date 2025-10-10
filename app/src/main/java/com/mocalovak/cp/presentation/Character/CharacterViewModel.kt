@@ -82,11 +82,11 @@ class CharacterViewModel @Inject constructor(
                 }
 
                 val weightMatch = when (item) {
-                    is Equipment.Clother -> activeWeights.isEmpty() || (item.armorWeight in activeWeights)
-                    else -> true
+                    is Equipment.Clother -> (item.armorWeight in activeWeights)
+                    else -> false
                 }
 
-                typeMatch && weightMatch
+                typeMatch || weightMatch
             }
         }.stateIn(
             viewModelScope,
@@ -126,11 +126,11 @@ class CharacterViewModel @Inject constructor(
             if (activeTypes.isEmpty() && activeUseTypes.isEmpty() && activeSource.isEmpty()) return@combine skills
 
             skills.filter { item ->
-                val typeMatch =  activeTypes.isEmpty() || (item.type in activeTypes)
-                val useTypeMatch = activeUseTypes.isEmpty() || (item.useType in activeUseTypes)
-                val sourceMatch = activeSource.isEmpty() || (item.source in activeSource)
+                val typeMatch =  (item.type in activeTypes)
+                val useTypeMatch = (item.useType in activeUseTypes)
+                val sourceMatch = (item.source in activeSource)
 
-                typeMatch && useTypeMatch && sourceMatch
+                typeMatch || useTypeMatch || sourceMatch
             }
         }.stateIn(
             viewModelScope,

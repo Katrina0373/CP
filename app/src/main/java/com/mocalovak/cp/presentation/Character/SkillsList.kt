@@ -96,7 +96,9 @@ fun SkillsList(vm: CharacterViewModel = hiltViewModel()){
                     colors = FilterChipDefaults.filterChipColors(
                         containerColor = unfocusedFilterButtonBack,
                         selectedContainerColor = filterButtonBack
-                    )
+                    ),
+                    shape = RoundedCornerShape(cornerRadius),
+                    border = null
                 )
             }
         }
