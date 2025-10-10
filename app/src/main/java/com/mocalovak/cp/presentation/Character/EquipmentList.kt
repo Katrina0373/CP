@@ -208,6 +208,9 @@ fun ExpandableEquipmentCard(
                             equipment.chance?.let {
                                     ParameterView("Шанс", "${(it * 100).toInt()}%")
                             }
+                            equipment.passiveEffects?.let {
+                                ParameterView("Пассивный эффект:", it.takeString())
+                            }
                         }
                     }
 
@@ -230,7 +233,9 @@ fun ExpandableEquipmentCard(
                     }
 
                     is Equipment.Potion -> {
-                        ParameterView("Эффект: ", equipment.effect)
+                        equipment.effect?.let {
+                            ParameterView("Эффект: ", equipment.effect)
+                        }
                     }
 
                     else -> {}

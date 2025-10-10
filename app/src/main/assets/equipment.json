@@ -4,7 +4,7 @@
     "id": "char001",
     "name": "Кинжал",
     "type": "Weapon",
-    "slot": ["RightHand"],
+    "slot": ["RightHand", "LeftHand"],
     "description": "атака d4, легко метнуть, шанс на критическую атаку 10%",
     "weight": "Light",
 
@@ -18,7 +18,7 @@
     "id": "char002",
     "name": "Перчатки",
     "type": "Armor",
-    "slot": ["RightHand"],
+    "slot": ["TwoHands"],
     "description": "Лёгкие перчатки для воришек и лазутчиков",
     "weight": "Light",
 
@@ -38,7 +38,7 @@
 
     "damage": null,
     "distance": null,
-    "effect": "Восстанавливает 2к6 хитов",
+    "effect": "Восстанавливает 2к6 здоровья",
     "chance": null,
     "passiveEffects": null
   },
@@ -54,7 +54,11 @@
     "distance": null,
     "effect": null,
     "chance": null,
-    "passiveEffects": null
+    "passiveEffects": [{
+      "parameter": "charisma",
+      "bonus": 1,
+      "description": "+1 к харизме"
+    }]
   },
   {
     "id": "char005",

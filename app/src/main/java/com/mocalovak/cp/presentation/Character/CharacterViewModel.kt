@@ -16,13 +16,17 @@ import com.mocalovak.cp.domain.usecase.GetAllEquipment
 import com.mocalovak.cp.domain.usecase.GetCharacterUseCase
 import com.mocalovak.cp.domain.usecase.GetCharactersEquipment
 import com.mocalovak.cp.domain.usecase.GetCharactersSkillsUseCase
+import com.mocalovak.cp.domain.usecase.UpdateCharacterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,6 +35,7 @@ class CharacterViewModel @Inject constructor(
     private val getCharactersEquipment: GetCharactersEquipment,
     private val getAllEquipment: GetAllEquipment,
     private val getCharactersSkillsUseCase: GetCharactersSkillsUseCase,
+    private val updateCharacterUseCase: UpdateCharacterUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -146,19 +151,40 @@ class CharacterViewModel @Inject constructor(
         }
     }
 
-//    fun updateHP(newHP:Int){
-//        _character.value?.currentHP = newHP
-//    }
-//
-//    fun updateGold(newGold:Int){
-//        _character.value?.gold = newGold
-//    }
+    fun updateGold(newValue:Int){
+        if(newValue > 0) {
+            viewModelScope.launch(Dispatchers.IO) {
+                updateCharacterUseCase.updateGold(character.value!!.id, newValue)
+            }
+        }
+    }
+    fun updateHP(newValue:Int){
+        if(newValue > 0) {
+            viewModelScope.launch(Dispatchers.IO) {
+                updateCharacterUseCase.updateHP(character.value!!.id, newValue)
+            }
+        }
+    }
+    fun updateMana(newValue:Int){
+        if(newValue > 0) {
+            viewModelScope.launch(Dispatchers.IO) {
+                updateCharacterUseCase.updateMana(character.value!!.id, newValue)
+            }
+        }
+    }
 
-//    fun saveCharacter(){
-//        viewModelScope.launch {
-//            _character.value?.let { updateCharacterUseCase(it) }
-//        }
-//    }
+    fun levelUp() {
+            viewModelScope.launch(Dispatchers.IO) {
+                updateCharacterUseCase.levelUp(character.value!!.id)
+            }
+
+    }
+
+    fun updateCharacter(character: Character){
+        viewModelScope.launch(Dispatchers.IO) {
+            updateCharacterUseCase(character)
+        }
+    }
 
 
 }

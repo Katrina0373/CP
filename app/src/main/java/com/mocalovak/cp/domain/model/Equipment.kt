@@ -8,7 +8,7 @@ enum class EquipType{
 }
 
 enum class BodyPart {
-    Head, LeftHand, RightHand, Body, Legs, Foots, Hands
+    Head, LeftHand, RightHand, Body, Legs, Foots, TwoHands
 }
 
 enum class ArmorWeight {
@@ -46,7 +46,7 @@ sealed class Equipment {
         override val id: String,
         override val name: String,
         override val description: String,
-        val effect: String
+        val effect: String?,
     ) : Equipment()
 
     data class Artifact(

@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import javax.annotation.processing.Generated
 import com.mocalovak.cp.domain.model.Character
 import java.io.ByteArrayOutputStream
+import kotlin.math.max
 
 @Entity(tableName = "characters")
 data class CharacterEntity(
@@ -34,7 +35,8 @@ data class CharacterEntity(
     val intelligence:Int,
     val magic:Int,
     val charisma:Int,
-    val perception:Int
+    val perception:Int,
+    val initiative: Int
     )
 
 fun CharacterEntity.toDomain(): Character {
@@ -61,7 +63,37 @@ fun CharacterEntity.toDomain(): Character {
     intelligence,
     magic,
     charisma,
-    perception
+    perception,
+        dexterity + initiative
+    )
+}
+
+fun Character.toEntity(): CharacterEntity {
+    return CharacterEntity(
+        id = id,
+        name = name,
+        classification = classification,
+        profession1 = profession1,
+        profession2 = profession2,
+        race = race,
+        imagePath = imagePath,
+        level = level,
+        maxHP = maxHP,
+        currentHP = currentHP,
+        gold = gold,
+        armorClass = armorClass,
+        speed = speed,
+        languages = languages,
+        maxMana = maxMana,
+        currentMana = currentMana,
+        strength = strength,
+        dexterity = dexterity,
+        constitution = constitution,
+        intelligence = intelligence,
+        magic = magic,
+        charisma = charisma,
+        perception = perception,
+        initiative = initiative - dexterity
     )
 }
 

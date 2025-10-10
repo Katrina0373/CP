@@ -219,7 +219,8 @@ fun PrevCharCard(){
             magic = 3,
             charisma = -1,
             perception = 2,
-            languages = emptyList()
+            languages = emptyList(),
+            initiative = 0
         ),
         openCharacter = {}, {}, {}
     )

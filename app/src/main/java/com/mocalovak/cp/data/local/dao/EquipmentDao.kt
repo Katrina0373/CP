@@ -42,4 +42,7 @@ interface EquipmentCharacterRefDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(ref: List<CharacterEquipmentCrossRef>)
+
+    @Query("UPDATE character_equipment_cross_ref SET isEquipped = :isEquipped WHERE characterId = :id")
+    suspend fun updateEquipStatus(id: String, isEquipped: Boolean)
 }

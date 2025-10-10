@@ -771,7 +771,8 @@ fun PrevChar(){
                 magic = 20,
                 charisma = 10,
                 perception = 20,
-                languages = emptyList()
+                languages = emptyList(),
+                initiative = 20
         ))
     }
 }
