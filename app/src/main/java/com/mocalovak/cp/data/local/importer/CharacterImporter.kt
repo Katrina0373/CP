@@ -23,7 +23,7 @@ class CharacterImporter @Inject constructor(
 
     suspend fun importIfNeeded() {
         val alreadyImported = preferenceManager.isCharacterImported.first()
-        //if (alreadyImported) return
+        if (alreadyImported) return
 
         val json = context.assets.open(FILE_NAME).bufferedReader().use { it.readText() }
 

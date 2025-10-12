@@ -26,7 +26,7 @@ class EquipmentImporter @Inject constructor(
 
     suspend fun importIfNeeded(){
         val alreadyImported = preferenceManager.isEquipmentImported.first()
-        //if (alreadyImported) return
+        if (alreadyImported) return
 
         val json = context.assets.open(FILE_NAME).bufferedReader().use { it.readText() }
 

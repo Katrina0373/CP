@@ -23,7 +23,7 @@ import com.mocalovak.cp.domain.model.Equipment
     EquipmentEntity::class,
     CharacterEquipmentCrossRef::class,
     SkillCharacterCrossRef::class
-], version = 6, exportSchema = true)
+], version = 7, exportSchema = true)
 @TypeConverters(Converters::class)
 abstract class AppDatabase: RoomDatabase(){
     abstract fun characterDao():CharacterDao

@@ -1,18 +1,13 @@
 package com.mocalovak.cp.presentation.Character
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -24,48 +19,33 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
-import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -74,46 +54,34 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.rememberNavController
 import com.mocalovak.cp.R
 import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.ui.theme.CPTheme
-import com.mocalovak.cp.ui.theme.backColor
 import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.gradientButton
-import com.mocalovak.cp.ui.theme.hptems
 import com.mocalovak.cp.ui.theme.numBack
 import com.mocalovak.cp.ui.theme.otherContainer
 import com.mocalovak.cp.ui.theme.subTextColor
 import com.mocalovak.cp.ui.theme.topContainer
 import com.mocalovak.cp.utils.loadImageFromAssets
 import kotlinx.coroutines.launch
-import kotlin.math.exp
 
 val cornerRadius = 14.dp
+enum class ChangingValues{ Health, Mana, Gold}
 
 @Composable
 fun CharacterScreen(charVM: CharacterViewModel = hiltViewModel(),
@@ -123,14 +91,14 @@ fun CharacterScreen(charVM: CharacterViewModel = hiltViewModel(),
 
     when {
         character == null -> CircularProgressIndicator()
-        else -> CharacterView(onBackClick, character!!)
+        else -> CharacterView(onBackClick, charVM, character!!)
     }
 }
 
 @Composable
 fun CharacterView(
     onBackClick: () -> Unit,
-    //charVM: CharacterViewModel = hiltViewModel(),
+    charVM: CharacterViewModel = hiltViewModel(),
     character: Character
     ){
 
@@ -143,8 +111,20 @@ fun CharacterView(
             ) {
 
             var isCommonInfoBoxExpanded by remember { mutableStateOf(true) }
+            var showHealthDialog by remember{ mutableStateOf(false) }
+            var showManaDialog by remember{ mutableStateOf(false) }
+            var showGoldDialog by remember{ mutableStateOf(false) }
+            var showLanguagesDialog by remember{ mutableStateOf(false) }
 
-            ExpandableBox(character = character, isExpanded = isCommonInfoBoxExpanded)
+
+            ExpandableBox(character = character, isExpanded = isCommonInfoBoxExpanded,
+                onHealthClick = {showHealthDialog = true},
+                onManaClick = {showManaDialog = true},
+                onGoldClick = {showGoldDialog = true},
+                increaseMana = {charVM.updateMana(character.currentMana + 1)},
+                decreaseMana = { charVM.updateMana(character.currentMana - 1) },
+                levelUp = { charVM.levelUp() }
+            )
 
             CharacterStatsCard(character) {isCommonInfoBoxExpanded = false}
 
@@ -163,6 +143,43 @@ fun CharacterView(
                 onAttackClick = {
 
                 })
+
+            if(showHealthDialog){
+                ChangingDialog(
+                    onDismiss = { showHealthDialog = false },
+                    onConfirm = { newValue -> charVM.updateHP(newValue) },
+                    label = "Здоровье",
+                    changingValue = ChangingValues.Health,
+                    currentValue = character.currentHP,
+                    maxValue = character.maxHP,
+                    temporaryValue = 0,
+                    painter = painterResource(R.drawable.heart_icon)
+                )
+            }
+            if(showManaDialog){
+                ChangingDialog(
+                    onDismiss = { showManaDialog = false },
+                    onConfirm = { newValue -> charVM.updateMana(newValue) },
+                    label = "Мана",
+                    changingValue = ChangingValues.Mana,
+                    currentValue = character.currentMana,
+                    maxValue = character.maxMana,
+                    temporaryValue = 0,
+                    painter = painterResource(R.drawable.heart_icon)
+                )
+            }
+            if(showGoldDialog){
+                ChangingDialog(
+                    onDismiss = { showGoldDialog = false },
+                    onConfirm = { newValue -> charVM.updateGold(newValue) },
+                    label = "Золото",
+                    changingValue = ChangingValues.Gold,
+                    currentValue = character.gold,
+                    maxValue = null,
+                    temporaryValue = 0,
+                    painter = painterResource(R.drawable.heart_icon)
+                )
+            }
 
         }
     }
@@ -249,7 +266,13 @@ fun GradientButton(
 @Composable
 fun ExpandableBox(
     isExpanded: Boolean = true,
-    character: Character
+    character: Character,
+    onHealthClick: () -> Unit,
+    onManaClick: () -> Unit,
+    onGoldClick: () -> Unit,
+    increaseMana: () -> Unit,
+    decreaseMana: () -> Unit,
+    levelUp: () -> Unit
     ) {
 
     var expanded by remember { mutableStateOf(isExpanded) }
@@ -290,7 +313,7 @@ fun ExpandableBox(
                         Image(painterResource(R.drawable.heart_icon),
                             contentDescription = "background",
                             modifier = Modifier.padding(top = 5.dp)
-                                .clickable {  })
+                                .clickable { onHealthClick() })
 
                         Text(text = "${character.currentHP}", fontSize = 20.sp)
                     }
@@ -321,7 +344,8 @@ fun ExpandableBox(
                                 modifier = Modifier.background(color = numBack,
                                     shape = RoundedCornerShape(8.dp))
                                     .padding(2.dp)
-                                    .sizeIn(minWidth = 40.dp, maxWidth = 80.dp))
+                                    .sizeIn(minWidth = 40.dp, maxWidth = 80.dp)
+                                    .clickable { onGoldClick() })
                             Text("Кошелёк",
                                 fontSize = 14.sp,
                                 color = subTextColor,
@@ -336,7 +360,7 @@ fun ExpandableBox(
                                 tint = Color.White,
                                 contentDescription = "levelup",
                                 modifier = Modifier.padding(start = 7.dp)
-                                    .clickable(onClick = {}))
+                                    .clickable(onClick = levelUp))
                         }
                             Text("Уровень",
                                 color = subTextColor,
@@ -350,7 +374,8 @@ fun ExpandableBox(
                                 modifier = Modifier.padding(bottom = 4.dp)) {
                                 Icon(painter = painterResource(R.drawable.minus_icon),
                                     contentDescription = "minus",
-                                    modifier = Modifier.padding(end = 5.dp))
+                                    modifier = Modifier.padding(end = 5.dp)
+                                        .clickable {decreaseMana()})
 
                                 Text("${character.currentMana}",
                                     textAlign = TextAlign.Center,
@@ -358,11 +383,13 @@ fun ExpandableBox(
                                     modifier = Modifier.background(color = numBack,
                                         shape = RoundedCornerShape(8.dp))
                                         .padding(2.dp)
-                                        .sizeIn(minWidth = 40.dp, maxWidth = 80.dp))
+                                        .sizeIn(minWidth = 40.dp, maxWidth = 80.dp)
+                                        .clickable { onManaClick() })
 
                                 Icon(painter = painterResource(R.drawable.plus_icon),
                                     contentDescription = "plus",
-                                    modifier = Modifier.padding(start = 5.dp))
+                                    modifier = Modifier.padding(start = 5.dp)
+                                        .clickable { increaseMana() })
 
                             }
                             Text("Мана",
@@ -534,16 +561,22 @@ fun StatsContent(character: Character) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HealthDialog(
+fun ChangingDialog(
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
-    character: Character
+    onConfirm: (Int) -> Unit,
+    label: String,
+    changingValue: ChangingValues,
+    currentValue:Int, maxValue:Int?,
+    temporaryValue:Int?,
+    painter: Painter
 ) {
     var increaseValue by remember { mutableStateOf("0") }
     var decreaseValue by remember { mutableStateOf("0") }
     Dialog(onDismissRequest = onDismiss) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(10.dp)) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(10.dp)
+        ) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -564,20 +597,20 @@ fun HealthDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.heart_icon), // твоя иконка сердца
+                            painter = painter, // твоя иконка сердца
                             contentDescription = null,
                             tint = Color.White,
                             modifier = Modifier.size(32.dp)
                         )
 
-                        Text("Здоровье", color = Color.White, fontSize = 18.sp)
+                        Text(label, color = Color.White, fontSize = 18.sp)
 
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Закрыть",
-                                tint = Color.White,
-                                modifier = Modifier.clickable(onClick = onDismiss)
-                            )
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = "Закрыть",
+                            tint = Color.White,
+                            modifier = Modifier.clickable(onClick = onDismiss)
+                        )
 
                     }
 
@@ -590,104 +623,109 @@ fun HealthDialog(
                         horizontalArrangement = Arrangement.SpaceAround,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(top = 23.dp)) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(top = 23.dp)
+                        ) {
                             Text(
-                                "${character.currentHP}/${character.maxHP} ", color = Color.White,
+                                text = if (changingValue != ChangingValues.Gold) "$currentValue/$maxValue" else currentValue.toString(),
+                                color = Color.White,
                                 modifier = Modifier
                                     //.height(30.dp)
                                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
                                     .padding(horizontal = 10.dp),
                                 textAlign = TextAlign.Center
                             )
-                            Text("Текущие",
+                            Text(
+                                "Текущие",
                                 color = subTextColor,
-                                modifier = Modifier.padding(top = 4.dp))
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
                         }
+//                        if(changingValue == ChangingValues.Health){
+//                            Text(
+//                                text = temporaryValue!!.toString(),
+//                                color = Color.White,
+//                                modifier = Modifier
+//                                    .background(color = numBack, shape = RoundedCornerShape(8.dp))
+//                                    .padding(horizontal = 10.dp),
+//                                textAlign = TextAlign.Center
+//                            )
+//                        }
 
-                        Box() {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    painterResource(R.drawable.minus_ic),
-                                    contentDescription = "minus",
-                                    tint = Color.Red,
-                                    modifier = Modifier.padding(end = 9.dp)
-                                )
-                                OutlinedTextField(
-                                    value = decreaseValue,
-                                    onValueChange = { newValue ->
-                                        decreaseValue = newValue
-                                    },
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                    modifier = Modifier.size(width = 30.dp, height = 30.dp)
-                                        .background(
-                                            color = numBack,
-                                            shape = RoundedCornerShape(8.dp)
-                                        ),
-                                    shape = MaterialTheme.shapes.extraSmall,
-                                    maxLines = 1,
-                                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                                        containerColor = Color.Transparent,
-                                        focusedBorderColor = Color.Transparent,
-                                        unfocusedBorderColor = Color.Transparent
-                                    ),
-                                    placeholder = { Text(decreaseValue) },
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End
+                        ) {
+                            Icon(
+                                painterResource(R.drawable.minus_ic),
+                                contentDescription = "minus",
+                                tint = Color.Red,
+                                modifier = Modifier.padding(end = 9.dp)
+                            )
+                            BasicTextField(
+                                value = decreaseValue,
+                                onValueChange = { decreaseValue = it },
+                                modifier = Modifier
+                                    .size(height = 30.dp, width = 40.dp)
+                                    .background(numBack, RoundedCornerShape(8.dp))
+                                    .padding(2.dp),
+                                singleLine = true,
+                                textStyle = LocalTextStyle.current.copy(
+                                    color = Color.White,
+                                    textAlign = TextAlign.Center
+                                ),
+//                                    decorationBox = { innerTextField ->
+//                                        if (decreaseValue.isBlank()) Text("0", color = Color.LightGray)
+//                                        innerTextField()
+//                                    },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
+                            Spacer(Modifier.width(5.dp))
 
-                                    )
-                            }
-                        }
-
-                        Box(contentAlignment = Alignment.Center) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    painterResource(R.drawable.plus_ic),
-                                    contentDescription = "plus",
-                                    tint = Color.Green,
-                                    modifier = Modifier.padding(end = 9.dp)
-                                )
-                                OutlinedTextField(
-                                    value = increaseValue,
-                                    onValueChange = { newValue ->
-                                        increaseValue = newValue
-                                    },
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                                    modifier = Modifier.size(width = 30.dp, height = 30.dp)
-                                        .background(
-                                            color = numBack,
-                                            shape = RoundedCornerShape(8.dp)
-                                        ),
-                                    shape = MaterialTheme.shapes.extraSmall,
-                                    maxLines = 1,
-                                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                                        containerColor = Color.Transparent,
-                                        focusedBorderColor = Color.Transparent,
-                                        unfocusedBorderColor = Color.Transparent
-                                    ),
-                                    placeholder = { Text(increaseValue) },
-
-                                    )
-                            }
+                            Icon(
+                                painterResource(R.drawable.plus_ic),
+                                contentDescription = "plus",
+                                tint = Color.Green,
+                                modifier = Modifier.padding(end = 9.dp)
+                            )
+                            BasicTextField(
+                                value = increaseValue,
+                                onValueChange = { increaseValue = it },
+                                modifier = Modifier
+                                    .size(height = 30.dp, width = 40.dp)
+                                    .background(numBack, RoundedCornerShape(8.dp))
+                                    .padding(2.dp),
+                                singleLine = true,
+                                textStyle = LocalTextStyle.current.copy(
+                                    color = Color.White,
+                                    textAlign = TextAlign.Center
+                                ),
+//                                    decorationBox = { innerTextField ->
+//                                        if (increaseValue.isBlank()) Text("0", color = Color.LightGray)
+//                                        innerTextField()
+//                                    },
+                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                            )
                         }
                     }
-
                 }
             }
             Spacer(Modifier.height(10.dp))
-            // 🔹 Кнопка Подтвердить
             GradientButton(
                 text = "Подтвердить",
                 gradient = gradientButton,
-                onClick = onConfirm,
+                onClick = {
+                    val result =
+                        currentValue - (if (decreaseValue.isNotBlank()) decreaseValue.toInt() else 0) + (if (increaseValue.isNotBlank()) increaseValue.toInt() else 0)
+                    println("result:" + result)
+                    onConfirm(result)
+                },
                 modifier = Modifier.fillMaxWidth()
             )
         }
     }
 }
-
-
-
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -747,16 +785,17 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
 @Composable
 fun PrevChar(){
     CPTheme {
-        CharacterView({},
-            character = Character(
-            "char001",
-            "Марсиль",
-            "Воин",
-            "Варвар",
-            "Master Fire",
-            "Орк",
-            level = 20,
-            maxHP = 100,
+        //CharacterView({},
+
+            val character = Character(
+                "char001",
+                "Марсиль",
+                "Воин",
+                "Варвар",
+                "Master Fire",
+                "Орк",
+                level = 20,
+                maxHP = 100,
                 imagePath = null,
                 currentHP = 100,
                 gold = 0,
@@ -773,6 +812,16 @@ fun PrevChar(){
                 perception = 20,
                 languages = emptyList(),
                 initiative = 20
-        ))
+            )
+        ChangingDialog(
+            onDismiss = {},
+            onConfirm = {},
+            label = "Здоровье",
+            changingValue = ChangingValues.Health,
+            currentValue = character.currentHP,
+            maxValue = character.maxHP,
+            temporaryValue = 0,
+            painter = painterResource(R.drawable.heart_icon),
+        )
     }
 }
