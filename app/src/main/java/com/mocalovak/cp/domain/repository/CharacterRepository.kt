@@ -12,4 +12,5 @@ interface CharacterRepository {
     fun updateHP(characterId:String, newValue:Int)
     fun updateMana(characterId:String, newValue:Int)
     fun levelUp(characterId:String)
+    fun updateLanguages(characterId: String, languages:List<String>)
 }

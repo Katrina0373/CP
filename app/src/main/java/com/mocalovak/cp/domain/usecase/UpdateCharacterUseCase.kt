@@ -24,6 +24,10 @@ class UpdateCharacterUseCase @Inject constructor(
         characterRepository.updateMana(characterId, newValue)
     }
 
+    fun updateLanguages(characterId:String, newValue: List<String>) {
+        characterRepository.updateLanguages(characterId, newValue)
+    }
+
     fun levelUp(characterId:String) {
         characterRepository.levelUp(characterId)
     }

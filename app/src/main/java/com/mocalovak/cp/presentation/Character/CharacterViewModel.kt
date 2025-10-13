@@ -165,12 +165,19 @@ class CharacterViewModel @Inject constructor(
             }
         }
     }
+
     fun updateMana(newValue:Int){
         if(newValue > 0) {
             viewModelScope.launch(Dispatchers.IO) {
                 updateCharacterUseCase.updateMana(character.value!!.id, newValue)
             }
         }
+    }
+
+    fun updateLanguages(newValue: List<String>){
+            viewModelScope.launch(Dispatchers.IO) {
+                updateCharacterUseCase.updateLanguages(character.value!!.id, newValue)
+            }
     }
 
     fun levelUp() {

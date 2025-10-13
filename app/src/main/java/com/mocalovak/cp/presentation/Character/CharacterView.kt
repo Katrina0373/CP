@@ -46,6 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,6 +63,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -102,6 +104,11 @@ fun CharacterView(
     character: Character
     ){
 
+    var isCommonInfoBoxExpanded by remember { mutableStateOf(true) }
+    var showHealthDialog by remember { mutableStateOf(false) }
+    var showManaDialog by remember { mutableStateOf(false) }
+    var showGoldDialog by remember { mutableStateOf(false) }
+    var showLanguagesDialog by remember { mutableStateOf(false) }
 
     Scaffold(topBar = {TopBarCharacter(character, onBackClick)}, modifier = Modifier.fillMaxSize()) { padding ->
         Column(modifier = Modifier
@@ -109,12 +116,6 @@ fun CharacterView(
             .padding(5.dp)
             .padding(top = padding.calculateTopPadding(), bottom = 5.dp),
             ) {
-
-            var isCommonInfoBoxExpanded by remember { mutableStateOf(true) }
-            var showHealthDialog by remember{ mutableStateOf(false) }
-            var showManaDialog by remember{ mutableStateOf(false) }
-            var showGoldDialog by remember{ mutableStateOf(false) }
-            var showLanguagesDialog by remember{ mutableStateOf(false) }
 
 
             ExpandableBox(character = character, isExpanded = isCommonInfoBoxExpanded,
@@ -134,14 +135,15 @@ fun CharacterView(
                     .background(color = containerColor,
                         shape = RoundedCornerShape(cornerRadius)
                     )
+                    .clickable { showLanguagesDialog = true}
                     .padding(vertical = 13.dp, horizontal = 20.dp)) {
-                Text("Языки:" )
+                Text(("Языки: " + character.languages?.joinToString(", ")).dropLast(2) ?: "",
+                    overflow = TextOverflow.Clip)
             }
             BottomActionButtons(onCheckClick = {
 
             },
                 onAttackClick = {
-
                 })
 
             if(showHealthDialog){
@@ -178,6 +180,15 @@ fun CharacterView(
                     maxValue = null,
                     temporaryValue = 0,
                     painter = painterResource(R.drawable.heart_icon)
+                )
+            }
+
+            if(showLanguagesDialog){
+                LanguagesExplorer(
+                    character.languages,
+                    onConfirm = { value -> charVM.updateLanguages(value)
+                                showLanguagesDialog = false},
+                    onDismiss = {showLanguagesDialog = false}
                 )
             }
 
@@ -432,11 +443,11 @@ fun ExpandableBox(
 
 
 @Composable
-fun CharacterStatsCard(character: Character, closeExpanedeBox: () -> Unit) {
+fun CharacterStatsCard(character: Character, closeExpanededBox: () -> Unit) {
     val tabs = listOf("Характеристики", "Навыки", "Инвентарь")
 
     val scope = rememberCoroutineScope()
-    var tabIndex by remember { mutableStateOf(0) }
+    var tabIndex by remember { mutableIntStateOf(0) }
 
     Card(
         modifier = Modifier
@@ -463,7 +474,7 @@ fun CharacterStatsCard(character: Character, closeExpanedeBox: () -> Unit) {
                         onClick = { scope.launch {
                             tabIndex = index
                             if(index != 0){
-                                closeExpanedeBox
+                                closeExpanededBox()
                             }
                         } },
                         text = {
@@ -559,7 +570,6 @@ fun StatsContent(character: Character) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChangingDialog(
     onDismiss: () -> Unit,

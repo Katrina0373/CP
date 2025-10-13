@@ -39,6 +39,10 @@ interface CharacterDao{
     @Query("update characters set level = level+1 where id = :id")
     fun levelUp(id:String)
 
+
+    @Query("update characters set languages = :languages where id = :id")
+    fun updateLanguages(id:String, languages:List<String>)
+
     @Update
     fun updateCharacter(character: CharacterEntity)
 }

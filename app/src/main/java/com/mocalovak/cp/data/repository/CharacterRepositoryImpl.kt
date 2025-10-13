@@ -38,6 +38,10 @@ class CharacterRepositoryImpl @Inject constructor(
         dao.updateMana(characterId, newValue)
     }
 
+    override fun updateLanguages(characterId: String, languages: List<String>) {
+        dao.updateLanguages(characterId, languages)
+    }
+
     override fun levelUp(characterId: String) {
         dao.levelUp(characterId)
     }
