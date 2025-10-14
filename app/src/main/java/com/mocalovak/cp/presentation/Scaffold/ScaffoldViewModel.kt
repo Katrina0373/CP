@@ -20,8 +20,8 @@ class ScaffoldViewModel @Inject constructor(
     private val preferenceManager: PreferenceManager
 ):ViewModel()
 {
-    private val _lastCharacterId = MutableStateFlow("null")
-    val lastCharacterId: StateFlow<String> = _lastCharacterId
+    private val _lastCharacterId = MutableStateFlow(0)
+    val lastCharacterId: StateFlow<Int> = _lastCharacterId
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -34,7 +34,7 @@ class ScaffoldViewModel @Inject constructor(
     fun removeLastCharacterId() {
         viewModelScope.launch(Dispatchers.IO) {
             preferenceManager.deleteLastCharacterId()
-            _lastCharacterId.value = "null"
+            _lastCharacterId.value = 0
         }
     }
 }

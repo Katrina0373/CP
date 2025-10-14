@@ -5,14 +5,55 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
+import androidx.datastore.core.DataMigration
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+    name = "settings",
+//    produceMigrations = { context ->
+//        listOf(object : DataMigration<Preferences> {
+//            // ключи старого и нового типа
+//            val OLD_KEY = stringPreferencesKey("last_character_id")
+//            val NEW_KEY = intPreferencesKey("last_character_id")
+//
+//            override suspend fun shouldMigrate(currentData: Preferences): Boolean {
+//                // мигрируем, если старый ключ присутствует
+//                return currentData.contains(OLD_KEY)
+//            }
+
+//            override suspend fun migrate(currentData: Preferences): Preferences {
+//                // получаем изменяемую копию
+//                val mutable = currentData.toMutablePreferences()
+//
+//                val oldValue = currentData[OLD_KEY]
+//                if (oldValue != null) {
+//                    // пробуем безопасно конвертировать
+//                    val intValue = oldValue.toIntOrNull()
+//                    if (intValue != null) {
+//                        mutable[NEW_KEY] = intValue
+//                    } else {
+//                        // fallback: можно записать -1 или удалить ключ
+//                        mutable[NEW_KEY] = 0
+//                    }
+//                    // удаляем старый string-ключ
+//                    mutable.remove(OLD_KEY)
+//                }
+//                return mutable.toPreferences()
+//            }
+
+//            override suspend fun cleanUp() {
+//                // не обязательно что-то делать
+//            }
+//        })
+//    }
+)
+
 
 class PreferenceManager @Inject constructor(
     @ApplicationContext val context: Context
@@ -24,7 +65,7 @@ class PreferenceManager @Inject constructor(
         val IS_EQUIPMENT_IMPORTED = booleanPreferencesKey("is_equipment_imported")
         val IS_ECREFS_IMPORTED = booleanPreferencesKey("is_equipment_characters_refs_imported")
         val IS_SCREFS_IMPORTED = booleanPreferencesKey("is_skill_character_refs_imported")
-        val LAST_CHARACTER_ID = stringPreferencesKey("last_character_id")
+        val LAST_CHARACTER_ID = intPreferencesKey("last_character_id")
     }
 
     // ---------- Универсальные функции ----------------------------------------
@@ -46,7 +87,7 @@ class PreferenceManager @Inject constructor(
     val isECRefsImported = getPreferenceFlow(Keys.IS_ECREFS_IMPORTED, false)
     val isSCRefsImported = getPreferenceFlow(Keys.IS_SCREFS_IMPORTED, false)
 
-    val lastCharacterId = getPreferenceFlow(Keys.LAST_CHARACTER_ID, "null")
+    val lastCharacterId = getPreferenceFlow(Keys.LAST_CHARACTER_ID, 0)
 
     // ---------- Готовые методы ------------------------------------------------
 
@@ -56,6 +97,6 @@ class PreferenceManager @Inject constructor(
     suspend fun setECRefsImported() = setPreference(Keys.IS_ECREFS_IMPORTED, true)
     suspend fun setSCRefsImported() = setPreference(Keys.IS_SCREFS_IMPORTED, true)
 
-    suspend fun setLastCharacterId(id: String) = setPreference(Keys.LAST_CHARACTER_ID, id)
-    suspend fun deleteLastCharacterId() = setPreference(Keys.LAST_CHARACTER_ID, "null")
+    suspend fun setLastCharacterId(id: Int) = setPreference(Keys.LAST_CHARACTER_ID, id)
+    suspend fun deleteLastCharacterId() = setPreference(Keys.LAST_CHARACTER_ID, 0)
 }

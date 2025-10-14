@@ -16,7 +16,7 @@ interface CharacterDao{
     fun getAll(): Flow<List<CharacterEntity>>
 
     @Query("select * from characters as Ch where Ch.id = :id")
-    fun getCharacterId(id: String): Flow<CharacterEntity?>
+    fun getCharacterId(id: Int): Flow<CharacterEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(characters: List<CharacterEntity>)
@@ -28,20 +28,20 @@ interface CharacterDao{
     fun insertOne(character:CharacterEntity)
 
     @Query("UPDATE characters SET gold = :gold WHERE id = :id")
-    fun updateGold(id: String, gold: Int)
+    fun updateGold(id: Int, gold: Int)
 
     @Query("UPDATE characters SET currentHP = :hp WHERE id = :id")
-    fun updateHP(id: String, hp: Int)
+    fun updateHP(id: Int, hp: Int)
 
     @Query("UPDATE characters SET currentMana = :mana WHERE id = :id")
-    fun updateMana(id: String, mana: Int)
+    fun updateMana(id: Int, mana: Int)
 
     @Query("update characters set level = level+1 where id = :id")
-    fun levelUp(id:String)
+    fun levelUp(id:Int)
 
 
     @Query("update characters set languages = :languages where id = :id")
-    fun updateLanguages(id:String, languages:List<String>)
+    fun updateLanguages(id:Int, languages:List<String>)
 
     @Update
     fun updateCharacter(character: CharacterEntity)

@@ -9,7 +9,7 @@ import javax.inject.Inject
 class GetCharacterUseCase @Inject constructor(
     private val characterRepository: CharacterRepository
 ){
-    operator fun invoke(id:String): Flow<Character?> {
+    operator fun invoke(id:Int): Flow<Character?> {
         return characterRepository.getCharacter(id)
     }
 }

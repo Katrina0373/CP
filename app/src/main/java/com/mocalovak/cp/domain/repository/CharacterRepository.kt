@@ -6,11 +6,11 @@ import kotlinx.coroutines.flow.StateFlow
 
 interface CharacterRepository {
     fun getCharacters():Flow<List<Character>>
-    fun getCharacter(id:String): Flow<Character?>
+    fun getCharacter(id:Int): Flow<Character?>
     fun updateCharacter(character: Character)
-    fun updateGold(characterId:String, newValue:Int)
-    fun updateHP(characterId:String, newValue:Int)
-    fun updateMana(characterId:String, newValue:Int)
-    fun levelUp(characterId:String)
-    fun updateLanguages(characterId: String, languages:List<String>)
+    fun updateGold(characterId:Int, newValue:Int)
+    fun updateHP(characterId:Int, newValue:Int)
+    fun updateMana(characterId: Int, newValue:Int)
+    fun levelUp(characterId:Int)
+    fun updateLanguages(characterId: Int, languages:List<String>)
 }

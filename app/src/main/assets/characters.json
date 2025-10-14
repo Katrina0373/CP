@@ -1,6 +1,6 @@
 [
   {
-    "id": "char001",
+    "id": 1,
     "name": "Эландор",
     "classification": "Маг",
     "profession1": "Путь огня",
@@ -25,7 +25,7 @@
     "perception": 1
   },
   {
-    "id": "char002",
+    "id": 2,
     "name": "Тристан",
     "classification": "Воин",
     "profession1": "Боец",

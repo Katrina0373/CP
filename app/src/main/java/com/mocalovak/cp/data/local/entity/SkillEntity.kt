@@ -15,7 +15,7 @@ import org.intellij.lang.annotations.MagicConstant
 @Entity(tableName = "skills")
 data class SkillEntity(
     @PrimaryKey(autoGenerate = true)
-    val id:Int,
+    val id: Int = 0,
     val name: String,
     val description: String,
     val type: ActivePassive, //active_passive
@@ -50,7 +50,7 @@ data class SkillEntity(
     indices = [Index("characterId"), Index("skillId")]
 )
 data class SkillCharacterCrossRef(
-    val characterId:String,
+    val characterId:Int,
     val skillId: Int
 )
 

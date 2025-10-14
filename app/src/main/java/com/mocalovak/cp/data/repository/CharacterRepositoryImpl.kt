@@ -18,7 +18,7 @@ class CharacterRepositoryImpl @Inject constructor(
         return listic.map { list -> list.map { it.toDomain() } }
     }
 
-    override fun getCharacter(id: String): Flow<Character?> {
+    override fun getCharacter(id: Int): Flow<Character?> {
         return dao.getCharacterId(id).map { it?.toDomain() }
     }
 
@@ -26,23 +26,23 @@ class CharacterRepositoryImpl @Inject constructor(
         dao.updateCharacter(character.toEntity())
     }
 
-    override fun updateGold(characterId: String, newValue: Int) {
+    override fun updateGold(characterId: Int, newValue: Int) {
         dao.updateGold(characterId, newValue)
     }
 
-    override fun updateHP(characterId: String, newValue: Int) {
+    override fun updateHP(characterId: Int, newValue: Int) {
         dao.updateHP(characterId, newValue)
     }
 
-    override fun updateMana(characterId: String, newValue: Int) {
+    override fun updateMana(characterId:Int, newValue: Int) {
         dao.updateMana(characterId, newValue)
     }
 
-    override fun updateLanguages(characterId: String, languages: List<String>) {
+    override fun updateLanguages(characterId: Int, languages: List<String>) {
         dao.updateLanguages(characterId, languages)
     }
 
-    override fun levelUp(characterId: String) {
+    override fun levelUp(characterId: Int) {
         dao.levelUp(characterId)
     }
 }

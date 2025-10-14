@@ -4,12 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.mocalovak.cp.presentation.Character.CharacterScreen
 import com.mocalovak.cp.presentation.Character.CharacterView
 import com.mocalovak.cp.presentation.CharacterList.CharacterList
 import com.mocalovak.cp.presentation.HomePage.HomeScreen
+import com.mocalovak.cp.presentation.library.EquipmentExplorer
 
 @Composable
 fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifier){
@@ -21,7 +24,7 @@ fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifi
     ) {
         composable(Screen.HomePage.route){
             HomeScreen(onShowAllClick = {
-                navHostController.navigateSingleTopTo(Screen.Character.createRoute("all"))
+                navHostController.navigateSingleTopTo(Screen.Character.createRoute(0))
             }, onShowCharClick = { characterId ->
                 navHostController.navigateSingleTopTo(Screen.Character.createRoute(characterId))
             })
@@ -32,17 +35,24 @@ fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifi
         composable(Screen.Rules.route){
             //CharacterListScreen()
         }
-        composable(Screen.Character.route)
+        composable(Screen.Character.route, arguments = listOf(navArgument("characterId") { type = NavType.IntType }))
         { backStackEntry ->
-            //println("route: $route")
-            val characterId = backStackEntry.arguments?.getString("characterId")
-            //println("character id = $characterId")
-            if(characterId.equals("all"))
+            println("route: $route")
+            val characterId = backStackEntry.arguments?.getInt("characterId")
+            println("character id = $characterId")
+            if(characterId == 0)
                 CharacterList(onCharacterClick = { characterId ->
                     navHostController.navigateSingleTopTo(Screen.Character.createRoute(characterId))
                 })
             else
-                CharacterScreen(characterId = characterId!!, onBackClick = { navHostController.popBackStack() })
+                CharacterScreen(characterId = characterId!!, onBackClick = { navHostController.popBackStack() }, navController = navHostController)
+        }
+        composable("EquipmentLibraryWithAdding/{characterId}", arguments = listOf(navArgument("characterId") { type = NavType.IntType })){ backStackEntry ->
+            val characterId = backStackEntry.arguments?.getInt("characterId")
+            EquipmentExplorer(withAdding = true, onBackClick = {navHostController.popBackStack()}, characterId = characterId)
+        }
+        composable("SkillLibraryWithAdding/{characterId}", arguments = listOf(navArgument("characterId") { type = NavType.IntType })){ backStackEntry ->
+            val characterId = backStackEntry.arguments?.getInt("characterId")
         }
     }
 }

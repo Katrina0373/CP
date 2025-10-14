@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.mocalovak.cp.R
+import com.mocalovak.cp.ui.theme.BrightPurple
 import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.gradientButton
 import com.mocalovak.cp.ui.theme.halfAppWhite
@@ -117,6 +118,7 @@ fun LanguagesExplorer(
                                 },
                                 colors = CheckboxDefaults.colors(
                                     uncheckedColor = halfAppWhite,
+                                    checkedColor = BrightPurple
                                 )
                             )
                             Text(allLanguages[index], color = Color.White)
@@ -131,8 +133,14 @@ fun LanguagesExplorer(
                     singleLine = true,
                     modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
                     colors = TextFieldDefaults.textFieldColors(
+                        focusedPlaceholderColor = Color.White,
+                        containerColor = containerColor,
+                        unfocusedIndicatorColor = BrightPurple,
+                        focusedIndicatorColor = BrightPurple,
                         focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White)
+                        unfocusedTextColor = Color.White
+                        ),
+
                 )
 
             }

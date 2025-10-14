@@ -26,7 +26,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -65,9 +64,9 @@ import com.mocalovak.cp.ui.theme.otherContainer
 import com.mocalovak.cp.ui.theme.unfocusedFilterButtonBack
 import com.mocalovak.cp.utils.NameConverter
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun EquipmentList(vm: CharacterViewModel = hiltViewModel()){
+fun EquipmentList(vm: CharacterViewModel = hiltViewModel(),
+                  openLibrary:() -> Unit){
     val equipment by vm.filteredEquipment.collectAsState()
 
     val filters: List<Any> = listOf(
@@ -118,7 +117,7 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel()){
             modifier = Modifier.fillMaxSize()
                 .padding(bottom = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally) {
-            items(items = equipment, key = {it.id}) { equip ->
+            items(items = equipment) { equip ->
                 val expanded = expandedStates[equip.id] ?: false
                 ExpandableEquipmentCard(
                     equipment = equip,
@@ -126,12 +125,15 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel()){
                     onExpandChange = { newState ->
                         expandedStates[equip.id] = newState
                     },
+                    withEquip = true,
                     onEquipClick = {},
                     onUnequipClick = {}
                 )
             }
             item{
-                Button(onClick = {}, colors = ButtonDefaults.buttonColors(containerColor = button2)) {
+                Button(onClick = {
+                    openLibrary()
+                }, colors = ButtonDefaults.buttonColors(containerColor = button2)) {
                     Text("Добавить из библиотеки", color= Color.White )
                 }
             }
@@ -146,8 +148,11 @@ fun ExpandableEquipmentCard(
     equipment: Equipment,
     expanded: Boolean,
     onExpandChange: (Boolean) -> Unit,
-    onEquipClick: () -> Unit,
-    onUnequipClick: () -> Unit
+    withEquip: Boolean = false,
+    onEquipClick: () -> Unit = {},
+    onUnequipClick: () -> Unit = {},
+    withAdd:Boolean = false,
+    onAddClick: () -> Unit = {},
 ) {
 
     val rotationState by animateFloatAsState(
@@ -200,13 +205,23 @@ fun ExpandableEquipmentCard(
                 when (equipment) {
                     is Equipment.Weapon -> {
                         Column(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
                             ParameterView("Урон", equipment.damage)
-                            Spacer(Modifier.height(5.dp))
+
+                            equipment.tir?.let {
+                                val value = when(it){
+                                    1 -> "\u2160"
+                                    2 -> "\u2161"
+                                    3 -> "\u2162"
+                                    else -> ""
+                                }
+                                ParameterView("Тир", value)
+                            }
 
                             equipment.chance?.let {
-                                    ParameterView("Шанс", "${(it * 100).toInt()}%")
+                                ParameterView("Шанс", "${(it * 100).toInt()}%")
                             }
                             equipment.passiveEffects?.let {
                                 ParameterView("Пассивный эффект:", it.takeString())
@@ -214,14 +229,26 @@ fun ExpandableEquipmentCard(
                         }
                     }
 
-                    is Equipment.Clother -> {
-                        Column {
+                    is Equipment.Clothes -> {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(5.dp)) {
 
-                            ParameterView("Тип брони: ",
+                            ParameterView(
+                                "Тип брони: ",
                                 NameConverter(equipment.armorWeight ?: "—")
                             )
-                            Spacer(Modifier.height(5.dp))
-                            ParameterView("Пассивные эффекты: ",
+                            equipment.tir?.let {
+                                val value = when(it){
+                                    1 -> "\u2160"
+                                    2 -> "\u2161"
+                                    3 -> "\u2162"
+                                    else -> ""
+                                }
+                                ParameterView("Тир", value)
+                            }
+                            ParameterView(
+                                "Пассивные эффекты: ",
                                 equipment.passiveEffects?.takeString() ?: "—"
                             )
 
@@ -233,8 +260,21 @@ fun ExpandableEquipmentCard(
                     }
 
                     is Equipment.Potion -> {
-                        equipment.effect?.let {
-                            ParameterView("Эффект: ", equipment.effect)
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                            equipment.tir?.let {
+                                val value = when (it) {
+                                    1 -> "\u2160"
+                                    2 -> "\u2161"
+                                    3 -> "\u2162"
+                                    else -> ""
+                                }
+                                ParameterView("Тир", value)
+                            }
+                            equipment.effect?.let {
+                                ParameterView("Эффект: ", equipment.effect)
+                            }
                         }
                     }
 
@@ -244,79 +284,80 @@ fun ExpandableEquipmentCard(
                 Spacer(Modifier.height(10.dp))
 
                 //Кнопки "Надеть / Снять"
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (equipment is Equipment.Clother || equipment is Equipment.Weapon) {
-                        if ((equipment as? Equipment.Weapon)?.isEquipped == true ||
-                            (equipment as? Equipment.Clother)?.isEquipped == true
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Check,
-                                contentDescription = "",
-                                tint = LightGreen,
-                                modifier = Modifier.size(15.dp)
-                            )
-                            Text("Надето", color = LightGreen,
+                if (withEquip) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (equipment is Equipment.Clothes || equipment is Equipment.Weapon) {
+                            if ((equipment as? Equipment.Weapon)?.isEquipped == true ||
+                                (equipment as? Equipment.Clothes)?.isEquipped == true
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Outlined.Check,
+                                    contentDescription = "",
+                                    tint = LightGreen,
+                                    modifier = Modifier.size(15.dp)
                                 )
-                            Text(text = "Снять",
+                                Text(
+                                    "Надето", color = LightGreen,
+                                )
+                                Text(
+                                    text = "Снять",
+                                    modifier = Modifier.padding(8.dp)
+                                        .clip(RoundedCornerShape(38.dp))
+                                        .background(otherContainer)
+                                        .padding(horizontal = 20.dp, vertical = 5.dp)
+                                        .clickable { onUnequipClick() },
+                                    color = Color.White
+                                )
+
+                            } else {
+                                Text("В багаже", color = BrightPurple)
+                                Text(
+                                    text = "Надеть",
+                                    modifier = Modifier.padding(8.dp)
+                                        .clip(RoundedCornerShape(38.dp))
+                                        .background(otherContainer)
+                                        .padding(horizontal = 20.dp, vertical = 5.dp)
+                                        .clickable { onEquipClick() },
+                                    color = Color.White
+                                )
+                            }
+                        } else if (equipment is Equipment.Potion) {
+                            Text(
+                                text = "Применить",
                                 modifier = Modifier.padding(8.dp)
                                     .clip(RoundedCornerShape(38.dp))
                                     .background(otherContainer)
                                     .padding(horizontal = 20.dp, vertical = 5.dp)
-                                    .clickable {  },
-                                color = Color.White)
-
-                        } else {
-                            Text("В багаже", color = BrightPurple)
-                            Text(text = "Надеть",
-                            modifier = Modifier.padding(8.dp)
-                                .clip(RoundedCornerShape(38.dp))
-                                .background(otherContainer)
-                                .padding(horizontal = 20.dp, vertical = 5.dp)
-                                .clickable {  },
-                            color = Color.White)
+                                    .clickable { },
+                                color = Color.White
+                            )
                         }
                     }
-                    else if(equipment is Equipment.Potion){
-                        Text(text = "Применить",
-                            modifier = Modifier.padding(8.dp)
-                                .clip(RoundedCornerShape(38.dp))
-                                .background(otherContainer)
-                                .padding(horizontal = 20.dp, vertical = 5.dp)
-                                .clickable {  },
-                            color = Color.White)
-                    }
+                }
+                if(withAdd){
+                    Text(
+                        text = "Добавить",
+                        modifier = Modifier.padding(8.dp)
+                            .clip(RoundedCornerShape(38.dp))
+                            .background(otherContainer)
+                            .padding(horizontal = 20.dp, vertical = 5.dp)
+                            .clickable { onAddClick() },
+                        color = Color.White
+                    )
                 }
             }
-
             HorizontalDivider(modifier = Modifier.padding(top = 10.dp))
         }
     }
 }
 
-@Composable
-fun SmallButton(modifier: Modifier = Modifier,
-                label: String,
-                onClick: () -> Unit){
-    
-    Button(
-        modifier = Modifier.size(height = 35.dp, width = 70.dp)
-            .then(modifier),
-        onClick = onClick
-    ) {
-        Text(text = label, color = Color.White)
-    }
-    
-    
-    
-}
-
 private fun Equipment.matchesType(type: EquipType): Boolean {
     return when (type) {
         EquipType.Weapon -> this is Equipment.Weapon
-        EquipType.Armor -> this is Equipment.Clother
+        EquipType.Armor -> this is Equipment.Clothes
         EquipType.Artifact -> this is Equipment.Artifact
         EquipType.Potion -> this is Equipment.Potion
         EquipType.Other -> this is Equipment.Other
@@ -353,22 +394,25 @@ fun EquipListPreview(){
             isEquipped = false,
             passiveEffects = null,
             activeEffect = "шанс на критическую атаку",
-            chance = 0.1f
+            chance = 0.1f,
+            tir = 1
         ),
-        Equipment.Clother(
+        Equipment.Clothes(
             id = "kek",
             name = "Перчатки",
             description = "Лёгкие перчатки для воришек и лазутчиков",
             slot = listOf(BodyPart.RightHand),
             isEquipped = true,
             passiveEffects = listOf(PassiveEffect("armorClass", 1, "+1 к КБ")),
-            armorWeight = ArmorWeight.Light
+            armorWeight = ArmorWeight.Light,
+            tir = 1
         ),
         Equipment.Potion(
             id = "pop",
             name = "Зелье лечения",
             description = "Бутолычка с заветной красной жидкостью",
-            effect = "Восстанавливает 2к6 хитов"
+            effect = "Восстанавливает 2к6 хитов",
+            tir = 1
         ),
         Equipment.Artifact(
             id = "kok",
@@ -387,5 +431,5 @@ fun EquipListPreview(){
     )
     val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
 
-    ExpandableEquipmentCard(equipList[0], true, {}, {} ,{ })
+    ExpandableEquipmentCard(equipList[0], true, {})
 }

@@ -3,7 +3,7 @@ package com.mocalovak.cp.domain.model
 import android.graphics.Bitmap
 
 data class Character(
-    val id:String,
+    val id:Int,
     val name:String,
     val classification: String,
     val profession1:String?,

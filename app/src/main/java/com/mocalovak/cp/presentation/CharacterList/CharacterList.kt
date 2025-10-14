@@ -39,7 +39,7 @@ import com.mocalovak.cp.ui.theme.numBack
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CharacterList(vm: CharacterListViewModel = hiltViewModel(), onCharacterClick: (String) -> Unit){
+fun CharacterList(vm: CharacterListViewModel = hiltViewModel(), onCharacterClick: (Int) -> Unit){
 
 
     val searchValue by vm.searchQuery.collectAsState()
@@ -65,9 +65,6 @@ fun CharacterList(vm: CharacterListViewModel = hiltViewModel(), onCharacterClick
                 ),
                 shape = RoundedCornerShape(cornerRadius),
                 placeholder = { Text(" Найти персонажа...", color = numBack) },
-//                modifier = Modifier
-//                    .padding(5.dp)
-//                    .fillMaxWidth(),
                 trailingIcon = {
                     Icon(painterResource(R.drawable.search_ic), contentDescription = "search")
                 }

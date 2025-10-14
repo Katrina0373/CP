@@ -33,19 +33,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.mocalovak.cp.R
 import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.ui.theme.CPTheme
@@ -87,13 +84,14 @@ enum class ChangingValues{ Health, Mana, Gold}
 
 @Composable
 fun CharacterScreen(charVM: CharacterViewModel = hiltViewModel(),
-                    characterId: String,
-                    onBackClick: () -> Unit){
+                    characterId: Int,
+                    onBackClick: () -> Unit,
+                    navController: NavController){
     val character by charVM.character.collectAsState()
 
     when {
         character == null -> CircularProgressIndicator()
-        else -> CharacterView(onBackClick, charVM, character!!)
+        else -> CharacterView(onBackClick, charVM, character!!, navController)
     }
 }
 
@@ -101,7 +99,8 @@ fun CharacterScreen(charVM: CharacterViewModel = hiltViewModel(),
 fun CharacterView(
     onBackClick: () -> Unit,
     charVM: CharacterViewModel = hiltViewModel(),
-    character: Character
+    character: Character,
+    navController: NavController
     ){
 
     var isCommonInfoBoxExpanded by remember { mutableStateOf(true) }
@@ -117,7 +116,6 @@ fun CharacterView(
             .padding(top = padding.calculateTopPadding(), bottom = 5.dp),
             ) {
 
-
             ExpandableBox(character = character, isExpanded = isCommonInfoBoxExpanded,
                 onHealthClick = {showHealthDialog = true},
                 onManaClick = {showManaDialog = true},
@@ -127,7 +125,19 @@ fun CharacterView(
                 levelUp = { charVM.levelUp() }
             )
 
-            CharacterStatsCard(character) {isCommonInfoBoxExpanded = false}
+            CharacterStatsCard(character,
+                closeExpandedBox = {isCommonInfoBoxExpanded = false},
+                openEquipmentLibrary = {
+                    navController.navigate("EquipmentLibraryWithAdding/${character.id}"){
+                        launchSingleTop = true
+                    }
+                },
+                openSkillLibrary = {
+                    navController.navigate("SkillLibraryWithAdding/${character.id}"){
+                        launchSingleTop = true
+                    }
+                }
+            )
 
             Box(contentAlignment = Alignment.TopStart,
                 modifier = Modifier.fillMaxWidth()
@@ -443,7 +453,10 @@ fun ExpandableBox(
 
 
 @Composable
-fun CharacterStatsCard(character: Character, closeExpanededBox: () -> Unit) {
+fun CharacterStatsCard(character: Character,
+                       closeExpandedBox: () -> Unit,
+                       openEquipmentLibrary:() -> Unit,
+                       openSkillLibrary:() -> Unit) {
     val tabs = listOf("Характеристики", "Навыки", "Инвентарь")
 
     val scope = rememberCoroutineScope()
@@ -474,7 +487,7 @@ fun CharacterStatsCard(character: Character, closeExpanededBox: () -> Unit) {
                         onClick = { scope.launch {
                             tabIndex = index
                             if(index != 0){
-                                closeExpanededBox()
+                                closeExpandedBox()
                             }
                         } },
                         text = {
@@ -504,8 +517,8 @@ fun CharacterStatsCard(character: Character, closeExpanededBox: () -> Unit) {
             //Cодержимое вкладки
             when (tabIndex) {
                 0 -> StatsContent(character)
-                1 -> SkillsList()
-                2 -> EquipmentList()
+                1 -> SkillsList(openLibrary = openSkillLibrary)
+                2 -> EquipmentList(openLibrary = openEquipmentLibrary)
             }
         }
     }
@@ -798,7 +811,7 @@ fun PrevChar(){
         //CharacterView({},
 
             val character = Character(
-                "char001",
+                1,
                 "Марсиль",
                 "Воин",
                 "Варвар",

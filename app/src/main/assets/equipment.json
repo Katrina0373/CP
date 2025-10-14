@@ -73,5 +73,57 @@
     "effect": null,
     "chance": null,
     "passiveEffects": null
+  },
+  {
+    "id": "w02-1",
+    "name": "Меч Двуручный",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["TwoHands"],
+    "description": "урон d10, понижает КБ противника на 2",
+    "weight": null,
+    "damage": "1d10 + strength | dexterity",
+    "distance": null,
+    "effect": "КБ противника понижается на 2 во время удара",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "a01-1",
+    "name": "Перчатки",
+    "type": "Armor",
+    "tir": 1,
+    "slot": [
+      "TwoHands"
+    ],
+    "description": "тяжелые перчатки, дают +1 к КБ",
+    "weight": "Heavy",
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [
+      {
+        "parameter": "armorClass",
+        "bonus": 1,
+        "description": "дают +1 к КБ"
+      }
+    ]
+  },
+  {
+    "id": "w03-1",
+    "name": "Пистолет",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["RightHand",
+      "LeftHand"
+    ],
+    "description": "одноручный пистолет, урон d6",
+    "weight": "Light",
+    "damage": "1d6 + perception",
+    "distance": 8,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
   }
 ]

@@ -7,7 +7,7 @@ enum class CombatMagic { Combat, Magic }
 enum class Source { Race, Common, Profession}
 
 data class Skill(
-    val id:Int,
+    val id: Int,
     val name: String,
     val description: String,
     val type: ActivePassive,

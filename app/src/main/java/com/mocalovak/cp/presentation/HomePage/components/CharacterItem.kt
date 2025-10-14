@@ -198,7 +198,7 @@ fun CharacterItemWithMenu(character: Character,
 fun PrevCharCard(){
     CharacterItemWithMenu(
         Character(
-            name = "Тристан", id = "8hfoeou",
+            name = "Тристан", id = 8,
             classification = "Воин",
             profession1 = "Боец",
             profession2 = "Паладин",

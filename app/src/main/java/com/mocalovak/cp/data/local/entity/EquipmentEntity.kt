@@ -3,7 +3,6 @@ package com.mocalovak.cp.data.local.entity
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.mocalovak.cp.domain.model.ArmorWeight
@@ -11,16 +10,14 @@ import com.mocalovak.cp.domain.model.BodyPart
 import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.domain.model.Equipment
 import com.mocalovak.cp.domain.model.PassiveEffect
-import org.jetbrains.annotations.NotNull
-import javax.annotation.processing.Generated
 
 @Entity(tableName = "equipment")
 data class EquipmentEntity(
     @PrimaryKey
-    @Generated
     val id:String,
     val name:String,
     val type: EquipType,
+    val tir: Int?,
     val slot: List<BodyPart?> = emptyList(),
     val description:String,
     val weight: ArmorWeight?,
@@ -33,14 +30,14 @@ data class EquipmentEntity(
 )
 
 data class EquipmentWithStatus(
+    val itemId: Int,
     @Embedded val equipment: EquipmentEntity,
-    val isEquipped: Boolean
+    val isEquipped: Boolean,
 )
 
 
 @Entity(
     tableName = "character_equipment_cross_ref",
-    primaryKeys = ["characterId", "equipmentId"],
     foreignKeys = [
         ForeignKey(
             entity = CharacterEntity::class,
@@ -58,7 +55,9 @@ data class EquipmentWithStatus(
     indices = [Index("characterId"), Index("equipmentId")]
 )
 data class CharacterEquipmentCrossRef(
-    val characterId: String,
+    @PrimaryKey(autoGenerate = true)
+    val itemId: Int = 0,
+    val characterId: Int,
     val equipmentId: String,
     val isEquipped: Boolean
 )
@@ -73,22 +72,25 @@ fun EquipmentEntity.toDomain(): Equipment {
             slot = slot.map { it!! },
             passiveEffects = passiveEffects,
             activeEffect = effect,
-            chance = chance
+            chance = chance,
+            tir = tir
         )
-        EquipType.Armor -> Equipment.Clother(
+        EquipType.Armor -> Equipment.Clothes(
             id = id,
             name = name,
             description = description,
             slot = slot.map { it!! },
             passiveEffects = passiveEffects,
             //isEquipped = isEquipped,
-            armorWeight = weight
+            armorWeight = weight,
+            tir = tir
         )
         EquipType.Potion -> Equipment.Potion(
             id = id,
             name = name,
             description = description,
-            effect = effect ?: ""
+            effect = effect ?: "",
+            tir = tir
         )
         EquipType.Artifact -> Equipment.Artifact(
             id = id,
@@ -105,12 +107,12 @@ fun EquipmentEntity.toDomain(): Equipment {
     }
 }
 
-fun EquipmentWithStatus.toDomain():Equipment {
+fun EquipmentWithStatus.toDomain(): Equipment {
     val baseEquipment = equipment.toDomain()
-
+    baseEquipment.id = itemId.toString()
     if(baseEquipment is Equipment.Weapon)
         baseEquipment.isEquipped = isEquipped
-    else if(baseEquipment is Equipment.Clother)
+    else if(baseEquipment is Equipment.Clothes)
         baseEquipment.isEquipped = isEquipped
 
     return baseEquipment

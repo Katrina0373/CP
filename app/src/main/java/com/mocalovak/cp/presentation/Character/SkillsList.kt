@@ -1,5 +1,6 @@
 package com.mocalovak.cp.presentation.Character
 
+import android.gesture.GestureLibrary
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -61,7 +62,8 @@ import com.mocalovak.cp.ui.theme.unfocusedFilterButtonBack
 import com.mocalovak.cp.utils.NameConverter
 
 @Composable
-fun SkillsList(vm: CharacterViewModel = hiltViewModel()){
+fun SkillsList(vm: CharacterViewModel = hiltViewModel(),
+               openLibrary: () -> Unit){
     val skills by vm.filteredSkills.collectAsState()
 
     val selectedFilters by vm.skillsFilters.collectAsState()

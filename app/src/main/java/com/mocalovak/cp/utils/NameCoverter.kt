@@ -6,8 +6,6 @@ import com.mocalovak.cp.domain.model.CombatMagic
 import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.domain.model.Equipment
 import com.mocalovak.cp.domain.model.Source
-import com.mocalovak.cp.presentation.Character.EquipmentList
-import java.util.SortedMap
 
 fun NameConverter(name: Any):String {
 
@@ -21,7 +19,7 @@ fun NameConverter(name: Any):String {
         ArmorWeight.Heavy -> "Тяжёлая"
         ArmorWeight.Light -> "Лёгкая"
         is Equipment.Weapon -> "Оружие"
-        is Equipment.Clother -> "Броня"
+        is Equipment.Clothes -> "Броня"
         is Equipment.Artifact -> "Артефакт"
         is Equipment.Potion -> "Зелье"
         is Equipment.Other -> "Другое"

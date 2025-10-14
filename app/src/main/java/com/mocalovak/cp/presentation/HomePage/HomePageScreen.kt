@@ -50,7 +50,7 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun HomeScreen(viewModel: HomePageViewModel = hiltViewModel(),  onShowAllClick: () -> Unit, onShowCharClick: (String) -> Unit) {
+fun HomeScreen(viewModel: HomePageViewModel = hiltViewModel(),  onShowAllClick: () -> Unit, onShowCharClick: (Int) -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
 
 
@@ -64,7 +64,7 @@ fun HomeScreen(viewModel: HomePageViewModel = hiltViewModel(),  onShowAllClick: 
 }
 
 @Composable
-fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowCharClick: (String) -> Unit,
+fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowCharClick: (Int) -> Unit,
              viewModel: HomePageViewModel = hiltViewModel()
 ){
 

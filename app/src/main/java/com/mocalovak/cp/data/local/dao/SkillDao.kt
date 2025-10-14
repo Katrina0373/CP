@@ -1,6 +1,7 @@
 package com.mocalovak.cp.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -18,7 +19,7 @@ interface SkillDao {
         on s.id = sc.skillId
         where sc.characterId == :characterId
     """)
-    fun getCharactersSkills(characterId: String): Flow<List<SkillEntity>>
+    fun getCharactersSkills(characterId: Int): Flow<List<SkillEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(skills: List<SkillEntity>)
@@ -30,4 +31,10 @@ interface SkillDao {
 interface SkillCharacterRefDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(refs: List<SkillCharacterCrossRef>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertOne(ref: SkillCharacterCrossRef)
+
+    @Delete
+    fun deleteSkillCharacterCrossRef(ref: SkillCharacterCrossRef)
 }

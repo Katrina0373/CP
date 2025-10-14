@@ -1,6 +1,7 @@
 package com.mocalovak.cp.data.local.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -17,11 +18,12 @@ interface EquipmentDao {
     fun getAll(): Flow<List<EquipmentEntity>>
 
     @Query("""
-        select e.*, c.isEquipped  
-        from equipment e 
-        inner join character_equipment_cross_ref c 
+        select c.itemId, e.*, c.isEquipped
+        from equipment e
+        join character_equipment_cross_ref c 
+        on e.id = c.equipmentId
         where  c.characterId = :characterId""")
-    fun getCharactersEquipment(characterId:String): Flow<List<EquipmentWithStatus>>
+    fun getCharactersEquipment(characterId:Int): Flow<List<EquipmentWithStatus>>
 
     @Query("select * from equipment where name == :name")
     fun getEquipByName(name:String): Flow<List<EquipmentEntity>>
@@ -39,10 +41,12 @@ interface EquipmentCharacterRefDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOne(ref: CharacterEquipmentCrossRef)
 
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(ref: List<CharacterEquipmentCrossRef>)
 
-    @Query("UPDATE character_equipment_cross_ref SET isEquipped = :isEquipped WHERE characterId = :id")
-    suspend fun updateEquipStatus(id: String, isEquipped: Boolean)
+    @Query("UPDATE character_equipment_cross_ref SET isEquipped = :isEquipped WHERE itemId = :id")
+    fun updateEquipStatus(id: Int, isEquipped: Boolean) //это id из Equipment
+
+    @Query("delete from character_equipment_cross_ref where itemId = :id")
+    fun deleteEquipCharacterCrossRef(id: Int) //это id из Equipment
 }

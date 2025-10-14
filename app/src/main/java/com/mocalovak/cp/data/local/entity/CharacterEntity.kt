@@ -1,19 +1,13 @@
 package com.mocalovak.cp.data.local.entity
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import javax.annotation.processing.Generated
 import com.mocalovak.cp.domain.model.Character
-import java.io.ByteArrayOutputStream
-import kotlin.math.max
 
 @Entity(tableName = "characters")
 data class CharacterEntity(
-    @PrimaryKey
-    @Generated
-    val id:String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 1,
     val name:String,
     val classification: String,
     val profession1:String?,
@@ -70,7 +64,6 @@ fun CharacterEntity.toDomain(): Character {
 
 fun Character.toEntity(): CharacterEntity {
     return CharacterEntity(
-        id = id,
         name = name,
         classification = classification,
         profession1 = profession1,

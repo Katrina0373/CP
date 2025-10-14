@@ -1,6 +1,5 @@
 package com.mocalovak.cp.presentation.Character
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,7 +22,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -42,7 +40,7 @@ class CharacterViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<CharacterViewUIState>(CharacterViewUIState.Loading)
     val uiState: StateFlow<CharacterViewUIState> = _uiState
 
-    private val characterId: String = savedStateHandle["characterId"] ?: ""
+    private val characterId: Int = savedStateHandle["characterId"] ?: 0
 
     private val _character = getCharacterUseCase(characterId)
     val character: StateFlow<Character?> = _character.stateIn(
@@ -52,7 +50,7 @@ class CharacterViewModel @Inject constructor(
     )
 
 
-    private val _equipment = getAllEquipment()
+    private val _equipment = getCharactersEquipment(characterId)
     private val _skills = getCharactersSkillsUseCase(characterId)
 
     private val _equipmentFilters = MutableStateFlow(
@@ -80,14 +78,14 @@ class CharacterViewModel @Inject constructor(
             equip.filter { item ->
                 val typeMatch = when (item) {
                     is Equipment.Weapon -> EquipType.Weapon in activeTypes
-                    is Equipment.Clother -> EquipType.Armor in activeTypes
+                    is Equipment.Clothes -> EquipType.Armor in activeTypes
                     is Equipment.Potion -> EquipType.Potion in activeTypes
                     is Equipment.Artifact -> EquipType.Artifact in activeTypes
                     is Equipment.Other -> EquipType.Other in activeTypes
                 }
 
                 val weightMatch = when (item) {
-                    is Equipment.Clother -> (item.armorWeight in activeWeights)
+                    is Equipment.Clothes -> (item.armorWeight in activeWeights)
                     else -> false
                 }
 

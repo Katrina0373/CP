@@ -12,23 +12,23 @@ class UpdateCharacterUseCase @Inject constructor(
         characterRepository.updateCharacter(character)
     }
 
-    fun updateGold(characterId:String, newValue: Int) {
+    fun updateGold(characterId:Int, newValue: Int) {
         characterRepository.updateGold(characterId, newValue)
     }
 
-    fun updateHP(characterId:String, newValue: Int) {
+    fun updateHP(characterId:Int, newValue: Int) {
         characterRepository.updateHP(characterId, newValue)
     }
 
-    fun updateMana(characterId:String, newValue: Int) {
+    fun updateMana(characterId:Int, newValue: Int) {
         characterRepository.updateMana(characterId, newValue)
     }
 
-    fun updateLanguages(characterId:String, newValue: List<String>) {
+    fun updateLanguages(characterId:Int, newValue: List<String>) {
         characterRepository.updateLanguages(characterId, newValue)
     }
 
-    fun levelUp(characterId:String) {
+    fun levelUp(characterId:Int) {
         characterRepository.levelUp(characterId)
     }
 }

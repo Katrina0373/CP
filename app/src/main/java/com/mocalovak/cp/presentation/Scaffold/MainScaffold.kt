@@ -96,19 +96,14 @@ fun BottomBar(navController: NavController, scaffoldVM: ScaffoldViewModel = hilt
                         println("id scaffold: $id")
                         if (currentRoute != screen.route) {
                             if(screen is Screen.Character) {
-                                if (id != "null") {
-                                    navController.navigateSingleTopTo(screen.createRoute(id))
-                                }
-                                else {
-                                    navController.navigateSingleTopTo(screen.createRoute("all"))
-                                }
+                                navController.navigateSingleTopTo(screen.createRoute(id))
                             }
                                 else
                                     navController.navigateSingleTopTo(screen.route)
                         }
-                        else if(screen is Screen.Character && id != "null"){
+                        else if(screen is Screen.Character && id != 0){
                             scaffoldVM.removeLastCharacterId()
-                            navController.navigateSingleTopTo(screen.createRoute("all"))
+                            navController.navigateSingleTopTo(screen.createRoute(0))
                         }
                     },
                     colors = NavigationBarItemDefaults.colors(

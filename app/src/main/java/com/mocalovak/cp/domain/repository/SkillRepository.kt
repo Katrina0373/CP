@@ -6,5 +6,7 @@ import kotlinx.coroutines.flow.Flow
 interface SkillRepository {
     fun getSkills(): Flow<List<Skill>>
 
-    fun getCharactersSkills(characterId:String): Flow<List<Skill>>
+    fun getCharactersSkills(characterId: Int): Flow<List<Skill>>
+
+    fun addSkillToCharacter(characterId: Int, skillId: Int)
 }

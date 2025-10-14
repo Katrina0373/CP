@@ -9,7 +9,7 @@ class GetCharactersSkillsUseCase @Inject constructor(
     private val repository: SkillRepository
 ) {
 
-    operator fun invoke(characterId:String): Flow<List<Skill>> {
+    operator fun invoke(characterId:Int): Flow<List<Skill>> {
         return repository.getCharactersSkills(characterId)
     }
 }

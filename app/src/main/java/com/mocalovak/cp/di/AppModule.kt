@@ -57,13 +57,15 @@ object AppModule {
 
     @Provides
     fun provideSkillRepository(
-        dao:SkillDao
-    ): SkillRepository = SkillRepositoryImpl(dao)
+        skillDao:SkillDao,
+        refDao: SkillCharacterRefDao
+    ): SkillRepository = SkillRepositoryImpl(skillDao, refDao)
 
     @Provides
     fun provideEquipmentRepository(
-        dao: EquipmentDao
-    ): EquipmentRepository = EquipmentRepositoryImpl(dao)
+        dao: EquipmentDao,
+        refDao: EquipmentCharacterRefDao
+    ): EquipmentRepository = EquipmentRepositoryImpl(dao, refDao)
 
 
     @Provides

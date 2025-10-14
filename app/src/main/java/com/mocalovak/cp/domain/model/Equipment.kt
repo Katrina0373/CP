@@ -1,8 +1,5 @@
 package com.mocalovak.cp.domain.model
 
-import android.media.audiofx.DynamicsProcessing.Eq
-import com.mocalovak.cp.presentation.HomePage.HomePageUiState
-
 enum class EquipType{
     Armor, Weapon, Potion, Artifact, Other
 }
@@ -16,14 +13,16 @@ enum class ArmorWeight {
 }
 
 sealed class Equipment {
-    abstract val id: String
+    abstract var id: String
     abstract val name: String
     abstract val description: String
+    open val tir: Int? = null
 
     data class Weapon(
-        override val id: String,
+        override var id: String,
         override val name: String,
         override val description: String,
+        override val tir: Int?,
         val damage: String,
         val slot: List<BodyPart>,
         var isEquipped: Boolean = false,
@@ -32,10 +31,11 @@ sealed class Equipment {
         val chance: Float? //шанс активации эффекта
     ) : Equipment()
 
-    data class Clother(
-        override val id: String,
+    data class Clothes(
+        override var id: String,
         override val name: String,
         override val description: String,
+        override val tir: Int?,
         val slot: List<BodyPart>,
         var isEquipped: Boolean = false,
         val passiveEffects: List<PassiveEffect>?,
@@ -43,21 +43,22 @@ sealed class Equipment {
     ) : Equipment()
 
     data class Potion(
-        override val id: String,
+        override var id: String,
         override val name: String,
         override val description: String,
+        override val tir: Int?,
         val effect: String?,
     ) : Equipment()
 
     data class Artifact(
-        override val id: String,
+        override var id: String,
         override val name: String,
         override val description: String,
         val passiveEffects: List<PassiveEffect>?
     ) : Equipment()
 
     data class Other(
-        override val id:String,
+        override var id: String,
         override val name: String,
         override val description: String
     ): Equipment()
