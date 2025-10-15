@@ -60,6 +60,7 @@ import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.filterButtonBack
 import com.mocalovak.cp.ui.theme.halfAppWhite
+import com.mocalovak.cp.ui.theme.hptems
 import com.mocalovak.cp.ui.theme.otherContainer
 import com.mocalovak.cp.ui.theme.unfocusedFilterButtonBack
 import com.mocalovak.cp.utils.NameConverter
@@ -102,7 +103,7 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel(),
                         containerColor = unfocusedFilterButtonBack,
                         selectedContainerColor = filterButtonBack,
                     ),
-                    shape = RoundedCornerShape(cornerRadius),
+                    shape = RoundedCornerShape(18.dp),
                     border = null
                 )
             }
@@ -115,6 +116,7 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel(),
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxSize()
+                .padding(20.dp)
                 .padding(bottom = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally) {
             items(items = equipment) { equip ->
@@ -129,6 +131,8 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel(),
                     onEquipClick = {},
                     onUnequipClick = {}
                 )
+                HorizontalDivider(//modifier = Modifier.padding(top = 10.dp),
+                    color = hptems)
             }
             item{
                 Button(onClick = {
@@ -167,7 +171,7 @@ fun ExpandableEquipmentCard(
             .animateContentSize()
             .clickable(onClick = {onExpandChange(!expanded)})
     ) {
-        Column(Modifier.padding(20.dp)) {
+        Column(modifier = Modifier.padding(vertical = 10.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -349,7 +353,6 @@ fun ExpandableEquipmentCard(
                     )
                 }
             }
-            HorizontalDivider(modifier = Modifier.padding(top = 10.dp))
         }
     }
 }

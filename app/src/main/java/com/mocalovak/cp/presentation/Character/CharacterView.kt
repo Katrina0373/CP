@@ -72,6 +72,7 @@ import com.mocalovak.cp.ui.theme.CPTheme
 import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.gradientButton
+import com.mocalovak.cp.ui.theme.halfAppWhite
 import com.mocalovak.cp.ui.theme.numBack
 import com.mocalovak.cp.ui.theme.otherContainer
 import com.mocalovak.cp.ui.theme.subTextColor
@@ -147,8 +148,8 @@ fun CharacterView(
                     )
                     .clickable { showLanguagesDialog = true}
                     .padding(vertical = 13.dp, horizontal = 20.dp)) {
-                Text(("Языки: " + character.languages?.joinToString(", ")).dropLast(2) ?: "",
-                    overflow = TextOverflow.Clip)
+                Text(("Языки: " + character.languages?.joinToString(", ")),
+                    maxLines = 1)
             }
             BottomActionButtons(onCheckClick = {
 
@@ -347,17 +348,20 @@ fun ExpandableBox(
                     Box(contentAlignment = Alignment.Center){
                         Image(painterResource(R.drawable.speedicon),
                             contentDescription = "background",
-                            modifier = Modifier.padding(top = 3.dp))
+                            modifier = Modifier.padding(top = 3.dp)
+                        )
                         Text(text = "${character.speed}", fontSize = 20.sp,
                             modifier = Modifier.padding(end = 12.dp))
                     }
                 }
                 Spacer(Modifier.height(20.dp))
                 Row(modifier = Modifier.fillMaxWidth()
-                    .padding(start = 37.dp),
+                    .padding(start = 25.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.Top) {
-                    Box(contentAlignment = Alignment.Center){
+                    Box(contentAlignment = Alignment.Center,
+                        modifier = Modifier.padding(end = 5.dp)
+                        ){
                         Column(horizontalAlignment = Alignment.CenterHorizontally){
                             Text("${character.gold}",
                                 textAlign = TextAlign.Center,
@@ -385,7 +389,8 @@ fun ExpandableBox(
                         }
                             Text("Уровень",
                                 color = subTextColor,
-                                fontSize = 14.sp)
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(top = 4.dp))
                          }
                     }
                     Box(
@@ -771,7 +776,8 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
                     )
                     Text(
                         "${character.classification} ${character.profession1 ?: ""} ${character.race}",
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        color = halfAppWhite
                     )
 
                 }
@@ -804,7 +810,7 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
 
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun PrevChar(){
     CPTheme {
@@ -836,15 +842,6 @@ fun PrevChar(){
                 languages = emptyList(),
                 initiative = 20
             )
-        ChangingDialog(
-            onDismiss = {},
-            onConfirm = {},
-            label = "Здоровье",
-            changingValue = ChangingValues.Health,
-            currentValue = character.currentHP,
-            maxValue = character.maxHP,
-            temporaryValue = 0,
-            painter = painterResource(R.drawable.heart_icon),
-        )
+        ExpandableBox(true, character, {}, {}, {}, {}, {}, {})
     }
 }

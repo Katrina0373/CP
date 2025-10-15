@@ -1,5 +1,6 @@
 package com.mocalovak.cp.presentation.Character
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -20,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
@@ -81,7 +86,8 @@ fun LanguagesExplorer(
                 shape = RoundedCornerShape(cornerRadius)
             ) {
 
-                Column {
+                Column(
+                ) {
                     Box(modifier = Modifier.fillMaxWidth()) {
 
                         Text(
@@ -110,6 +116,8 @@ fun LanguagesExplorer(
                     childCheckedStates.forEachIndexed { index, checked ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(7.dp)
+                                .padding(start = 7.dp)
                         ) {
                             Checkbox(
                                 checked = checked,
@@ -119,29 +127,37 @@ fun LanguagesExplorer(
                                 colors = CheckboxDefaults.colors(
                                     uncheckedColor = halfAppWhite,
                                     checkedColor = BrightPurple
-                                )
+                                ),
+                                modifier = Modifier.size(10.dp)
+                                    //.padding(horizontal = 10.dp)
                             )
-                            Text(allLanguages[index], color = Color.White)
+                            Text(allLanguages[index], color = Color.White,
+                                modifier = Modifier.padding(start = 15.dp))
                         }
                     }
                 }
-
-                OutlinedTextField(
-                    value = otherLanguages,
-                    onValueChange = { otherLanguages = it },
-                    label = { Text("Прочие языки", color = Color.White) },
-                    singleLine = true,
-                    modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        focusedPlaceholderColor = Color.White,
-                        containerColor = containerColor,
-                        unfocusedIndicatorColor = BrightPurple,
-                        focusedIndicatorColor = BrightPurple,
-                        focusedTextColor = Color.White,
-                        unfocusedTextColor = Color.White
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(start = 7.dp, end = 12.dp)) {
+                    Text("Другое: ", color = Color.White,
+                        modifier = Modifier.padding(start = 10.dp))
+                    TextField(
+                        value = otherLanguages,
+                        onValueChange = { otherLanguages = it },
+                        //label = { Text("Прочие языки", color = Color.White) },
+                        singleLine = true,
+                        modifier = Modifier.padding(start = 10.dp, bottom = 10.dp),
+                            //.sizeIn(maxWidth = 220.dp),
+                        colors = TextFieldDefaults.textFieldColors(
+                            focusedPlaceholderColor = Color.White,
+                            containerColor = containerColor,
+                            unfocusedIndicatorColor = BrightPurple,
+                            focusedIndicatorColor = BrightPurple,
+                            focusedTextColor = Color.White,
+                            unfocusedTextColor = Color.White
                         ),
 
-                )
+                        )
+                }
 
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -150,7 +166,9 @@ fun LanguagesExplorer(
                 gradient = gradientButton,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                onConfirm(allLanguages.filterIndexed { ind, _ -> childCheckedStates[ind] } + otherLanguages)
+                var chosenLanguages = allLanguages.filterIndexed { ind, _ -> childCheckedStates[ind]}
+                if(otherLanguages.trim().isNotBlank()) chosenLanguages += otherLanguages
+                    onConfirm(chosenLanguages)
             }
         }
     }
