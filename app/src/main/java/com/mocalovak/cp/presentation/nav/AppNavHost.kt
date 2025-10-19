@@ -9,10 +9,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.mocalovak.cp.presentation.Character.CharacterScreen
-import com.mocalovak.cp.presentation.Character.CharacterView
 import com.mocalovak.cp.presentation.CharacterList.CharacterList
 import com.mocalovak.cp.presentation.HomePage.HomeScreen
-import com.mocalovak.cp.presentation.library.EquipmentExplorer
+import com.mocalovak.cp.presentation.Libraries.EquipmentExplorer
 
 @Composable
 fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifier){

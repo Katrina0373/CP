@@ -16,9 +16,9 @@ val numberTextStyle = TextStyle(
         Font(R.font.raleway_mediumitalic, weight = FontWeight.Normal, style = FontStyle.Italic),
     ),
     fontWeight = FontWeight.Normal,
-    fontSize = 18.sp,
+    fontSize = 16.sp,
     letterSpacing = 0.5.sp,
-    lineHeight = 22.sp,
+    lineHeight = 24.sp,
     color = Color.White
 )
 

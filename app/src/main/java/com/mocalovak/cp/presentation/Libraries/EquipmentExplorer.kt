@@ -1,4 +1,4 @@
-package com.mocalovak.cp.presentation.library
+package com.mocalovak.cp.presentation.Libraries
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -14,16 +14,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -45,10 +41,10 @@ import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.presentation.Character.ExpandableEquipmentCard
 import com.mocalovak.cp.presentation.Character.cornerRadius
 import com.mocalovak.cp.ui.theme.backColor
-import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.filterButtonBack
 import com.mocalovak.cp.ui.theme.halfAppWhite
+import com.mocalovak.cp.ui.theme.hptems
 import com.mocalovak.cp.ui.theme.numBack
 import com.mocalovak.cp.ui.theme.unfocusedFilterButtonBack
 import com.mocalovak.cp.utils.NameConverter
@@ -102,7 +98,8 @@ fun EquipmentExplorer(vm: EquipmentExplorerViewModel = hiltViewModel(),
                 placeholder = { Text(" Найти снаряжение...", color = numBack) },
                 trailingIcon = {
                     Icon(painterResource(R.drawable.search_ic), contentDescription = "search")
-                }
+                },
+                modifier = Modifier.weight(1f)
             )
         }
         Row(
@@ -138,7 +135,7 @@ fun EquipmentExplorer(vm: EquipmentExplorerViewModel = hiltViewModel(),
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxSize()
-                .padding(bottom = 10.dp),
+                .padding(10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(items = equipment, key = { it.id }) { equip ->
@@ -152,8 +149,8 @@ fun EquipmentExplorer(vm: EquipmentExplorerViewModel = hiltViewModel(),
                     withAdd = withAdding,
                     onAddClick = { vm.addEquipmentToCharacter(equip.id) }
                 )
+                HorizontalDivider(color = hptems)
             }
-
         }
     }
 }

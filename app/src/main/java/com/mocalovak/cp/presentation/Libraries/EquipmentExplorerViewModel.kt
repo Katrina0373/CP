@@ -1,4 +1,4 @@
-package com.mocalovak.cp.presentation.library
+package com.mocalovak.cp.presentation.Libraries
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -56,33 +56,40 @@ class EquipmentExplorerViewModel @Inject constructor(
         combine(_equipment, _equipmentFilters, _searchQuery) { equip, filt, query ->
             val activeTypes = filt.filter { it.value }.keys.filterIsInstance<EquipType>()
             val activeWeights = filt.filter { it.value }.keys.filterIsInstance<ArmorWeight>()
-
-            // Если фильтры не выбраны — показываем всё
-            if (activeTypes.isEmpty() && activeWeights.isEmpty()) return@combine equip
+            val q = query.trim()
 
             equip.filter { item ->
-                val typeMatch = when (item) {
-                    is Equipment.Weapon -> EquipType.Weapon in activeTypes
-                    is Equipment.Clothes -> EquipType.Armor in activeTypes
-                    is Equipment.Potion -> EquipType.Potion in activeTypes
-                    is Equipment.Artifact -> EquipType.Artifact in activeTypes
-                    is Equipment.Other -> EquipType.Other in activeTypes
+                val typeMatch = if (activeTypes.isEmpty()) {
+                    true
+                } else {
+                    when (item) {
+                        is Equipment.Weapon -> EquipType.Weapon in activeTypes
+                        is Equipment.Clothes -> EquipType.Armor in activeTypes
+                        is Equipment.Potion -> EquipType.Potion in activeTypes
+                        is Equipment.Artifact -> EquipType.Artifact in activeTypes
+                        is Equipment.Other -> EquipType.Other in activeTypes
+                    }
                 }
 
-                val weightMatch = when (item) {
-                    is Equipment.Clothes -> (item.armorWeight in activeWeights)
-                    else -> false
+                val weightMatch = if (activeWeights.isEmpty()) {
+                    true
+                } else {
+                    when (item) {
+                        is Equipment.Clothes -> item.armorWeight in activeWeights
+                        else -> false
+                    }
                 }
 
-                val searchContain = if(query.isBlank()) true else item.name.contains(query, ignoreCase = true)
+                val searchContain = q.isBlank() || item.name.contains(q, ignoreCase = true)
 
-                (typeMatch || weightMatch) && searchContain
+                typeMatch && weightMatch && searchContain
             }
         }.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             emptyList()
         )
+
 
     fun updateEquipmentFilter(filter: Any){
         _equipmentFilters.update { current ->

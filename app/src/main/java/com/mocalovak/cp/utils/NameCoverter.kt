@@ -2,6 +2,7 @@ package com.mocalovak.cp.utils
 
 import com.mocalovak.cp.domain.model.ActivePassive
 import com.mocalovak.cp.domain.model.ArmorWeight
+import com.mocalovak.cp.domain.model.BodyPart
 import com.mocalovak.cp.domain.model.CombatMagic
 import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.domain.model.Equipment
@@ -30,6 +31,10 @@ fun NameConverter(name: Any):String {
         Source.Race -> "Расовый"
         Source.Common -> "Общий"
         Source.Profession -> "Классовый"
+        BodyPart.RightHand -> "Правая рука"
+        BodyPart.LeftHand -> "Левая рука"
+        "RightHand" -> "Правая рука"
+        "LeftHand" -> "Левая рука"
         else -> "Прочее"
     }
 }

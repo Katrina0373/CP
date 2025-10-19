@@ -5,12 +5,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mocalovak.cp.domain.model.ActivePassive
 import com.mocalovak.cp.domain.model.ArmorWeight
+import com.mocalovak.cp.domain.model.BodyPart
 import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.domain.model.CombatMagic
 import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.domain.model.Equipment
 import com.mocalovak.cp.domain.model.Skill
 import com.mocalovak.cp.domain.model.Source
+import com.mocalovak.cp.domain.usecase.DeleteItemUseCase
+import com.mocalovak.cp.domain.usecase.EquipItemUseCase
 import com.mocalovak.cp.domain.usecase.GetAllEquipment
 import com.mocalovak.cp.domain.usecase.GetCharacterUseCase
 import com.mocalovak.cp.domain.usecase.GetCharactersEquipment
@@ -34,6 +37,8 @@ class CharacterViewModel @Inject constructor(
     private val getAllEquipment: GetAllEquipment,
     private val getCharactersSkillsUseCase: GetCharactersSkillsUseCase,
     private val updateCharacterUseCase: UpdateCharacterUseCase,
+    private val equipItemUseCase: EquipItemUseCase,
+    private val deleteItemUseCase: DeleteItemUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -191,5 +196,26 @@ class CharacterViewModel @Inject constructor(
         }
     }
 
+    fun equipItem(item: Equipment, slot:BodyPart){
+        viewModelScope.launch(Dispatchers.IO) {
+            equipItemUseCase(item.id, slot)
+        }
+    }
+
+    fun takeEmptySlots(equipment: List<Equipment>, item: Equipment): List<BodyPart>{
+        return equipItemUseCase.takeEmptySlots2(equipment, item)
+    }
+
+    fun deleteItem(item:Equipment){
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteItemUseCase(item.id)
+        }
+    }
+
+    fun UnEquipItem(itemId: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            equipItemUseCase.unEquipItem(itemId)
+        }
+    }
 
 }

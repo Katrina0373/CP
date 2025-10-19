@@ -4,6 +4,7 @@ import com.mocalovak.cp.data.local.dao.EquipmentCharacterRefDao
 import com.mocalovak.cp.data.local.dao.EquipmentDao
 import com.mocalovak.cp.data.local.entity.CharacterEquipmentCrossRef
 import com.mocalovak.cp.data.local.entity.toDomain
+import com.mocalovak.cp.domain.model.BodyPart
 import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.domain.model.Equipment
 import com.mocalovak.cp.domain.repository.EquipmentRepository
@@ -30,7 +31,18 @@ class EquipmentRepositoryImpl @Inject constructor(
     }
 
     override fun addEquipmentCrossRef(characterId: Int, equipmentId: String) {
-        daoRef.insertOne(CharacterEquipmentCrossRef(characterId = characterId, equipmentId = equipmentId, isEquipped = false))
+        daoRef.insertOne(CharacterEquipmentCrossRef(characterId = characterId, equipmentId = equipmentId, isEquipped = null))
     }
 
+    override fun equipItem(itemId: String, slot: BodyPart) {
+        daoRef.updateEquipStatus(itemId.toInt(), slot)
+    }
+
+    override fun unEquipItem(itemId: String) {
+        daoRef.updateEquipStatus(itemId.toInt(), null)
+    }
+
+    override fun deleteItemFromCharacter(itemId: String) {
+        daoRef.deleteEquipCharacterCrossRef(itemId.toInt())
+    }
 }

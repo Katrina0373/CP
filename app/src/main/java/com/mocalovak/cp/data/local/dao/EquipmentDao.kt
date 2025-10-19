@@ -8,6 +8,7 @@ import androidx.room.Query
 import com.mocalovak.cp.data.local.entity.CharacterEquipmentCrossRef
 import com.mocalovak.cp.data.local.entity.EquipmentEntity
 import com.mocalovak.cp.data.local.entity.EquipmentWithStatus
+import com.mocalovak.cp.domain.model.BodyPart
 import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.domain.model.Equipment
 import kotlinx.coroutines.flow.Flow
@@ -45,7 +46,7 @@ interface EquipmentCharacterRefDao {
     fun insertAll(ref: List<CharacterEquipmentCrossRef>)
 
     @Query("UPDATE character_equipment_cross_ref SET isEquipped = :isEquipped WHERE itemId = :id")
-    fun updateEquipStatus(id: Int, isEquipped: Boolean) //это id из Equipment
+    fun updateEquipStatus(id: Int, isEquipped: BodyPart?) //это id из Equipment
 
     @Query("delete from character_equipment_cross_ref where itemId = :id")
     fun deleteEquipCharacterCrossRef(id: Int) //это id из Equipment

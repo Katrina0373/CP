@@ -32,7 +32,7 @@ data class EquipmentEntity(
 data class EquipmentWithStatus(
     val itemId: Int,
     @Embedded val equipment: EquipmentEntity,
-    val isEquipped: Boolean,
+    val isEquipped: BodyPart? = null,
 )
 
 
@@ -59,7 +59,7 @@ data class CharacterEquipmentCrossRef(
     val itemId: Int = 0,
     val characterId: Int,
     val equipmentId: String,
-    val isEquipped: Boolean
+    val isEquipped: BodyPart?
 )
 
 fun EquipmentEntity.toDomain(): Equipment {
