@@ -28,8 +28,8 @@ class EquipmentExplorerViewModel @Inject constructor(
 ): ViewModel() {
 
 
-    private val _uiState = MutableStateFlow<CharacterViewUIState>(CharacterViewUIState.Loading)
-    val uiState: StateFlow<CharacterViewUIState> = _uiState
+//    private val _uiState = MutableStateFlow<CharacterViewUIState>(CharacterViewUIState.Loading)
+//    val uiState: StateFlow<CharacterViewUIState> = _uiState
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
