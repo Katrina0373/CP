@@ -7,25 +7,11 @@
     "slot": ["RightHand", "LeftHand"],
     "description": "атака d4, легко метнуть, шанс на критическую атаку 10%",
     "weight": "Light",
-
+    "tir": 1,
     "damage": "1d4",
     "distance": null,
     "effect": "Критическая атака",
     "chance": 0.1,
-    "passiveEffects": null
-  },
-  {
-    "id": "char002",
-    "name": "Перчатки",
-    "type": "Armor",
-    "slot": ["TwoHands"],
-    "description": "Лёгкие перчатки для воришек и лазутчиков",
-    "weight": "Light",
-
-    "damage": null,
-    "distance": null,
-    "effect": null,
-    "chance": null,
     "passiveEffects": null
   },
   {
@@ -122,6 +108,248 @@
     "weight": "Light",
     "damage": "1d6 + perception",
     "distance": 8,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+  "id": "w3-1",
+  "name": "Молот",
+  "type": "Weapon",
+  "tir": 1,
+  "slot": ["TwoHands"],
+  "description": "Большой двуручный молот",
+  "weight": null,
+  "damage": "1d10 + strength",
+  "distance": null,
+  "effect": "Оглушение",
+  "chance": 0.1,
+  "passiveEffects": null
+},
+  {
+  "id": "w3-2",
+  "name": "Копьё",
+  "type": "Weapon",
+  "tir": 1,
+  "slot": ["TwoHands"],
+  "description": "Большое двуручное копьё, действует на 2 клетки",
+  "weight": null,
+  "damage": "1d10 + strength",
+  "distance": 2,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": null
+},
+  {
+  "id": "w3-3",
+  "name": "Посох поддрежки",
+  "type": "Weapon",
+  "tir": 1,
+  "slot": ["TwoHands"],
+  "description": "Посох поддержки улучшает действие ваших заклинаний поддержки",
+  "weight": "Magic",
+  "damage": "1d4 + strength",
+  "distance": 8,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "support",
+      "bonus": 4,
+      "description": "+d4 к заклинаниям поддержки"
+    },
+    {
+      "parameter": "maxMana",
+      "bonus": 2,
+      "description": "+2 ячейки маны"
+    }
+  ]
+},
+  {
+  "id": "w3-4",
+  "name": "Посох атаки",
+  "type": "Weapon",
+  "tir": 1,
+  "slot": ["TwoHands"],
+  "description": "Посох, чтобы разить заклинаниями ваших врагов",
+  "weight": "Magic",
+  "damage": "1d4 + strength",
+  "distance": 8,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "magic attack",
+      "bonus": 4,
+      "description": "+d4 к заклинаниям атаки"
+    },
+    {
+      "parameter": "maxMana",
+      "bonus": 2,
+      "description": "+2 ячейки маны"
+    }
+  ]
+},
+  {
+  "id": "a3-1",
+  "name": "Лёгкий шлем",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["Head"],
+  "description": "Лёгкий шлем для ветренной головы",
+  "weight": "Light",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 0.75,
+      "description": "+0,75 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a3-2",
+  "name": "Тяжёлый шлем",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["Head"],
+  "description": "Тяжёлый шлем от тяжёлых ударов",
+  "weight": "Heavy",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 1,
+      "description": "+1 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a3-3",
+  "name": "Шляпа мага",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["Head"],
+  "description": "Не защитит вашу умную голову от ударов, но улучшит вашу магию",
+  "weight": "Magic",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "maxMana",
+      "bonus": 1,
+      "description": "+1 ячейка маны"
+    }
+  ]
+},
+  {
+  "id": "a3-4",
+  "name": "Лёгкие перчатки",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["TwoHands"],
+  "description": "Лёгкие перчатки для воришек и лазутчиков",
+  "weight": "",
+  "damage": "",
+  "distance": 0,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": null
+},
+  {
+    "id": "w3-5",
+    "name": "Щит",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["LeftHand"],
+    "description": "Простой деревянный щит",
+    "weight": null,
+    "damage": "1d4 + strength",
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [
+      {
+        "parameter": "armorClass",
+        "bonus": 1,
+        "description": "+1 к классу брони"
+      }
+    ]
+  },
+  {
+    "id": "w3-6",
+    "name": "Ружьё",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["TwoHands"],
+    "description": "Большой двуручный карабин",
+    "weight": null,
+    "damage": "1d10 + perception",
+    "distance": 14,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-7",
+    "name": "Катана",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["TwoHands"],
+    "description": "Крутое оружие для крутых самураев",
+    "weight": null,
+    "damage": "1d8 + strength | dexterity",
+    "distance": null,
+    "effect": "Понижает КБ врага на 2, шанс критической атаки",
+    "chance": 0.2,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-8",
+    "name": "Одноручный меч",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Небольшой меч чтобы сечь головы",
+    "weight": null,
+    "damage": "1d6 + strength | dexterity",
+    "distance": null,
+    "effect": "Снижает КБ врага на 1",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-9",
+    "name": "Пан-флейта",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Флейта для заклинаний поддержки",
+    "weight": null,
+    "damage": "1d4 + strength",
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-10",
+    "name": "Лютня",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["TwoHands"],
+    "description": "Оружие настоящих бардов",
+    "weight": null,
+    "damage": "1d4 + strength",
+    "distance": null,
     "effect": null,
     "chance": null,
     "passiveEffects": null
