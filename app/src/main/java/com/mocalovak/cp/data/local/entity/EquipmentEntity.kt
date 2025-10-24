@@ -96,7 +96,7 @@ fun EquipmentEntity.toDomain(): Equipment {
             id = id,
             name = name,
             description = description,
-            passiveEffects = passiveEffects
+            passiveEffects = passiveEffects,
         )
 
         EquipType.Other -> Equipment.Other(
@@ -114,6 +114,8 @@ fun EquipmentWithStatus.toDomain(): Equipment {
         baseEquipment.isEquipped = isEquipped
     else if(baseEquipment is Equipment.Clothes)
         baseEquipment.isEquipped = isEquipped
+    else if(baseEquipment is Equipment.Artifact)
+        baseEquipment.isSet = isEquipped != null
 
     return baseEquipment
 }

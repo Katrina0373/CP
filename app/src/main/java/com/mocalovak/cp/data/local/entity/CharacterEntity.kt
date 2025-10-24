@@ -18,7 +18,7 @@ data class CharacterEntity(
     var maxHP:Int,
     var currentHP:Int,
     var gold:Int,
-    var armorClass:Int,
+    var armorClass:Float,
     var speed:Int,
     val languages:List<String>?,
     val maxMana:Int,

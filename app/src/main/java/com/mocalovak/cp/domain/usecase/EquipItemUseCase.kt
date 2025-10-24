@@ -13,9 +13,16 @@ class EquipItemUseCase @Inject constructor(
         if(item is Equipment.Weapon){
             if(item.isEquipped != null) return emptyList()
 
-            return item.slot.filter { slot ->
-                characterEquipment.none {
-                    it is Equipment.Weapon && it.isEquipped == slot
+            if(item.slot[0] == BodyPart.TwoHands){
+                return if (characterEquipment.any{
+                    it is Equipment.Weapon && it.isEquipped != null
+                }) emptyList()
+                else item.slot
+            } else {
+                return item.slot.filter { slot ->
+                    characterEquipment.none {
+                        it is Equipment.Weapon && (it.isEquipped == slot || it.isEquipped == BodyPart.TwoHands)
+                    }
                 }
             }
         }

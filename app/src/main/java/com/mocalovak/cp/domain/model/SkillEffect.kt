@@ -1,6 +1,4 @@
-package com.mocalovak.cp.domain
-
-import com.mocalovak.cp.domain.model.Character
+package com.mocalovak.cp.domain.model
 
 
 interface SkillEffect {
@@ -13,7 +11,7 @@ class FireballEffect : SkillEffect {
     }
 }
 
-class HealEffect: SkillEffect{
+class HealEffect: SkillEffect {
     override fun apply(character: Character): String {
         return "D4 + ${character.constitution}"
     }

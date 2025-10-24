@@ -1,5 +1,7 @@
 package com.mocalovak.cp.presentation.Character
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -46,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -91,7 +94,7 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel(),
     )
 
     val selectedFilters by vm.equipmentFilters.collectAsState()
-
+    val context = LocalContext.current
 
 
     Column(modifier = Modifier.padding(10.dp)) {
@@ -214,11 +217,11 @@ fun DeleteAcceptDialog(
 
     Dialog(onDismissRequest = onDismiss) {
         Card(modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
+            .fillMaxWidth(),
             shape = RoundedCornerShape(cornerRadius),
             colors = CardDefaults.cardColors(containerColor = topContainer)){
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(10.dp)) {
 
                 Icon(Icons.Default.Close,
                     "",
@@ -264,7 +267,7 @@ fun ExpandableEquipmentCard(
 
     var showBodyPartAsk by remember { mutableStateOf(false) }
     var showDeleteAcceptDialog by remember { mutableStateOf(false) }
-
+    val context = LocalContext.current
 
     if (showBodyPartAsk) {
         BodyPartAskingDialog(
@@ -417,9 +420,11 @@ fun ExpandableEquipmentCard(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        if (equipment is Equipment.Clothes || equipment is Equipment.Weapon) {
+
+                        if (equipment is Equipment.Clothes || equipment is Equipment.Weapon || equipment is Equipment.Artifact) {
                             if ((equipment as? Equipment.Weapon)?.isEquipped != null ||
-                                (equipment as? Equipment.Clothes)?.isEquipped != null
+                                (equipment as? Equipment.Clothes)?.isEquipped != null ||
+                                (equipment as? Equipment.Artifact)?.isSet == true
                             ) {
                                 Icon(
                                     imageVector = Icons.Outlined.Check,
@@ -449,12 +454,18 @@ fun ExpandableEquipmentCard(
                                         .background(otherContainer)
                                         .padding(horizontal = 20.dp, vertical = 5.dp)
                                         .clickable {
-                                            val emptySlots = findEmptySlots()
-                                            if(emptySlots.size > 1){
-                                                showBodyPartAsk = true
-                                            }
-                                            else if(emptySlots.size == 1){
-                                                onEquipClick(emptySlots[0])
+                                            if(equipment is Equipment.Artifact){
+                                                onEquipClick(BodyPart.Body)
+                                            } else {
+                                                val emptySlots = findEmptySlots()
+                                                if (emptySlots.size > 1) {
+                                                    showBodyPartAsk = true
+                                                } else if (emptySlots.size == 1) {
+                                                    onEquipClick(emptySlots[0])
+                                                }
+                                                else {
+                                                    Toast.makeText(context, "Коллизия предметов", Toast.LENGTH_SHORT).show()
+                                                }
                                             }
                                         },
                                     color = Color.White
@@ -555,7 +566,7 @@ fun EquipListPreview(){
             description = "Лёгкие перчатки для воришек и лазутчиков",
             slot = listOf(BodyPart.RightHand),
             isEquipped = null,
-            passiveEffects = listOf(PassiveEffect("armorClass", 1, "+1 к КБ")),
+            passiveEffects = listOf(PassiveEffect("armorClass", 1f, "+1 к КБ")),
             armorWeight = ArmorWeight.Light,
             tir = 1
         ),
@@ -570,9 +581,10 @@ fun EquipListPreview(){
             id = "kok",
             name = "Кольцо сметения",
             description = "Золотое колечко как раз по вашему пальцу",
+            isSet = true,
             passiveEffects = listOf(PassiveEffect(
                 "intellegence",
-                1,
+                1f,
                 "Заставляет ваших противников сомневаться в своей правоте"))
         ),
         Equipment.Other(
@@ -583,14 +595,14 @@ fun EquipListPreview(){
     )
     val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
 
-//    ExpandableEquipmentCard(
-//        equipList[0], true, {},
-//        withEquip = true,
-//        onEquipClick = {},
-//        onUnEquipClick = {},
-//        withAdd = false,
-//        onAddClick = {},
-//        onDeleteClick = {}
-//    )
-    BodyPartAskingDialog(listOf(BodyPart.LeftHand, BodyPart.RightHand), {}) { }
+    ExpandableEquipmentCard(
+        equipList[3], true, {},
+        withEquip = true,
+        onEquipClick = {},
+        onUnEquipClick = {},
+        withAdd = false,
+        onAddClick = {},
+        onDeleteClick = {}
+    )
+    //DeleteAcceptDialog(name = "Кинжал", {})  { }
 }

@@ -208,7 +208,7 @@ fun PrevCharCard(){
             maxHP = 64,
             currentHP = 64,
             gold = 100,
-            armorClass = 18,
+            armorClass = 18f,
             speed = 4,
             maxMana = 5,
             currentMana = 5,

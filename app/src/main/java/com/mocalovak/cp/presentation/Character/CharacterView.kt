@@ -65,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.mocalovak.cp.R
 import com.mocalovak.cp.domain.model.Character
@@ -79,6 +80,7 @@ import com.mocalovak.cp.ui.theme.subTextColor
 import com.mocalovak.cp.ui.theme.topContainer
 import com.mocalovak.cp.utils.loadImageFromAssets
 import kotlinx.coroutines.launch
+import kotlin.math.floor
 
 val cornerRadius = 14.dp
 enum class ChangingValues{ Health, Mana, Gold}
@@ -342,7 +344,7 @@ fun ExpandableBox(
 
                     Box(contentAlignment = Alignment.Center){
                         Image(painterResource(R.drawable.sheildicon), contentDescription = "background")
-                        Text(text = "${character.armorClass}", fontSize = 20.sp)
+                        Text(text = "${floor(character.armorClass).toInt()}", fontSize = 20.sp)
                     }
 
                     Box(contentAlignment = Alignment.Center){
@@ -442,7 +444,7 @@ fun ExpandableBox(
                     contentDescription = "shield icon",
                     modifier = Modifier.size(25.dp))
                 Spacer(modifier = Modifier.width(9.dp))
-                Text("${character.armorClass}")
+                Text("${floor(character.armorClass).toInt()}")
 
                 Spacer(modifier = Modifier.width(18.dp))
 
@@ -746,7 +748,6 @@ fun ChangingDialog(
                 onClick = {
                     val result =
                         currentValue - (if (decreaseValue.isNotBlank()) decreaseValue.toInt() else 0) + (if (increaseValue.isNotBlank()) increaseValue.toInt() else 0)
-                    println("result:" + result)
                     onConfirm(result)
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -828,7 +829,7 @@ fun PrevChar(){
                 imagePath = null,
                 currentHP = 100,
                 gold = 0,
-                armorClass = 20,
+                armorClass = 20f,
                 speed = 10,
                 maxMana = 500,
                 currentMana = 500,

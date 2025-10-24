@@ -54,7 +54,8 @@ sealed class Equipment {
         override var id: String,
         override val name: String,
         override val description: String,
-        val passiveEffects: List<PassiveEffect>?
+        val passiveEffects: List<PassiveEffect>?,
+        var isSet: Boolean = false
     ) : Equipment()
 
     data class Other(

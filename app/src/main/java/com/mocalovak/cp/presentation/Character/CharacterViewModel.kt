@@ -50,7 +50,7 @@ class CharacterViewModel @Inject constructor(
     private val _character = getCharacterUseCase(characterId)
     val character: StateFlow<Character?> = _character.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
+        SharingStarted.Eagerly,
         null
     )
 
@@ -203,7 +203,7 @@ class CharacterViewModel @Inject constructor(
     }
 
     fun takeEmptySlots(equipment: List<Equipment>, item: Equipment): List<BodyPart>{
-        return equipItemUseCase.takeEmptySlots2(equipment, item)
+        return equipItemUseCase.takeEmptySlots(equipment, item)
     }
 
     fun deleteItem(item:Equipment){

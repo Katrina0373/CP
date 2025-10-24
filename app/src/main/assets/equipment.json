@@ -15,25 +15,25 @@
     "passiveEffects": null
   },
   {
-    "id": "char003",
+    "id": "p3-1",
     "name": "Зелье лечения",
     "type": "Potion",
     "slot": [],
     "description": "Бутолычка с заветной красной жидкостью",
     "weight": null,
-
+    "tir": 1,
     "damage": null,
     "distance": null,
-    "effect": "Восстанавливает 2к6 здоровья",
+    "effect": "Восстанавливает 1d8 здоровья",
     "chance": null,
     "passiveEffects": null
   },
   {
-    "id": "char004",
-    "name": "Кольцо сметения",
+    "id": "ar3-5",
+    "name": "Кольцо",
     "type": "Artifact",
     "slot": [],
-    "description": "Золотое колечко как раз по вашему пальцу",
+    "description": "Золотое кольцо придаёт вам чуть больше уверенности",
     "weight": null,
 
     "damage": null,
@@ -262,7 +262,13 @@
   "distance": 0,
   "effect": null,
   "chance": null,
-  "passiveEffects": null
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 0.5,
+      "description": "+0,5 к классу брони"
+    }
+  ]
 },
   {
     "id": "w3-5",
@@ -349,6 +355,108 @@
     "description": "Оружие настоящих бардов",
     "weight": null,
     "damage": "1d4 + strength",
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "p3-1",
+    "name": "Зелье маны",
+    "type": "Potion",
+    "tir": 1,
+    "slot": [],
+    "description": "Фиолотевое и блестит",
+    "weight": null,
+    "damage": null,
+    "distance": null,
+    "effect": "Восстанавливает d4 ячеек маны",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "ar3-1",
+    "name": "Ожерелье",
+    "type": "Artifact",
+    "tir": 1,
+    "slot": [],
+    "description": "Светится силой",
+    "weight": null,
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [{
+      "parameter": "strength",
+      "bonus": 1,
+      "description": "+1 к силе"
+    }
+    ]
+  },
+  {
+    "id": "ar3-2",
+    "name": "Браслет",
+    "type": "Artifact",
+    "tir": 1,
+    "slot": [],
+    "description": "Хорошо смотрится на вашей руке",
+    "weight": null,
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [{
+      "parameter": "perception",
+      "bonus": 1,
+      "description": "+1 к восприятию"
+    }
+      ]
+  },
+  {
+    "id": "ar3-3",
+    "name": "Амулет",
+    "type": "Artifact",
+    "tir": 1,
+    "slot": [],
+    "description": "Символ настоящих ловкачей",
+    "weight": null,
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [{
+      "parameter": "dexterity",
+      "bonus": 1,
+      "description": "+1 к ловкости"
+    }]
+  },
+  {
+    "id": "ar3-4",
+    "name": "Магический камень",
+    "type": "Artifact",
+    "tir": 1,
+    "slot": [],
+    "description": "Фиолетовый и блестит",
+    "weight": null,
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [{
+      "parameter": "magic",
+      "bonus": 1,
+      "description": "+1 к магии"
+    }]
+  },
+  {
+    "id": "ar3-6",
+    "name": "Калимба",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Маленький музыкальный инструмент, эффекты калимбы применяются только на играющего",
+    "weight": "Light",
+    "damage": null,
     "distance": null,
     "effect": null,
     "chance": null,

@@ -1,5 +1,7 @@
 package com.mocalovak.cp.presentation.Libraries
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -58,6 +61,7 @@ fun EquipmentExplorer(vm: EquipmentExplorerViewModel = hiltViewModel(),
     val equipment by vm.filteredEquipment.collectAsState()
     val searchValue by vm.searchQuery.collectAsState()
 
+
     val filters: List<Any> = listOf(
         EquipType.Armor,
         EquipType.Weapon,
@@ -70,6 +74,8 @@ fun EquipmentExplorer(vm: EquipmentExplorerViewModel = hiltViewModel(),
     )
 
     val selectedFilters by vm.equipmentFilters.collectAsState()
+
+    val context = LocalContext.current
 
     Column(modifier = Modifier.fillMaxSize()
         .background(color = backColor)
@@ -147,10 +153,17 @@ fun EquipmentExplorer(vm: EquipmentExplorerViewModel = hiltViewModel(),
                         expandedStates[equip.id] = newState
                     },
                     withAdd = withAdding,
-                    onAddClick = { vm.addEquipmentToCharacter(equip.id) }
+                    onAddClick = { vm.addEquipmentToCharacter(equip.id)
+                    mToast(context, "Предмет ${equip.name} был добавлен")
+                    }
                 )
                 HorizontalDivider(color = hptems)
             }
         }
     }
+}
+
+// Function to generate a Toast
+private fun mToast(context: Context, text:String){
+    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 }
