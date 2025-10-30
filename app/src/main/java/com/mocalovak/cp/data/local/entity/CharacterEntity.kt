@@ -62,8 +62,9 @@ fun CharacterEntity.toDomain(): Character {
     )
 }
 
-fun Character.toEntity(): CharacterEntity {
+fun Character.toEntity(withID:Boolean): CharacterEntity {
     return CharacterEntity(
+        id = if(withID) id else 1,
         name = name,
         classification = classification,
         profession1 = profession1,

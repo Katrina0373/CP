@@ -108,7 +108,8 @@ fun CharacterItem(character: Character,
 fun CharacterItemWithMenu(character: Character,
                   openCharacter: () -> Unit,
                           onDeleteClick: () -> Unit,
-                          onFavoriteClick: () -> Unit){
+                          onFavoriteClick: () -> Unit,
+                          navigateToRedactionScreen: (Int) -> Unit){
     var expanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
     Card(
@@ -183,6 +184,11 @@ fun CharacterItemWithMenu(character: Character,
                             onClick = { /* Do something... */ }
                         )
                         DropdownMenuItem(
+                            text = { Text("Редактировать")},
+                            onClick = {
+                                navigateToRedactionScreen(character.id) }
+                        )
+                        DropdownMenuItem(
                             text = { Text("Удалить") },
                             onClick = { /* Do something... */ }
                         )
@@ -222,6 +228,6 @@ fun PrevCharCard(){
             languages = emptyList(),
             initiative = 0
         ),
-        openCharacter = {}, {}, {}
+        openCharacter = {}, {}, {}, {}
     )
 }

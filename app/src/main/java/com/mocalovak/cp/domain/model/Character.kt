@@ -4,7 +4,7 @@ import android.graphics.Bitmap
 
 data class Character(
     val id:Int,
-    val name:String,
+    var name:String,
     val classification: String,
     val profession1:String?,
     val profession2: String?,

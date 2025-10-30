@@ -18,12 +18,12 @@ class CharacterRepositoryImpl @Inject constructor(
         return listic.map { list -> list.map { it.toDomain() } }
     }
 
-    override fun getCharacter(id: Int): Flow<Character?> {
-        return dao.getCharacterId(id).map { it?.toDomain() }
+    override fun getCharacter(id: Int): Flow<Character> {
+        return dao.getCharacterId(id).map { it.toDomain() }
     }
 
     override fun updateCharacter(character: Character) {
-        dao.updateCharacter(character.toEntity())
+        dao.updateCharacter(character.toEntity(withID = true))
     }
 
     override fun updateGold(characterId: Int, newValue: Int) {

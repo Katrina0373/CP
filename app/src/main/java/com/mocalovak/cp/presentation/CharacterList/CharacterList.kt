@@ -39,7 +39,10 @@ import com.mocalovak.cp.ui.theme.numBack
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CharacterList(vm: CharacterListViewModel = hiltViewModel(), onCharacterClick: (Int) -> Unit){
+fun CharacterList(vm: CharacterListViewModel = hiltViewModel(),
+                  onCharacterClick: (Int) -> Unit,
+                  onRedactionClick: (Int) -> Unit
+                  ){
 
 
     val searchValue by vm.searchQuery.collectAsState()
@@ -97,7 +100,7 @@ fun CharacterList(vm: CharacterListViewModel = hiltViewModel(), onCharacterClick
                     vm.updateLastCharacter(character.id)
                     onCharacterClick(character.id)
                 },
-                    {}, {})
+                    {}, {}, onRedactionClick)
             }
         }
     }

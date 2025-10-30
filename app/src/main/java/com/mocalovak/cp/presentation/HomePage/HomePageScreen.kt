@@ -52,9 +52,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(viewModel: HomePageViewModel = hiltViewModel(),  onShowAllClick: () -> Unit, onShowCharClick: (Int) -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
-
-
-
     when (uiState) {
         is HomePageUiState.Loading -> CircularProgressIndicator()
         is HomePageUiState.Success -> HomePage((uiState as HomePageUiState.Success).characters,

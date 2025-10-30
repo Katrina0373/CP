@@ -95,6 +95,7 @@ fun EquipmentEntity.toDomain(): Equipment {
         EquipType.Artifact -> Equipment.Artifact(
             id = id,
             name = name,
+            tir = tir,
             description = description,
             passiveEffects = passiveEffects,
         )

@@ -16,7 +16,7 @@ interface CharacterDao{
     fun getAll(): Flow<List<CharacterEntity>>
 
     @Query("select * from characters as Ch where Ch.id = :id")
-    fun getCharacterId(id: Int): Flow<CharacterEntity?>
+    fun getCharacterId(id: Int): Flow<CharacterEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(characters: List<CharacterEntity>)

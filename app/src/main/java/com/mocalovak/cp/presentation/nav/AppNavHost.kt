@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.mocalovak.cp.presentation.Character.CharacterScreen
 import com.mocalovak.cp.presentation.CharacterList.CharacterList
+import com.mocalovak.cp.presentation.CharacterRedaction.RedactionCharacterScreen
 import com.mocalovak.cp.presentation.HomePage.HomeScreen
 import com.mocalovak.cp.presentation.Libraries.EquipmentExplorer
 
@@ -36,13 +37,15 @@ fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifi
         }
         composable(Screen.Character.route, arguments = listOf(navArgument("characterId") { type = NavType.IntType }))
         { backStackEntry ->
-            println("route: $route")
             val characterId = backStackEntry.arguments?.getInt("characterId")
-            println("character id = $characterId")
             if(characterId == 0)
-                CharacterList(onCharacterClick = { characterId ->
-                    navHostController.navigateSingleTopTo(Screen.Character.createRoute(characterId))
-                })
+                CharacterList(onCharacterClick = { id ->
+                    navHostController.navigateSingleTopTo(Screen.Character.createRoute(id))
+                },
+                    onRedactionClick = { id ->
+                        println("id = $id")
+                        navHostController.navigate("CharacterRedaction/$id")
+                    })
             else
                 CharacterScreen(characterId = characterId!!, onBackClick = { navHostController.popBackStack() }, navController = navHostController)
         }
@@ -52,6 +55,10 @@ fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifi
         }
         composable("SkillLibraryWithAdding/{characterId}", arguments = listOf(navArgument("characterId") { type = NavType.IntType })){ backStackEntry ->
             val characterId = backStackEntry.arguments?.getInt("characterId")
+        }
+        composable("CharacterRedaction/{characterId}", arguments = listOf(navArgument("characterId") { type = NavType.IntType })) { backStackEntry ->
+            val characterId = backStackEntry.arguments?.getInt("characterId")
+            RedactionCharacterScreen(characterId = characterId, onBackClick = { navHostController.popBackStack() })
         }
     }
 }

@@ -34,7 +34,6 @@ import javax.inject.Inject
 class CharacterViewModel @Inject constructor(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getCharactersEquipment: GetCharactersEquipment,
-    private val getAllEquipment: GetAllEquipment,
     private val getCharactersSkillsUseCase: GetCharactersSkillsUseCase,
     private val updateCharacterUseCase: UpdateCharacterUseCase,
     private val equipItemUseCase: EquipItemUseCase,

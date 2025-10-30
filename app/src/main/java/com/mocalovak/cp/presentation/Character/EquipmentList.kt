@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -439,9 +440,9 @@ fun ExpandableEquipmentCard(
                                     text = "Снять",
                                     modifier = Modifier.padding(8.dp)
                                         .clip(RoundedCornerShape(38.dp))
+                                        .clickable { onUnEquipClick() }
                                         .background(otherContainer)
-                                        .padding(horizontal = 20.dp, vertical = 5.dp)
-                                        .clickable { onUnEquipClick() },
+                                        .padding(horizontal = 20.dp, vertical = 5.dp),
                                     color = Color.White
                                 )
 
@@ -451,8 +452,6 @@ fun ExpandableEquipmentCard(
                                     text = "Надеть",
                                     modifier = Modifier.padding(8.dp)
                                         .clip(RoundedCornerShape(38.dp))
-                                        .background(otherContainer)
-                                        .padding(horizontal = 20.dp, vertical = 5.dp)
                                         .clickable {
                                             if(equipment is Equipment.Artifact){
                                                 onEquipClick(BodyPart.Body)
@@ -467,7 +466,9 @@ fun ExpandableEquipmentCard(
                                                     Toast.makeText(context, "Коллизия предметов", Toast.LENGTH_SHORT).show()
                                                 }
                                             }
-                                        },
+                                        }
+                                        .background(otherContainer)
+                                        .padding(horizontal = 20.dp, vertical = 5.dp),
                                     color = Color.White
                                 )
                             }
@@ -491,7 +492,9 @@ fun ExpandableEquipmentCard(
                                 painter = painterResource(R.drawable.delete_ic),
                                 "",
                                 tint = Color.Unspecified,
-                                modifier = Modifier.clickable {
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .clickable {
                                     showDeleteAcceptDialog = true
                                 }
                             )
@@ -503,9 +506,9 @@ fun ExpandableEquipmentCard(
                         text = "Добавить",
                         modifier = Modifier.padding(8.dp)
                             .clip(RoundedCornerShape(38.dp))
+                            .clickable { onAddClick() }
                             .background(otherContainer)
-                            .padding(horizontal = 20.dp, vertical = 5.dp)
-                            .clickable { onAddClick() },
+                            .padding(horizontal = 20.dp, vertical = 5.dp),
                         color = Color.White
                     )
                 }

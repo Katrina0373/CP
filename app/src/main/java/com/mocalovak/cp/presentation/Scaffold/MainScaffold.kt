@@ -72,7 +72,7 @@ fun BottomBar(navController: NavController, scaffoldVM: ScaffoldViewModel = hilt
     Surface(
         modifier = Modifier
             .fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
         shadowElevation = 8.dp
     ) {
         NavigationBar(

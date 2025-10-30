@@ -1,20 +1,6 @@
 
 [
   {
-    "id": "char001",
-    "name": "Кинжал",
-    "type": "Weapon",
-    "slot": ["RightHand", "LeftHand"],
-    "description": "атака d4, легко метнуть, шанс на критическую атаку 10%",
-    "weight": "Light",
-    "tir": 1,
-    "damage": "1d4",
-    "distance": null,
-    "effect": "Критическая атака",
-    "chance": 0.1,
-    "passiveEffects": null
-  },
-  {
     "id": "p3-1",
     "name": "Зелье лечения",
     "type": "Potion",
@@ -68,7 +54,7 @@
     "slot": ["TwoHands"],
     "description": "урон d10, понижает КБ противника на 2",
     "weight": null,
-    "damage": "1d10 + strength | dexterity",
+    "damage": "1d10 + strength",
     "distance": null,
     "effect": "КБ противника понижается на 2 во время удара",
     "chance": null,
@@ -132,10 +118,10 @@
   "type": "Weapon",
   "tir": 1,
   "slot": ["TwoHands"],
-  "description": "Большое двуручное копьё, действует на 2 клетки",
+  "description": "Большое двуручное копьё, действует на 3 клетки",
   "weight": null,
   "damage": "1d10 + strength",
-  "distance": 2,
+  "distance": 3,
   "effect": null,
   "chance": null,
   "passiveEffects": null
@@ -257,9 +243,9 @@
   "tir": 1,
   "slot": ["TwoHands"],
   "description": "Лёгкие перчатки для воришек и лазутчиков",
-  "weight": "",
-  "damage": "",
-  "distance": 0,
+  "weight": "Light",
+  "damage": null,
+  "distance": null,
   "effect": null,
   "chance": null,
   "passiveEffects": [
@@ -270,6 +256,187 @@
     }
   ]
 },
+  {
+  "id": "a3-5",
+  "name": "Лёгкий нагрудник",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["Body"],
+  "description": "Лёгкий доспех, чтобы двигаться быстро и проворно",
+  "weight": "Light",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 0.75,
+      "description": "+0,75 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a3-6",
+  "name": "Тяжёлый нагрудник",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["Body"],
+  "description": "Настоящее рыцарское обмундирование",
+  "weight": "Heavy",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 1,
+      "description": "+1 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a3-7",
+  "name": "Плащ мага",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["Body"],
+  "description": "Покрывает ваше хлюпкое тело",
+  "weight": "Magic",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "maxMana",
+      "bonus": 1,
+      "description": "+1 ячейка маны"
+    }
+  ]
+},
+  {
+  "id": "a3-8",
+  "name": "Лёгкие штаны",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["Legs"],
+  "description": "В таких штанах и на шпагат можно",
+  "weight": "Light",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 0.5,
+      "description": "+0,5 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a3-9",
+  "name": "Ножные доспехи",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["Legs"],
+  "description": "Заставляют чувствовать вашу нижнюю часть тела тяжелее",
+  "weight": "Heavy",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 1,
+      "description": "+1 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a3-10",
+  "name": "Штаны мага",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["Legs"],
+  "description": "В них есть что-то магическое",
+  "weight": "Magic",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "maxMana",
+      "bonus": 1,
+      "description": "+1 ячейка маны"
+    }
+  ]
+},
+  {
+  "id": "a3-11",
+  "name": "Ботинки",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["Foots"],
+  "description": "Удобные и лёгкие. Стоп, они что, со стельками?",
+  "weight": "Light",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 0.5,
+      "description": "+0.5 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a3-12",
+  "name": "Сапоги",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["Foots"],
+  "description": "В них не очень удобно, зато гвоздь не пробьёт",
+  "weight": "Heavy",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 1,
+      "description": "+1 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a3-13",
+  "name": "Сапоги мага",
+  "type": "Armor",
+  "tir": 1,
+  "slot": ["Legs"],
+  "description": "Ещё немного и станут ботфортами",
+  "weight": "Magic",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "maxMana",
+      "bonus": 1,
+      "description": "+1 ячейка маны"
+    }
+  ]
+},
+
   {
     "id": "w3-5",
     "name": "Щит",
@@ -329,6 +496,118 @@
     "damage": "1d6 + strength | dexterity",
     "distance": null,
     "effect": "Снижает КБ врага на 1",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-9",
+    "name": "Топор",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Подходит для рубки мяса",
+    "weight": null,
+    "damage": "1d8 + strength",
+    "distance": null,
+    "effect": "Повышает КБ врага на 1",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-10",
+    "name": "Молот",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Оставляет вмятины на ваших врагах",
+    "weight": null,
+    "damage": "1d6 + strength",
+    "distance": null,
+    "effect": "Шанс оглушения",
+    "chance": 0.05,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-11",
+    "name": "Копьё",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Враг так просто от вас не уйдёт",
+    "weight": null,
+    "damage": "1d6 + strength | dexterity",
+    "distance": 2,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-12",
+    "name": "Арбалет",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Небольшой ручной арбалет",
+    "weight": null,
+    "damage": "1d6 + perception",
+    "distance": 6,
+    "effect": "",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-13",
+    "name": "Арбалет",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["TwoHands"],
+    "description": "Тяжёлый арбалет. Держать только двумя руками",
+    "weight": null,
+    "damage": "1d10 + perception",
+    "distance": 10,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-14",
+    "name": "Лук",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["TwoHands"],
+    "description": "Любимое оружие лесных эльфов",
+    "weight": null,
+    "damage": "1d8 + perception",
+    "distance": 8,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-15",
+    "name": "Кинжал",
+    "type": "Weapon",
+    "slot": ["RightHand", "LeftHand"],
+    "description": "атака d4, легко метнуть, шанс на критическую атаку 10%",
+    "weight": "Light",
+    "tir": 1,
+    "damage": "1d4 + dexterity",
+    "distance": null,
+    "effect": "Критическая атака",
+    "chance": 0.1,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-16",
+    "name": "Двуручный топор",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["TwoHands"],
+    "description": "Серьёзный аргумент в спорах",
+    "weight": null,
+    "damage": "1d12 + strength",
+    "distance": null,
+    "effect": "Повышает КБ врага на 2",
     "chance": null,
     "passiveEffects": null
   },
@@ -453,6 +732,733 @@
     "name": "Калимба",
     "type": "Weapon",
     "tir": 1,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Маленький музыкальный инструмент, эффекты калимбы применяются только на играющего",
+    "weight": "Light",
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "p32-1",
+    "name": "Зелье лечения",
+    "type": "Potion",
+    "slot": [],
+    "description": "Бутолычка с заветной красной жидкостью",
+    "weight": null,
+    "tir": 2,
+    "damage": null,
+    "distance": null,
+    "effect": "Восстанавливает 2d8 здоровья",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "ar32-5",
+    "name": "Кольцо",
+    "type": "Artifact",
+    "slot": [],
+    "description": "Золотое кольцо придаёт вам чуть больше уверенности",
+    "weight": null,
+    "tir": 2,
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [{
+      "parameter": "charisma",
+      "bonus": 1,
+      "description": "+1 к харизме"
+    }]
+  },
+  {
+    "id": "w02-2",
+    "name": "Меч Двуручный",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["TwoHands"],
+    "description": "урон 2d10, понижает КБ противника на 2",
+    "weight": null,
+    "damage": "2d10 + strength",
+    "distance": null,
+    "effect": "КБ противника понижается на 2 во время удара",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "a01-2",
+    "name": "Перчатки",
+    "type": "Armor",
+    "tir": 2,
+    "slot": [
+      "TwoHands"
+    ],
+    "description": "тяжелые перчатки, дают +2 к КБ",
+    "weight": "Heavy",
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [
+      {
+        "parameter": "armorClass",
+        "bonus": 2,
+        "description": "дают +2 к КБ"
+      }
+    ]
+  },
+  {
+    "id": "w03-2",
+    "name": "Пистолет",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["RightHand",
+      "LeftHand"
+    ],
+    "description": "одноручный пистолет, урон 2d6",
+    "weight": "Light",
+    "damage": "2d6 + perception",
+    "distance": 8,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+  "id": "w32-1",
+  "name": "Молот",
+  "type": "Weapon",
+  "tir": 2,
+  "slot": ["TwoHands"],
+  "description": "Большой двуручный молот",
+  "weight": null,
+  "damage": "2d10 + strength",
+  "distance": null,
+  "effect": "Оглушение",
+  "chance": 0.2,
+  "passiveEffects": null
+},
+  {
+  "id": "w32-2",
+  "name": "Копьё",
+  "type": "Weapon",
+  "tir": 2,
+  "slot": ["TwoHands"],
+  "description": "Большое двуручное копьё, действует на 3 клетки",
+  "weight": null,
+  "damage": "2d10 + strength",
+  "distance": 3,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": null
+},
+  {
+  "id": "w32-3",
+  "name": "Посох поддрежки",
+  "type": "Weapon",
+  "tir": 2,
+  "slot": ["TwoHands"],
+  "description": "Посох поддержки улучшает действие ваших заклинаний поддержки",
+  "weight": "Magic",
+  "damage": "2d4 + strength",
+  "distance": 8,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "support",
+      "bonus": 4,
+      "description": "+2d4 к заклинаниям поддержки"
+    },
+    {
+      "parameter": "maxMana",
+      "bonus": 4,
+      "description": "+4 ячейки маны"
+    }
+  ]
+},
+  {
+  "id": "w32-4",
+  "name": "Посох атаки",
+  "type": "Weapon",
+  "tir": 2,
+  "slot": ["TwoHands"],
+  "description": "Посох, чтобы разить заклинаниями ваших врагов",
+  "weight": "Magic",
+  "damage": "2d4 + strength",
+  "distance": 8,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "magic attack",
+      "bonus": 4,
+      "description": "+2d4 к заклинаниям атаки"
+    },
+    {
+      "parameter": "maxMana",
+      "bonus": 4,
+      "description": "+4 ячейки маны"
+    }
+  ]
+},
+  {
+  "id": "a32-1",
+  "name": "Лёгкий шлем",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["Head"],
+  "description": "Лёгкий шлем для ветренной головы",
+  "weight": "Light",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 1.5,
+      "description": "+1,5 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a32-2",
+  "name": "Тяжёлый шлем",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["Head"],
+  "description": "Тяжёлый шлем от тяжёлых ударов",
+  "weight": "Heavy",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 2,
+      "description": "+2 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a32-3",
+  "name": "Шляпа мага",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["Head"],
+  "description": "Не защитит вашу умную голову от ударов, но улучшит вашу магию",
+  "weight": "Magic",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "maxMana",
+      "bonus": 2,
+      "description": "+2 ячейка маны"
+    }
+  ]
+},
+  {
+  "id": "a32-4",
+  "name": "Лёгкие перчатки",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["TwoHands"],
+  "description": "Лёгкие перчатки для воришек и лазутчиков",
+  "weight": "Light",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 1,
+      "description": "+1 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a32-5",
+  "name": "Лёгкий нагрудник",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["Body"],
+  "description": "Лёгкий доспех, чтобы двигаться быстро и проворно",
+  "weight": "Light",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 1.5,
+      "description": "+1,5 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a32-6",
+  "name": "Тяжёлый нагрудник",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["Body"],
+  "description": "Настоящее рыцарское обмундирование",
+  "weight": "Heavy",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 2,
+      "description": "+2 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a32-7",
+  "name": "Плащ мага",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["Body"],
+  "description": "Покрывает ваше хлюпкое тело",
+  "weight": "Magic",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "maxMana",
+      "bonus": 2,
+      "description": "+2 ячейка маны"
+    }
+  ]
+},
+  {
+  "id": "a32-8",
+  "name": "Лёгкие штаны",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["Legs"],
+  "description": "В таких штанах и на шпагат можно",
+  "weight": "Light",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 1,
+      "description": "+1 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a32-9",
+  "name": "Ножные доспехи",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["Legs"],
+  "description": "Заставляют чувствовать вашу нижнюю часть тела тяжелее",
+  "weight": "Heavy",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 2,
+      "description": "+2 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a32-10",
+  "name": "Штаны мага",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["Legs"],
+  "description": "В них есть что-то магическое",
+  "weight": "Magic",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "maxMana",
+      "bonus": 2,
+      "description": "+2 ячейка маны"
+    }
+  ]
+},
+  {
+  "id": "a32-11",
+  "name": "Ботинки",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["Foots"],
+  "description": "Удобные и лёгкие. Стоп, они что, со стельками?",
+  "weight": "Light",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 1,
+      "description": "+1 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a32-12",
+  "name": "Сапоги",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["Foots"],
+  "description": "В них не очень удобно, зато гвоздь не пробьёт",
+  "weight": "Heavy",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "armorClass",
+      "bonus": 2,
+      "description": "+2 к классу брони"
+    }
+  ]
+},
+  {
+  "id": "a32-13",
+  "name": "Сапоги мага",
+  "type": "Armor",
+  "tir": 2,
+  "slot": ["Legs"],
+  "description": "Ещё немного и станут ботфортами",
+  "weight": "Magic",
+  "damage": null,
+  "distance": null,
+  "effect": null,
+  "chance": null,
+  "passiveEffects": [
+    {
+      "parameter": "maxMana",
+      "bonus": 2,
+      "description": "+2 ячейка маны"
+    }
+  ]
+},
+
+  {
+    "id": "w32-5",
+    "name": "Щит",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["LeftHand"],
+    "description": "Простой деревянный щит",
+    "weight": null,
+    "damage": "2d4 + strength",
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [
+      {
+        "parameter": "armorClass",
+        "bonus": 2,
+        "description": "+2 к классу брони"
+      }
+    ]
+  },
+  {
+    "id": "w32-6",
+    "name": "Ружьё",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["TwoHands"],
+    "description": "Большой двуручный карабин",
+    "weight": null,
+    "damage": "2d10 + perception",
+    "distance": 14,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w32-7",
+    "name": "Катана",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["TwoHands"],
+    "description": "Крутое оружие для крутых самураев",
+    "weight": null,
+    "damage": "2d8 + strength | dexterity",
+    "distance": null,
+    "effect": "Понижает КБ врага на 2, шанс критической атаки",
+    "chance": 0.4,
+    "passiveEffects": null
+  },
+  {
+    "id": "w32-8",
+    "name": "Одноручный меч",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Небольшой меч чтобы сечь головы",
+    "weight": null,
+    "damage": "2d6 + strength | dexterity",
+    "distance": null,
+    "effect": "Снижает КБ врага на 1",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w32-9",
+    "name": "Топор",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Подходит для рубки мяса",
+    "weight": null,
+    "damage": "2d8 + strength",
+    "distance": null,
+    "effect": "Повышает КБ врага на 1",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w32-10",
+    "name": "Молот",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Оставляет вмятины на ваших врагах",
+    "weight": null,
+    "damage": "2d6 + strength",
+    "distance": null,
+    "effect": "Шанс оглушения",
+    "chance": 0.1,
+    "passiveEffects": null
+  },
+  {
+    "id": "w3-11",
+    "name": "Копьё",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Враг так просто от вас не уйдёт",
+    "weight": null,
+    "damage": "2d6 + strength | dexterity",
+    "distance": 2,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w32-12",
+    "name": "Арбалет",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Небольшой ручной арбалет",
+    "weight": null,
+    "damage": "2d6 + perception",
+    "distance": 6,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w32-13",
+    "name": "Арбалет",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["TwoHands"],
+    "description": "Тяжёлый арбалет. Держать только двумя руками",
+    "weight": null,
+    "damage": "2d10 + perception",
+    "distance": 10,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w32-14",
+    "name": "Лук",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["TwoHands"],
+    "description": "Любимое оружие лесных эльфов",
+    "weight": null,
+    "damage": "1d8 + perception",
+    "distance": 8,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w32-15",
+    "name": "Кинжал",
+    "type": "Weapon",
+    "slot": ["RightHand", "LeftHand"],
+    "description": "атака d4, легко метнуть, шанс на критическую атаку 10%",
+    "weight": "Light",
+    "tir": 2,
+    "damage": "2d4 + dexterity",
+    "distance": null,
+    "effect": "Критическая атака",
+    "chance": 0.2,
+    "passiveEffects": null
+  },
+  {
+    "id": "w32-16",
+    "name": "Двуручный топор",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["TwoHands"],
+    "description": "Серьёзный аргумент в спорах",
+    "weight": null,
+    "damage": "2d12 + strength",
+    "distance": null,
+    "effect": "Повышает КБ врага на 2",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w32-9",
+    "name": "Пан-флейта",
+    "type": "Weapon",
+    "tir": 2,
+    "slot": ["LeftHand", "RightHand"],
+    "description": "Флейта для заклинаний поддержки",
+    "weight": null,
+    "damage": "2d4 + strength",
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "w32-10",
+    "name": "Лютня",
+    "type": "Weapon",
+    "tir": 1,
+    "slot": ["TwoHands"],
+    "description": "Оружие настоящих бардов",
+    "weight": null,
+    "damage": "1d4 + strength",
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "p32-1",
+    "name": "Зелье маны",
+    "type": "Potion",
+    "tir": 2,
+    "slot": [],
+    "description": "Фиолотевое и блестит",
+    "weight": null,
+    "damage": null,
+    "distance": null,
+    "effect": "Восстанавливает 2d4 ячеек маны",
+    "chance": null,
+    "passiveEffects": null
+  },
+  {
+    "id": "ar32-1",
+    "name": "Ожерелье",
+    "type": "Artifact",
+    "tir": 2,
+    "slot": [],
+    "description": "Светится силой",
+    "weight": null,
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [{
+      "parameter": "strength",
+      "bonus": 2,
+      "description": "+2 к силе"
+    }
+    ]
+  },
+  {
+    "id": "ar32-2",
+    "name": "Браслет",
+    "type": "Artifact",
+    "tir": 2,
+    "slot": [],
+    "description": "Хорошо смотрится на вашей руке",
+    "weight": null,
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [{
+      "parameter": "perception",
+      "bonus": 2,
+      "description": "+2 к восприятию"
+    }
+      ]
+  },
+  {
+    "id": "ar32-3",
+    "name": "Амулет",
+    "type": "Artifact",
+    "tir": 2,
+    "slot": [],
+    "description": "Символ настоящих ловкачей",
+    "weight": null,
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [{
+      "parameter": "dexterity",
+      "bonus": 2,
+      "description": "+2 к ловкости"
+    }]
+  },
+  {
+    "id": "ar32-4",
+    "name": "Магический камень",
+    "type": "Artifact",
+    "tir": 2,
+    "slot": [],
+    "description": "Фиолетовый и блестит",
+    "weight": null,
+    "damage": null,
+    "distance": null,
+    "effect": null,
+    "chance": null,
+    "passiveEffects": [{
+      "parameter": "magic",
+      "bonus": 2,
+      "description": "+2 к магии"
+    }]
+  },
+  {
+    "id": "ar32-6",
+    "name": "Калимба",
+    "type": "Weapon",
+    "tir": 2,
     "slot": ["LeftHand", "RightHand"],
     "description": "Маленький музыкальный инструмент, эффекты калимбы применяются только на играющего",
     "weight": "Light",
