@@ -1,5 +1,6 @@
 package com.mocalovak.cp.presentation.Character
 
+import android.graphics.drawable.shapes.RoundRectShape
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
@@ -26,6 +27,8 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -50,6 +53,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -167,8 +171,7 @@ fun CharacterView(
                     changingValue = ChangingValues.Health,
                     currentValue = character.currentHP,
                     maxValue = character.maxHP,
-                    temporaryValue = 0,
-                    painter = painterResource(R.drawable.heart_icon)
+                    temporaryValue = 0
                 )
             }
             if(showManaDialog){
@@ -179,20 +182,18 @@ fun CharacterView(
                     changingValue = ChangingValues.Mana,
                     currentValue = character.currentMana,
                     maxValue = character.maxMana,
-                    temporaryValue = 0,
-                    painter = painterResource(R.drawable.heart_icon)
+                    temporaryValue = 0
                 )
             }
             if(showGoldDialog){
                 ChangingDialog(
                     onDismiss = { showGoldDialog = false },
-                    onConfirm = { newValue -> charVM.updateGold(newValue) },
+                    onConfirm = { newValue -> charVM.updateGold(newValue)},
                     label = "Золото",
                     changingValue = ChangingValues.Gold,
                     currentValue = character.gold,
                     maxValue = null,
-                    temporaryValue = 0,
-                    painter = painterResource(R.drawable.heart_icon)
+                    temporaryValue = 0
                 )
             }
 
@@ -368,11 +369,12 @@ fun ExpandableBox(
                             Text("${character.gold}",
                                 textAlign = TextAlign.Center,
                                 maxLines = 1,
-                                modifier = Modifier.background(color = numBack,
-                                    shape = RoundedCornerShape(8.dp))
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .clickable { onGoldClick() }
+                                    .background(color = numBack)
                                     .padding(2.dp)
-                                    .sizeIn(minWidth = 40.dp, maxWidth = 80.dp)
-                                    .clickable { onGoldClick() })
+                                    .sizeIn(minWidth = 40.dp, maxWidth = 80.dp))
                             Text("Кошелёк",
                                 fontSize = 14.sp,
                                 color = subTextColor,
@@ -387,6 +389,7 @@ fun ExpandableBox(
                                 tint = Color.White,
                                 contentDescription = "levelup",
                                 modifier = Modifier.padding(start = 7.dp)
+                                    .clip(CircleShape)
                                     .clickable(onClick = levelUp))
                         }
                             Text("Уровень",
@@ -403,20 +406,23 @@ fun ExpandableBox(
                                 Icon(painter = painterResource(R.drawable.minus_icon),
                                     contentDescription = "minus",
                                     modifier = Modifier.padding(end = 5.dp)
+                                        .clip(CircleShape)
                                         .clickable {decreaseMana()})
 
                                 Text("${character.currentMana}",
                                     textAlign = TextAlign.Center,
                                     maxLines = 1,
-                                    modifier = Modifier.background(color = numBack,
-                                        shape = RoundedCornerShape(8.dp))
+                                    modifier = Modifier
+                                        .clip(shape = RoundedCornerShape(8.dp))
+                                        .clickable { onManaClick() }
+                                        .background(color = numBack)
                                         .padding(2.dp)
-                                        .sizeIn(minWidth = 40.dp, maxWidth = 80.dp)
-                                        .clickable { onManaClick() })
+                                        .sizeIn(minWidth = 40.dp, maxWidth = 80.dp))
 
                                 Icon(painter = painterResource(R.drawable.plus_icon),
                                     contentDescription = "plus",
                                     modifier = Modifier.padding(start = 5.dp)
+                                        .clip(CircleShape)
                                         .clickable { increaseMana() })
 
                             }
@@ -597,146 +603,176 @@ fun ChangingDialog(
     label: String,
     changingValue: ChangingValues,
     currentValue:Int, maxValue:Int?,
-    temporaryValue:Int?,
-    painter: Painter
+    temporaryValue:Int?
 ) {
     var increaseValue by remember { mutableStateOf("0") }
     var decreaseValue by remember { mutableStateOf("0") }
     Dialog(onDismissRequest = onDismiss) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(10.dp)
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(),
+                    .padding(vertical = 10.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = topContainer
                 )
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.padding(vertical = 10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     // 🔹 Иконка здоровья
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 13.dp)
                     ) {
-                        Icon(
-                            painter = painter, // твоя иконка сердца
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(32.dp)
-                        )
-
-                        Text(label, color = Color.White, fontSize = 18.sp)
+                        Text(label, color = Color.White, fontSize = 18.sp,
+                            modifier = Modifier.align(Alignment.Center))
 
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Закрыть",
-                            tint = Color.White,
+                            tint = halfAppWhite,
                             modifier = Modifier.clickable(onClick = onDismiss)
+                                .align(Alignment.TopEnd)
                         )
 
                     }
 
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
                     // 🔹 Поля для изменения
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(5.dp),
                         horizontalArrangement = Arrangement.SpaceAround,
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.Top
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(top = 23.dp)
-                        ) {
-                            Text(
-                                text = if (changingValue != ChangingValues.Gold) "$currentValue/$maxValue" else currentValue.toString(),
-                                color = Color.White,
-                                modifier = Modifier
-                                    //.height(30.dp)
-                                    .background(color = numBack, shape = RoundedCornerShape(8.dp))
-                                    .padding(horizontal = 10.dp),
-                                textAlign = TextAlign.Center
-                            )
-                            Text(
-                                "Текущие",
-                                color = subTextColor,
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
+                        Row() {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .height(30.dp)
+                                        .background(
+                                            color = numBack,
+                                            shape = RoundedCornerShape(8.dp)
+                                        )
+                                        .padding(horizontal = 10.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = currentValue.toString(),
+                                        color = Color.White,
+                                        textAlign = TextAlign.Center,
+                                    )
+                                }
+
+                                Text(
+                                    "Текущие",
+                                    color = subTextColor,
+                                    modifier = Modifier.padding(top = 4.dp),
+                                    fontSize = 13.sp
+                                )
+                            }
+                            if (changingValue != ChangingValues.Gold) {
+                                Spacer(Modifier.width(10.dp))
+                                Column(modifier = Modifier.padding(end = 10.dp)) {
+                                    Box(
+                                        modifier = Modifier
+                                            .height(30.dp)
+                                            .background(
+                                                color = numBack,
+                                                shape = RoundedCornerShape(8.dp)
+                                            )
+                                            .padding(horizontal = 10.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = maxValue.toString(),
+                                            color = Color.White,
+                                            textAlign = TextAlign.Center,
+                                        )
+                                    }
+                                    Text(
+                                        "Макс.",
+                                        color = subTextColor,
+                                        modifier = Modifier.padding(top = 4.dp),
+                                        fontSize = 13.sp
+                                    )
+                                }
+                            }
                         }
-//                        if(changingValue == ChangingValues.Health){
-//                            Text(
-//                                text = temporaryValue!!.toString(),
-//                                color = Color.White,
-//                                modifier = Modifier
-//                                    .background(color = numBack, shape = RoundedCornerShape(8.dp))
-//                                    .padding(horizontal = 10.dp),
-//                                textAlign = TextAlign.Center
-//                            )
-//                        }
 
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.End
                         ) {
-                            Icon(
-                                painterResource(R.drawable.minus_ic),
-                                contentDescription = "minus",
-                                tint = Color.Red,
-                                modifier = Modifier.padding(end = 9.dp)
-                            )
-                            BasicTextField(
-                                value = decreaseValue,
-                                onValueChange = { decreaseValue = it },
-                                modifier = Modifier
-                                    .size(height = 30.dp, width = 40.dp)
-                                    .background(numBack, RoundedCornerShape(8.dp))
-                                    .padding(2.dp),
-                                singleLine = true,
-                                textStyle = LocalTextStyle.current.copy(
-                                    color = Color.White,
-                                    textAlign = TextAlign.Center
-                                ),
-//                                    decorationBox = { innerTextField ->
-//                                        if (decreaseValue.isBlank()) Text("0", color = Color.LightGray)
-//                                        innerTextField()
-//                                    },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                            )
-                            Spacer(Modifier.width(5.dp))
+                                Icon(
+                                    painterResource(R.drawable.minus_ic),
+                                    contentDescription = "minus",
+                                    tint = Color.Red,
+                                    modifier = Modifier.padding(end = 6.dp)
+                                )
+                                BasicTextField(
+                                    value = decreaseValue,
+                                    onValueChange = { decreaseValue = it },
+                                    modifier = Modifier
+                                        .size(height = 30.dp, width = 40.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(numBack)
+                                        .padding(2.dp),
+                                    singleLine = true,
+                                    textStyle = LocalTextStyle.current.copy(
+                                        color = Color.White,
+                                        textAlign = TextAlign.Center
+                                    ),
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                )
 
-                            Icon(
-                                painterResource(R.drawable.plus_ic),
-                                contentDescription = "plus",
-                                tint = Color.Green,
-                                modifier = Modifier.padding(end = 9.dp)
-                            )
-                            BasicTextField(
-                                value = increaseValue,
-                                onValueChange = { increaseValue = it },
-                                modifier = Modifier
-                                    .size(height = 30.dp, width = 40.dp)
-                                    .background(numBack, RoundedCornerShape(8.dp))
-                                    .padding(2.dp),
-                                singleLine = true,
-                                textStyle = LocalTextStyle.current.copy(
-                                    color = Color.White,
-                                    textAlign = TextAlign.Center
-                                ),
+                            Spacer(Modifier.width(10.dp))
+                                Icon(
+                                    painterResource(R.drawable.plus_ic),
+                                    contentDescription = "plus",
+                                    tint = Color.Green,
+                                    modifier = Modifier.padding(end = 6.dp)
+                                )
+                                BasicTextField(
+                                    value = increaseValue,
+                                    onValueChange = { increaseValue = it },
+                                    modifier = Modifier
+                                        .size(height = 30.dp, width = 40.dp)
+                                        .background(numBack, RoundedCornerShape(8.dp))
+                                        .padding(2.dp),
+                                    singleLine = true,
+                                    textStyle = LocalTextStyle.current.copy(
+                                        color = Color.White,
+                                        textAlign = TextAlign.Center
+                                    ),
 //                                    decorationBox = { innerTextField ->
 //                                        if (increaseValue.isBlank()) Text("0", color = Color.LightGray)
 //                                        innerTextField()
 //                                    },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                            )
+                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                )
+
+                        }
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    if(changingValue != ChangingValues.Gold) {
+                        Button(
+                            onClick = {
+                                if (maxValue != null) {
+                                    onConfirm(maxValue)
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = button2)
+                        ) {
+                            Text("Восстановить до максимума")
                         }
                     }
                 }
@@ -749,6 +785,7 @@ fun ChangingDialog(
                     val result =
                         currentValue - (if (decreaseValue.isNotBlank()) decreaseValue.toInt() else 0) + (if (increaseValue.isNotBlank()) increaseValue.toInt() else 0)
                     onConfirm(result)
+                    onDismiss()
                 },
                 modifier = Modifier.fillMaxWidth()
             )
@@ -843,6 +880,18 @@ fun PrevChar(){
                 languages = emptyList(),
                 initiative = 20
             )
-        ExpandableBox(true, character, {}, {}, {}, {}, {}, {})
+        //ExpandableBox(true, character, {}, {}, {}, {}, {}, {})
+
+        ChangingDialog(
+            {},
+            onConfirm = {},
+            label = "Здоровье",
+            changingValue = ChangingValues.Health,
+            currentValue = character.currentHP,
+            maxValue = character.maxHP,
+            temporaryValue = 0
+        )
+
     }
+
 }
