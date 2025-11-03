@@ -181,7 +181,8 @@ fun CharacterItemWithMenu(character: Character,
                     ) {
                         DropdownMenuItem(
                             text = { Text("В избранное") },
-                            onClick = { /* Do something... */ }
+                            onClick = { /* Do something... */ },
+                            modifier = Modifier.clip(RoundedCornerShape(topStart = cornerRadius, topEnd = cornerRadius))
                         )
                         DropdownMenuItem(
                             text = { Text("Редактировать")},
@@ -190,7 +191,8 @@ fun CharacterItemWithMenu(character: Character,
                         )
                         DropdownMenuItem(
                             text = { Text("Удалить") },
-                            onClick = { /* Do something... */ }
+                            onClick = { /* Do something... */ },
+                            modifier = Modifier.clip(RoundedCornerShape(bottomStart = cornerRadius, bottomEnd = cornerRadius))
                         )
                     }
                 }

@@ -1,5 +1,13 @@
 package com.mocalovak.cp.presentation.CharacterRedaction
 
+import android.view.animation.RotateAnimation
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,6 +38,7 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -60,6 +69,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mocalovak.cp.R
 import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.presentation.Character.cornerRadius
+import com.mocalovak.cp.ui.theme.ExpandedListBackColor
+import com.mocalovak.cp.ui.theme.ExpandedListFocusedColor
 import com.mocalovak.cp.ui.theme.backColor
 import com.mocalovak.cp.ui.theme.borderColor
 import com.mocalovak.cp.ui.theme.containerColor
@@ -136,6 +147,22 @@ fun EditCharacterScreen(character: Character,
     var maxmana by remember { mutableStateOf(characterCopy.maxMana.toString()) }
     var speed by remember { mutableStateOf(characterCopy.speed.toString()) }
 
+    val mageList = mapOf(
+        "Путь огня" to listOf("Мастер пламени", "Повелитель духа огня"),
+        "Путь воды" to listOf("Тритон", "Морфилинг"),
+        "Путь воздуха" to listOf("Знающий потоки", "Безымянный"),
+        "Путь тьмы" to listOf("Владыка тьмы", "Некромант"),
+        "Путь света" to listOf("Жрец", "Мастер вдохновения"),
+        )
+
+    val warriorList = mapOf(
+        "Танк" to listOf("Паладин", "Рыцарь"),
+        "Боец" to listOf("Варвар", "Гладиатор"),
+        "Плут" to listOf("Вор", "Лучник"),
+        "Бард" to listOf("Виртуоз"),
+        "Инженер" to listOf("Артефактер", "Грендёр"),
+    )
+
     val races = listOf(
         "Человек",
         "Людоящер",
@@ -146,6 +173,10 @@ fun EditCharacterScreen(character: Character,
         "Орк",
         "Табакси"
     )
+
+    var selectedButton by remember { mutableStateOf(characterCopy.classification == "Воин") }
+    var selectedList by remember { mutableStateOf(if(selectedButton) warriorList else mageList)}
+
     Scaffold(topBar = {TopBarRedaction { onBackClick() }}) { innerPadding ->
         Column(
             modifier = Modifier
@@ -168,7 +199,12 @@ fun EditCharacterScreen(character: Character,
             // Поля
             CharacterTextField("Имя", characterCopy.name)
             { characterCopy = characterCopy.copy(name = it) }
-            EditDropdownMenu("Раса", races, {characterCopy = characterCopy.copy(race = it)})
+            EditDropdownMenu(
+                label = "Раса",
+                options = races,
+                onValueChange = {characterCopy = characterCopy.copy(race = it)},
+                currentValue = races.indexOf(characterCopy.race)
+            )
             
             // Уровень
             StatStepper(
@@ -181,20 +217,39 @@ fun EditCharacterScreen(character: Character,
                     if (characterCopy.level > 1)
                         characterCopy = characterCopy.copy(level = characterCopy.level-1) })
 
+
             // Классы
             Text("Класс", color = Color.White, modifier = Modifier.padding(top = 12.dp))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
-                ToggleButton("Воин", true)
-                ToggleButton("Маг", false)
+                ToggleButton("Воин", selectedButton) {
+                    selectedButton = true
+                    selectedList = warriorList
+                }
+                ToggleButton("Маг", !selectedButton) {
+                    selectedButton = false
+                    selectedList = mageList
+                }
             }
 
-            CharacterTextField("Профессия", characterCopy.profession1 ?: "")
-            { characterCopy = characterCopy.copy(profession1 = it) }
-            CharacterTextField("Специальность", characterCopy.profession2 ?:"")
-            { characterCopy = characterCopy.copy(profession2 = it) }
+            EditDropdownMenu(
+                label = "Профессия",
+                options = selectedList.keys.toList(),
+                onValueChange = {characterCopy = characterCopy.copy(profession1 = it)},
+                currentValue = selectedList.keys.indexOfOrFirst(characterCopy.profession1),
+                enable = characterCopy.level >= 4
+            )
+            EditDropdownMenu(
+                label = "Специальность",
+                options = selectedList[characterCopy.profession1] ?: selectedList.values.first(),
+                onValueChange = {characterCopy = characterCopy.copy(profession2 = it)},
+                currentValue = selectedList[characterCopy.profession2]?.indexOfFirst {
+                    characterCopy.profession2?.let { it1 -> it.contains(it1) } == true
+                } ?: 0,
+                enable = characterCopy.level >= 10
+            )
 
             // Портрет
             Text("Портрет", color = Color.White, modifier = Modifier.padding(top = 12.dp))
@@ -304,7 +359,8 @@ fun EditCharacterScreen(character: Character,
                         maxMana = if(maxmana.isBlank()) 0 else maxmana.toInt(),
                         speed = if(speed.isBlank()) 0 else speed.toInt(),
                         armorClass = if(armor.isBlank()) 0f else armor.toFloat(),
-                        maxHP = if(maxhp.isBlank()) 1 else maxhp.toInt()
+                        maxHP = if(maxhp.isBlank()) 1 else maxhp.toInt(),
+                        classification = if (selectedButton) "Воин" else "Маг"
                     )) }
                     .padding(vertical = 14.dp),
                 contentAlignment = Alignment.Center
@@ -401,7 +457,7 @@ fun ModifiedStats(label:String,
             modifier = Modifier.weight(0.6f))
         Spacer(modifier = Modifier.width(10.dp))
             BasicTextField(
-                value = value.toString(),
+                value = value,
                 onValueChange = { onStatChange(it)},
                 modifier = Modifier
                     .width(50.dp)
@@ -417,11 +473,27 @@ fun ModifiedStats(label:String,
     }
 }
 
+fun Set<String>.indexOfOrFirst(elem:String?): Int{
+    val ind = this.indexOf(elem)
+    return if(ind == -1) 0
+    else ind
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditDropdownMenu(label:String, options: List<String>, onValueChange: (String) -> Unit) {
+fun EditDropdownMenu(label:String,
+                     options: List<String>,
+                     onValueChange: (String) -> Unit,
+                     currentValue: Int,
+                     enable: Boolean = true) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf(options[0]) }
+
+    var selectedOption by remember(options, currentValue) { mutableStateOf(options[currentValue]) }
+
+    val rotationState by animateFloatAsState(
+        targetValue = if (!expanded) 180f else 0f,
+        label = "arrowRotation"
+    )
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(label, color = Color.White)
@@ -433,14 +505,16 @@ fun EditDropdownMenu(label:String, options: List<String>, onValueChange: (String
             // Поле, по которому нажимаем
             TextField(
                 value = selectedOption,
-                onValueChange = { onValueChange(it) },
+                onValueChange = {  },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 4.dp)
                     .menuAnchor(),
                 readOnly = true,
                 trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+                    Icon(painterResource(R.drawable.row_up_icon),
+                        "",
+                        modifier = Modifier.rotate(rotationState))
                 },
                 colors = TextFieldDefaults.textFieldColors(
                     containerColor = containerColor,
@@ -448,25 +522,41 @@ fun EditDropdownMenu(label:String, options: List<String>, onValueChange: (String
                     unfocusedIndicatorColor = Color.Transparent,
                     cursorColor = Color.White,
                     focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White
+                    unfocusedTextColor = Color.White,
+                    disabledIndicatorColor = Color.Transparent,
+
                 ),
                 singleLine = true,
-                shape = RoundedCornerShape(cornerRadius)
+                shape = RoundedCornerShape(cornerRadius),
+                enabled = enable
             )
 
-            // Само выпадающее меню
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
+            AnimatedVisibility(
+                visible = expanded,
+                enter = fadeIn(animationSpec = tween(200)) + expandVertically(),
+                exit = fadeOut(animationSpec = tween(150)) + shrinkVertically()
             ) {
-                options.forEach { option ->
-                    DropdownMenuItem(
-                        text = { Text(option) },
-                        onClick = {
-                            selectedOption = option
-                            expanded = false
-                        }
-                    )
+                ExposedDropdownMenu(
+                    expanded = true, // важно: всегда true, т.к. AnimatedVisibility управляет показом
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.clip(RoundedCornerShape(cornerRadius))
+                        .background(color = ExpandedListBackColor)
+                ) {
+                    options.forEach { option ->
+                        val isSelected = option == selectedOption
+                        val backgroundColor =
+                            if (isSelected) ExpandedListFocusedColor
+                            else Color.Transparent
+                        DropdownMenuItem(
+                            text = { Text(option) },
+                            onClick = {
+                                selectedOption = option
+                                onValueChange(option)
+                                expanded = false
+                            },
+                            modifier = Modifier.background(color = backgroundColor)
+                        )
+                    }
                 }
             }
         }
@@ -474,11 +564,12 @@ fun EditDropdownMenu(label:String, options: List<String>, onValueChange: (String
 }
 
 @Composable
-fun ToggleButton(text: String, selected: Boolean) {
+fun ToggleButton(text: String, selected: Boolean, onClick: () -> Unit) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(50))
             .background(if (selected) selectedButtonColor else containerColor)
+            .clickable { onClick() }
             .border(0.5.dp, color = if(selected) selectedBorderColor else Color.Transparent, RoundedCornerShape(50))
             .padding(horizontal = 20.dp, vertical = 8.dp)
     ) {

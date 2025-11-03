@@ -25,6 +25,7 @@ sealed class Equipment {
         override val tir: Int?,
         val damage: String,
         val slot: List<BodyPart>,
+        val distance: Int = 1,
         var isEquipped: BodyPart? = null,
         val passiveEffects: List<PassiveEffect>?,
         val activeEffect: String?, //активируется во время атаки

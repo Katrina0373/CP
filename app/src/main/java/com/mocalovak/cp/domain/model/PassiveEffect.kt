@@ -1,13 +1,34 @@
 package com.mocalovak.cp.domain.model
 
-import kotlinx.coroutines.flow.Flow
 import kotlin.math.floor
 
-data class PassiveEffect(val parameter:String, val bonus: Float, val description:String){
+open class PassiveEffect(val parameter:String, val bonus: Float, val description:String){
     override fun toString():String {
         return description
     }
 }
+
+class PassiveEffectWithCondition(
+    parameter: String,
+    bonus: Float,
+    description: String,
+    condition:String
+    ): PassiveEffect(parameter, bonus, description)
+
+class PassiveEffectWeapon(
+    parameter: String,
+    bonus: Float,
+    description: String,
+    condition :(Equipment.Weapon) -> Boolean
+    ): PassiveEffect(parameter, bonus, description)
+
+class PassiveEffectMagic(
+    parameter: String,
+    bonus: Float,
+    description: String,
+    condition :(MagicSkill) -> Boolean
+): PassiveEffect(parameter, bonus, description)
+
 
 fun List<PassiveEffect>?.takeString(): String {
     var result: String = ""
