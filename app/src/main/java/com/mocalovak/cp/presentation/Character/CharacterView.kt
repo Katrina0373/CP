@@ -85,6 +85,7 @@ import com.mocalovak.cp.ui.theme.topContainer
 import com.mocalovak.cp.utils.loadImageFromAssets
 import kotlinx.coroutines.launch
 import kotlin.math.floor
+import kotlin.math.min
 
 val cornerRadius = 14.dp
 enum class ChangingValues{ Health, Mana, Gold}
@@ -115,6 +116,7 @@ fun CharacterView(
     var showManaDialog by remember { mutableStateOf(false) }
     var showGoldDialog by remember { mutableStateOf(false) }
     var showLanguagesDialog by remember { mutableStateOf(false) }
+    var showRestDialog by remember { mutableStateOf(false) }
 
     Scaffold(topBar = {TopBarCharacter(character, onBackClick)}, modifier = Modifier.fillMaxSize()) { padding ->
         Column(modifier = Modifier
@@ -129,7 +131,8 @@ fun CharacterView(
                 onGoldClick = {showGoldDialog = true},
                 increaseMana = {charVM.updateMana(character.currentMana + 1)},
                 decreaseMana = { charVM.updateMana(character.currentMana - 1) },
-                levelUp = { charVM.levelUp() }
+                levelUp = { charVM.levelUp() },
+                onRestDialogClick = {showRestDialog = true}
             )
 
             CharacterStatsCard(character,
@@ -207,6 +210,16 @@ fun CharacterView(
                                 showLanguagesDialog = false},
                     onDismiss = {showLanguagesDialog = false}
                 )
+            }
+
+            if(showRestDialog){
+                RestDialog(level = character.level,
+                    onDismiss = {showRestDialog = false},
+                    onRestClick = {health, mana ->
+                        charVM.updateHP(min(character.currentHP + health, character.maxHP))
+                        charVM.updateMana(min(character.currentMana + mana, character.maxMana))
+                        showRestDialog = false
+                    })
             }
 
         }
@@ -300,7 +313,8 @@ fun ExpandableBox(
     onGoldClick: () -> Unit,
     increaseMana: () -> Unit,
     decreaseMana: () -> Unit,
-    levelUp: () -> Unit
+    levelUp: () -> Unit,
+    onRestDialogClick: () -> Unit
     ) {
 
     var expanded by remember { mutableStateOf(isExpanded) }
@@ -331,6 +345,18 @@ fun ExpandableBox(
         }
 
         if(expanded){
+            Box(modifier = Modifier.padding(start = 10.dp, top = 10.dp)) {
+                Icon(painterResource(R.drawable.moon_ic),
+                    "moon",
+                    tint = Color.White,
+                    modifier = Modifier.clip(CircleShape)
+                        .background(color = numBack)
+                        .clickable {
+                            onRestDialogClick()
+                        }
+                        .padding(5.dp)
+                        .size(17.dp))
+            }
             Column(modifier = Modifier.padding(13.dp)) {
                 Row(modifier = Modifier
                     .fillMaxWidth()

@@ -183,7 +183,7 @@ fun EditCharacterScreen(character: Character,
                 .fillMaxSize()
                 .background(backColor)
                 .verticalScroll(scrollState)
-                .padding(top = innerPadding.calculateTopPadding(), bottom = 5.dp)
+                .padding(top = innerPadding.calculateTopPadding())
                 .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -372,8 +372,6 @@ fun EditCharacterScreen(character: Character,
                     fontWeight = FontWeight.Bold
                 )
             }
-
-            Spacer(Modifier.height(30.dp))
         }
     }
 }
@@ -532,7 +530,7 @@ fun EditDropdownMenu(label:String,
             )
 
             AnimatedVisibility(
-                visible = expanded,
+                visible = enable && expanded,
                 enter = fadeIn(animationSpec = tween(200)) + expandVertically(),
                 exit = fadeOut(animationSpec = tween(150)) + shrinkVertically()
             ) {
