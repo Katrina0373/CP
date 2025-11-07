@@ -77,6 +77,8 @@ import com.mocalovak.cp.ui.theme.subButton
 import com.mocalovak.cp.ui.theme.topContainer
 import com.mocalovak.cp.ui.theme.unfocusedFilterButtonBack
 import com.mocalovak.cp.utils.NameConverter
+import com.mocalovak.cp.utils.ToastState
+import com.mocalovak.cp.utils.ToastType
 
 @Composable
 fun EquipmentList(vm: CharacterViewModel = hiltViewModel(),
@@ -463,7 +465,7 @@ fun ExpandableEquipmentCard(
                                                     onEquipClick(emptySlots[0])
                                                 }
                                                 else {
-                                                    Toast.makeText(context, "Коллизия предметов", Toast.LENGTH_SHORT).show()
+                                                    ToastState.show("Этот слот уже используется", ToastType.ERROR)
                                                 }
                                             }
                                         }

@@ -82,6 +82,7 @@ import com.mocalovak.cp.ui.theme.numBack
 import com.mocalovak.cp.ui.theme.otherContainer
 import com.mocalovak.cp.ui.theme.subTextColor
 import com.mocalovak.cp.ui.theme.topContainer
+import com.mocalovak.cp.utils.CustomToastHost
 import com.mocalovak.cp.utils.loadImageFromAssets
 import kotlinx.coroutines.launch
 import kotlin.math.floor
@@ -103,6 +104,7 @@ fun CharacterScreen(charVM: CharacterViewModel = hiltViewModel(),
     }
 }
 
+
 @Composable
 fun CharacterView(
     onBackClick: () -> Unit,
@@ -119,12 +121,12 @@ fun CharacterView(
     var showRestDialog by remember { mutableStateOf(false) }
 
     Scaffold(topBar = {TopBarCharacter(character, onBackClick)}, modifier = Modifier.fillMaxSize()) { padding ->
+
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(5.dp)
             .padding(top = padding.calculateTopPadding(), bottom = 5.dp),
             ) {
-
             ExpandableBox(character = character, isExpanded = isCommonInfoBoxExpanded,
                 onHealthClick = {showHealthDialog = true},
                 onManaClick = {showManaDialog = true},
@@ -223,6 +225,7 @@ fun CharacterView(
             }
 
         }
+        CustomToastHost()
     }
 }
 

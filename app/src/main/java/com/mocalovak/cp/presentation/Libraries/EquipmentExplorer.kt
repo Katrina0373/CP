@@ -50,7 +50,10 @@ import com.mocalovak.cp.ui.theme.halfAppWhite
 import com.mocalovak.cp.ui.theme.hptems
 import com.mocalovak.cp.ui.theme.numBack
 import com.mocalovak.cp.ui.theme.unfocusedFilterButtonBack
+import com.mocalovak.cp.utils.CustomToastHost
 import com.mocalovak.cp.utils.NameConverter
+import com.mocalovak.cp.utils.ToastState
+import com.mocalovak.cp.utils.ToastType
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -76,6 +79,7 @@ fun EquipmentExplorer(vm: EquipmentExplorerViewModel = hiltViewModel(),
     val selectedFilters by vm.equipmentFilters.collectAsState()
 
     val context = LocalContext.current
+
 
     Column(modifier = Modifier.fillMaxSize()
         .background(color = backColor)
@@ -154,16 +158,12 @@ fun EquipmentExplorer(vm: EquipmentExplorerViewModel = hiltViewModel(),
                     },
                     withAdd = withAdding,
                     onAddClick = { vm.addEquipmentToCharacter(equip.id)
-                    mToast(context, "Предмет ${equip.name} был добавлен")
+                        ToastState.show("Предмет добавлен в багаж", ToastType.INFO)
                     }
                 )
                 HorizontalDivider(color = hptems)
             }
         }
     }
-}
-
-// Function to generate a Toast
-private fun mToast(context: Context, text:String){
-    Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
+    CustomToastHost()
 }

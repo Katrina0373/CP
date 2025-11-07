@@ -2,6 +2,7 @@ package com.mocalovak.cp.presentation.nav
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.substring
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -13,6 +14,7 @@ import com.mocalovak.cp.presentation.CharacterList.CharacterList
 import com.mocalovak.cp.presentation.CharacterRedaction.RedactionCharacterScreen
 import com.mocalovak.cp.presentation.HomePage.HomeScreen
 import com.mocalovak.cp.presentation.Libraries.EquipmentExplorer
+import kotlin.math.max
 
 @Composable
 fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifier){
