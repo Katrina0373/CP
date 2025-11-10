@@ -27,7 +27,8 @@ val Typography = Typography(
     bodyLarge = numberTextStyle,
     bodyMedium = numberTextStyle,
     labelMedium = numberTextStyle,
-titleLarge = numberTextStyle.copy(fontSize = 22.sp, lineHeight = 28.sp, letterSpacing = 0.sp)
+titleLarge = numberTextStyle.copy(fontSize = 22.sp, lineHeight = 28.sp, letterSpacing = 0.sp),
+    titleMedium = numberTextStyle.copy(fontSize = 20.sp)
 //    bodyLarge = TextStyle(
 //        fontFamily = FontFamily.Default,
 //        fontWeight = FontWeight.Normal,

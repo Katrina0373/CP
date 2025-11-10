@@ -598,7 +598,6 @@ fun EquipListPreview(){
             description = "Написано на неизвестном языке"
         )
     )
-    val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
 
     ExpandableEquipmentCard(
         equipList[3], true, {},

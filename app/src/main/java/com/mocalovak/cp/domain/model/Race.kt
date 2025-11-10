@@ -1,8 +1,8 @@
 package com.mocalovak.cp.domain.model
 
-sealed class Race(name:String, passiveEffect: List<PassiveEffect>) {
+sealed class Race(val name:String, val passiveEffect: List<PassiveEffect>) {
     object Human: Race("Человек", listOf(
-        PassiveEffectWeapon("sword", 1f, "+1 к силе при использовании меча", {it.name.contains("меч")}),
+        PassiveEffectWeapon("strength", 1f, "+1 к силе при использовании меча", {it.name.contains("меч")}),
         PassiveEffectMagic("magic", 2f, "+2 к магии света", {it.magicType == MagicType.Light}),
         PassiveEffectWithCondition("charisma", 1f, "+1 к харизме", "при попытке торговаться")))
     object HighElf: Race("Высший эльф", listOf<PassiveEffect>(
@@ -20,7 +20,7 @@ sealed class Race(name:String, passiveEffect: List<PassiveEffect>) {
     object DarkElf: Race("Тёмный эльф", listOf(
         PassiveEffectWithCondition("perception", 1f, "+1 к восприятию", "ночью и в закрытых пространствах"),
         PassiveEffectMagic("magic", 1f, "+1 к тёмной магии") { it.magicType == MagicType.Dark },
-        PassiveEffect("critical attack", 0.1f, "шанс на критическую атаку +10%"),
+        PassiveEffectWithCondition("critical attack", 0.1f, "шанс на критическую атаку +10%", ""),
         PassiveEffectWithCondition("dexterity", 1f, "+1 к ловкости", "при скрытой атаке"),
         PassiveEffectWithCondition("dexterity", 1f, "+1 к ловкости", "при попытке взлома")
     ))
@@ -31,16 +31,16 @@ sealed class Race(name:String, passiveEffect: List<PassiveEffect>) {
         PassiveEffectWithCondition("charisma", 0f, "отрицательный параметр харизмы превращается в положительный", "при запугивании"),
     ))
     object Dwarf: Race("Дварф", listOf(
-        PassiveEffectWithCondition("percaption", 1f, "+1 к воприятию", "в темноте"),
+        PassiveEffectWithCondition("perception", 1f, "+1 к воприятию", "в темноте"),
         PassiveEffectWeapon("intelligence", 1f, "+1 к интеллекту", { it.name.contains("пистолет", ignoreCase = true) || it.name.contains("ружьё", ignoreCase = true) }),
         PassiveEffectWeapon("strength", 1f, "+1 к силе",  {it.name.contains("молот", ignoreCase = true)}),
         PassiveEffectWeapon("stunning", 0.1f, "+10% к шансу оглушения") {it.name.contains("молот", ignoreCase = true)}
     ))
-    object Tabaksi: Race("Табакси", listOf(
+    data object Tabaksi: Race("Табакси", listOf(
         PassiveEffectWithCondition("dexterity", 1f, "+1 к ловкости", "проверка скрытности"),
         PassiveEffectWithCondition("dexterity", 1f, "+1 к ловкости", "попытка взлома"),
         PassiveEffectWithCondition("dexterity", 1f, "+1 к ловкости", "скрытая атака"),
-        PassiveEffect("critical attack", 0.1f, "+10% к шансу критической атаки с оружием")
+        PassiveEffectWithCondition("critical attack", 0.1f, "+10% к шансу критической атаки с оружием", "") //Потом исправить!
     ))
     object Lizardman: Race("Людоящер", listOf(
         PassiveEffectWithCondition("constitution", 3f, "+3 к спасброску телосложения", "спасбросок от яда"),

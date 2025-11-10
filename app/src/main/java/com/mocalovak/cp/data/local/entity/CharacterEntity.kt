@@ -3,6 +3,7 @@ package com.mocalovak.cp.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mocalovak.cp.domain.model.Character
+import com.mocalovak.cp.domain.model.Race
 
 @Entity(tableName = "characters")
 data class CharacterEntity(
@@ -40,7 +41,9 @@ fun CharacterEntity.toDomain(): Character {
     classification,
     profession1,
     profession2,
-    race,
+    race = Race::class.sealedSubclasses
+            .mapNotNull { it.objectInstance }
+            .first { it.name == race },
     imagePath,
     level,
     maxHP,
@@ -69,7 +72,7 @@ fun Character.toEntity(withID:Boolean): CharacterEntity {
         classification = classification,
         profession1 = profession1,
         profession2 = profession2,
-        race = race,
+        race = race.name,
         imagePath = imagePath,
         level = level,
         maxHP = maxHP,

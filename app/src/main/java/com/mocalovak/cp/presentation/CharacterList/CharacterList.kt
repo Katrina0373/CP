@@ -30,8 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mocalovak.cp.R
 import com.mocalovak.cp.presentation.Character.cornerRadius
-import com.mocalovak.cp.presentation.HomePage.components.CharacterItem
-import com.mocalovak.cp.presentation.HomePage.components.CharacterItemWithMenu
+import com.mocalovak.cp.utils.CharacterItemWithMenu
 import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.numBack

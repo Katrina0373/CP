@@ -1,6 +1,14 @@
 package com.mocalovak.cp.domain.model
 
-import android.graphics.Bitmap
+enum class Modification(val title: String) {
+    STRENGTH("Сила"),
+    DEXTERITY("Ловкость"),
+    CONSTITUTION("Телосложение"),
+    INTELLIGENCE("Интеллект"),
+    MAGIC("Магия"),
+    CHARISMA("Харизма"),
+    PERCEPTION("Восприятие")
+}
 
 data class Character(
     val id:Int,
@@ -8,7 +16,7 @@ data class Character(
     val classification: String,
     val profession1:String?,
     val profession2: String?,
-    val race:String,
+    val race: Race,
     val imagePath: String?,
     var level:Int,
     var maxHP:Int,
@@ -27,4 +35,29 @@ data class Character(
     var charisma:Int,
     var perception:Int,
     var initiative: Int
-)
+) {
+    fun hasUnregisterPassiveEffects(
+        skills: List<Skill>?,
+        equipment: List<Equipment>?
+    ): List<PassiveEffect> {
+        val fromEquipment: List<PassiveEffect> = equipment?.flatMap { equip ->
+            when (equip) {
+                is Equipment.Weapon -> equip.passiveEffects
+                    ?.filterIsInstance<PassiveEffectWithCondition>()
+                    ?: emptyList()
+                is Equipment.Clothes -> equip.passiveEffects
+                    ?.filterIsInstance<PassiveEffectWithCondition>()
+                    ?: emptyList()
+                else -> emptyList()
+            }
+        } ?: emptyList()
+
+        val fromSkills = skills?.flatMap { it.passiveEffect ?: emptyList() } ?: emptyList()
+
+        val fromRace = race.passiveEffect.filter {
+            it is PassiveEffectWeapon || it is PassiveEffectWithCondition || it is PassiveEffectMagic
+        }
+
+        return fromEquipment + fromSkills + fromRace
+    }
+}

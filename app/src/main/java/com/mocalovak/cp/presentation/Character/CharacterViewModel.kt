@@ -3,6 +3,7 @@ package com.mocalovak.cp.presentation.Character
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mocalovak.cp.domain.model.ActivePassive
 import com.mocalovak.cp.domain.model.ArmorWeight
 import com.mocalovak.cp.domain.model.BodyPart
@@ -100,6 +101,8 @@ class CharacterViewModel @Inject constructor(
             SharingStarted.WhileSubscribed(5000),
             emptyList()
         )
+
+    val allEquipment = _equipment.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun updateEquipmentFilter(filter: Any){
         _equipmentFilters.update { current ->

@@ -1,4 +1,4 @@
-package com.mocalovak.cp.presentation.HomePage.components
+package com.mocalovak.cp.utils
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,17 +32,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mocalovak.cp.domain.model.Character
+import com.mocalovak.cp.domain.model.Race
 import com.mocalovak.cp.presentation.Character.cornerRadius
 import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.dropMenuBackColor
-import com.mocalovak.cp.utils.loadImageFromAssets
 
 @Composable
 fun CharacterItem(character: Character,
@@ -210,7 +208,7 @@ fun PrevCharCard(){
             classification = "Воин",
             profession1 = "Боец",
             profession2 = "Паладин",
-            race = "Людоящер",
+            race = Race.Lizardman,
             imagePath = null,
             level = 16,
             maxHP = 64,

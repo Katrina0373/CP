@@ -73,6 +73,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.mocalovak.cp.R
 import com.mocalovak.cp.domain.model.Character
+import com.mocalovak.cp.domain.model.Race
 import com.mocalovak.cp.ui.theme.CPTheme
 import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.containerColor
@@ -119,111 +120,128 @@ fun CharacterView(
     var showGoldDialog by remember { mutableStateOf(false) }
     var showLanguagesDialog by remember { mutableStateOf(false) }
     var showRestDialog by remember { mutableStateOf(false) }
+    var showDiceChecking by remember { mutableStateOf(false) }
 
     Scaffold(topBar = {TopBarCharacter(character, onBackClick)}, modifier = Modifier.fillMaxSize()) { padding ->
 
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(5.dp)
-            .padding(top = padding.calculateTopPadding(), bottom = 5.dp),
+        if(!showDiceChecking) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(5.dp)
+                    .padding(top = padding.calculateTopPadding(), bottom = 5.dp),
             ) {
-            ExpandableBox(character = character, isExpanded = isCommonInfoBoxExpanded,
-                onHealthClick = {showHealthDialog = true},
-                onManaClick = {showManaDialog = true},
-                onGoldClick = {showGoldDialog = true},
-                increaseMana = {charVM.updateMana(character.currentMana + 1)},
-                decreaseMana = { charVM.updateMana(character.currentMana - 1) },
-                levelUp = { charVM.levelUp() },
-                onRestDialogClick = {showRestDialog = true}
-            )
+                ExpandableBox(character = character, isExpanded = isCommonInfoBoxExpanded,
+                    onHealthClick = { showHealthDialog = true },
+                    onManaClick = { showManaDialog = true },
+                    onGoldClick = { showGoldDialog = true },
+                    increaseMana = { charVM.updateMana(character.currentMana + 1) },
+                    decreaseMana = { charVM.updateMana(character.currentMana - 1) },
+                    levelUp = { charVM.levelUp() },
+                    onRestDialogClick = { showRestDialog = true }
+                )
 
-            CharacterStatsCard(character,
-                closeExpandedBox = {isCommonInfoBoxExpanded = false},
-                openEquipmentLibrary = {
-                    navController.navigate("EquipmentLibraryWithAdding/${character.id}"){
-                        launchSingleTop = true
+                CharacterStatsCard(character,
+                    closeExpandedBox = { isCommonInfoBoxExpanded = false },
+                    openEquipmentLibrary = {
+                        navController.navigate("EquipmentLibraryWithAdding/${character.id}") {
+                            launchSingleTop = true
+                        }
+                    },
+                    openSkillLibrary = {
+                        navController.navigate("SkillLibraryWithAdding/${character.id}") {
+                            launchSingleTop = true
+                        }
                     }
-                },
-                openSkillLibrary = {
-                    navController.navigate("SkillLibraryWithAdding/${character.id}"){
-                        launchSingleTop = true
-                    }
-                }
-            )
+                )
 
-            Box(contentAlignment = Alignment.TopStart,
-                modifier = Modifier.fillMaxWidth()
-                    .padding(7.dp)
-                    .background(color = containerColor,
-                        shape = RoundedCornerShape(cornerRadius)
+                Box(contentAlignment = Alignment.TopStart,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(7.dp)
+                        .background(
+                            color = containerColor,
+                            shape = RoundedCornerShape(cornerRadius)
+                        )
+                        .clickable { showLanguagesDialog = true }
+                        .padding(vertical = 13.dp, horizontal = 20.dp)) {
+                    Text(
+                        ("Языки: " + character.languages?.joinToString(", ")),
+                        maxLines = 1
                     )
-                    .clickable { showLanguagesDialog = true}
-                    .padding(vertical = 13.dp, horizontal = 20.dp)) {
-                Text(("Языки: " + character.languages?.joinToString(", ")),
-                    maxLines = 1)
-            }
-            BottomActionButtons(onCheckClick = {
-
-            },
-                onAttackClick = {
-                })
-
-            if(showHealthDialog){
-                ChangingDialog(
-                    onDismiss = { showHealthDialog = false },
-                    onConfirm = { newValue -> charVM.updateHP(newValue) },
-                    label = "Здоровье",
-                    changingValue = ChangingValues.Health,
-                    currentValue = character.currentHP,
-                    maxValue = character.maxHP,
-                    onIncrease = { charVM.updateHP(character.currentHP + 1) },
-                    onDecrease = { charVM.updateHP(character.currentHP - 1) }
-                )
-            }
-            if(showManaDialog){
-                ChangingDialog(
-                    onDismiss = { showManaDialog = false },
-                    onConfirm = { newValue -> charVM.updateMana(newValue) },
-                    label = "Мана",
-                    changingValue = ChangingValues.Mana,
-                    currentValue = character.currentMana,
-                    maxValue = character.maxMana,
-                    onIncrease = { charVM.updateMana(character.currentMana + 1) },
-                    onDecrease = { charVM.updateMana(character.currentMana - 1) }
-                )
-            }
-            if(showGoldDialog){
-                ChangingDialog(
-                    onDismiss = { showGoldDialog = false },
-                    onConfirm = { newValue -> charVM.updateGold(newValue)},
-                    label = "Золото",
-                    changingValue = ChangingValues.Gold,
-                    currentValue = character.gold,
-                    maxValue = null,
-                    onIncrease = { charVM.updateGold(character.gold + 1) },
-                    onDecrease = { charVM.updateGold(character.gold - 1) }
-                )
-            }
-
-            if(showLanguagesDialog){
-                LanguagesExplorer(
-                    character.languages,
-                    onConfirm = { value -> charVM.updateLanguages(value)
-                                showLanguagesDialog = false},
-                    onDismiss = {showLanguagesDialog = false}
-                )
-            }
-
-            if(showRestDialog){
-                RestDialog(level = character.level,
-                    onDismiss = {showRestDialog = false},
-                    onRestClick = {health, mana ->
-                        charVM.updateHP(min(character.currentHP + health, character.maxHP))
-                        charVM.updateMana(min(character.currentMana + mana, character.maxMana))
-                        showRestDialog = false
+                }
+                BottomActionButtons(onCheckClick = {
+                    showDiceChecking = true
+                },
+                    onAttackClick = {
                     })
-            }
 
+                if (showHealthDialog) {
+                    ChangingDialog(
+                        onDismiss = { showHealthDialog = false },
+                        onConfirm = { newValue -> charVM.updateHP(newValue) },
+                        label = "Здоровье",
+                        changingValue = ChangingValues.Health,
+                        currentValue = character.currentHP,
+                        maxValue = character.maxHP,
+                        onIncrease = { charVM.updateHP(character.currentHP + 1) },
+                        onDecrease = { charVM.updateHP(character.currentHP - 1) }
+                    )
+                }
+                if (showManaDialog) {
+                    ChangingDialog(
+                        onDismiss = { showManaDialog = false },
+                        onConfirm = { newValue -> charVM.updateMana(newValue) },
+                        label = "Мана",
+                        changingValue = ChangingValues.Mana,
+                        currentValue = character.currentMana,
+                        maxValue = character.maxMana,
+                        onIncrease = { charVM.updateMana(character.currentMana + 1) },
+                        onDecrease = { charVM.updateMana(character.currentMana - 1) }
+                    )
+                }
+                if (showGoldDialog) {
+                    ChangingDialog(
+                        onDismiss = { showGoldDialog = false },
+                        onConfirm = { newValue -> charVM.updateGold(newValue) },
+                        label = "Золото",
+                        changingValue = ChangingValues.Gold,
+                        currentValue = character.gold,
+                        maxValue = null,
+                        onIncrease = { charVM.updateGold(character.gold + 1) },
+                        onDecrease = { charVM.updateGold(character.gold - 1) }
+                    )
+                }
+
+                if (showLanguagesDialog) {
+                    LanguagesExplorer(
+                        character.languages,
+                        onConfirm = { value ->
+                            charVM.updateLanguages(value)
+                            showLanguagesDialog = false
+                        },
+                        onDismiss = { showLanguagesDialog = false }
+                    )
+                }
+
+                if (showRestDialog) {
+                    RestDialog(level = character.level,
+                        onDismiss = { showRestDialog = false },
+                        onRestClick = { health, mana ->
+                            charVM.updateHP(min(character.currentHP + health, character.maxHP))
+                            charVM.updateMana(min(character.currentMana + mana, character.maxMana))
+                            showRestDialog = false
+                        })
+                }
+
+            }
+        }
+        else {
+            DiceChecking(onDismiss = {showDiceChecking = false},
+                character = character,
+                equipment = charVM.allEquipment.collectAsState().value,
+                skills = emptyList(),
+                paddingValues = padding
+            )
         }
         CustomToastHost()
     }
@@ -294,14 +312,16 @@ fun GradientButton(
             verticalAlignment = Alignment.CenterVertically,
             //modifier = Modifier.padding(horizontal = 16.dp)
         ) {
-            Text(text, color = Color.White)
-            Spacer(modifier = Modifier.width(8.dp))
-            if(icon != null)
+            Text(text, color = Color.White,
+                textAlign = TextAlign.Center)
+            if(icon != null) {
+                Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     painter = icon,
                     contentDescription = text,
                     tint = Color.White
                 )
+            }
         }
     }
 }
@@ -873,7 +893,7 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
                         fontSize = 20.sp
                     )
                     Text(
-                        "${character.classification} ${character.profession1 ?: ""} ${character.race}",
+                        "${character.classification} ${character.profession1 ?: ""} ${character.race.name}",
                         fontSize = 16.sp,
                         color = halfAppWhite
                     )
@@ -920,7 +940,7 @@ fun PrevChar(){
                 "Воин",
                 "Варвар",
                 "Master Fire",
-                "Орк",
+                Race.Orc,
                 level = 20,
                 maxHP = 100,
                 imagePath = null,

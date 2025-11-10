@@ -68,6 +68,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mocalovak.cp.R
 import com.mocalovak.cp.domain.model.Character
+import com.mocalovak.cp.domain.model.Race
 import com.mocalovak.cp.presentation.Character.cornerRadius
 import com.mocalovak.cp.ui.theme.ExpandedListBackColor
 import com.mocalovak.cp.ui.theme.ExpandedListFocusedColor
@@ -163,16 +164,9 @@ fun EditCharacterScreen(character: Character,
         "Инженер" to listOf("Артефактер", "Грендёр"),
     )
 
-    val races = listOf(
-        "Человек",
-        "Людоящер",
-        "Высший эльф",
-        "Лесной эльф",
-        "Тёмный эльф",
-        "Дварф",
-        "Орк",
-        "Табакси"
-    )
+    val races = Race::class.sealedSubclasses
+        .mapNotNull { it.objectInstance }
+        .map { it.name }
 
     var selectedButton by remember { mutableStateOf(characterCopy.classification == "Воин") }
     var selectedList by remember { mutableStateOf(if(selectedButton) warriorList else mageList)}
@@ -202,8 +196,11 @@ fun EditCharacterScreen(character: Character,
             EditDropdownMenu(
                 label = "Раса",
                 options = races,
-                onValueChange = {characterCopy = characterCopy.copy(race = it)},
-                currentValue = races.indexOf(characterCopy.race)
+                onValueChange = {name -> characterCopy = characterCopy.copy(
+                    race = Race::class.sealedSubclasses
+                    .mapNotNull { it.objectInstance }
+                    .first { race -> race.name == name })},
+                currentValue = races.indexOf(characterCopy.race.name)
             )
             
             // Уровень
@@ -483,7 +480,8 @@ fun EditDropdownMenu(label:String,
                      options: List<String>,
                      onValueChange: (String) -> Unit,
                      currentValue: Int,
-                     enable: Boolean = true) {
+                     enable: Boolean = true,
+                     modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
 
     var selectedOption by remember(options, currentValue) { mutableStateOf(options[currentValue]) }
@@ -507,7 +505,8 @@ fun EditDropdownMenu(label:String,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 4.dp)
-                    .menuAnchor(),
+                    .menuAnchor()
+                    .then(modifier),
                 readOnly = true,
                 trailingIcon = {
                     Icon(painterResource(R.drawable.row_up_icon),
@@ -584,7 +583,7 @@ fun prevEdit(){
         classification = "Воин",
         profession1 = "Боец",
         profession2 = "Варвар",
-        race = "Дварф",
+        race = Race.Dwarf,
         imagePath = null,
         level = 13,
         maxHP = 65,

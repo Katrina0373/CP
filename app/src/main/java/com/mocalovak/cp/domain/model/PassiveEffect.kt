@@ -12,21 +12,21 @@ class PassiveEffectWithCondition(
     parameter: String,
     bonus: Float,
     description: String,
-    condition:String
+    val condition:String
     ): PassiveEffect(parameter, bonus, description)
 
 class PassiveEffectWeapon(
     parameter: String,
     bonus: Float,
     description: String,
-    condition :(Equipment.Weapon) -> Boolean
+    val condition :(Equipment.Weapon) -> Boolean
     ): PassiveEffect(parameter, bonus, description)
 
 class PassiveEffectMagic(
     parameter: String,
     bonus: Float,
     description: String,
-    condition :(MagicSkill) -> Boolean
+    val condition :(MagicSkill) -> Boolean
 ): PassiveEffect(parameter, bonus, description)
 
 

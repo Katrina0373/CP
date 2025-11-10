@@ -2,7 +2,9 @@ package com.mocalovak.cp.presentation.Scaffold
 
 import android.app.Activity
 import androidx.annotation.RestrictTo
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
@@ -31,6 +34,8 @@ import com.mocalovak.cp.presentation.nav.AppNavHost
 import com.mocalovak.cp.presentation.nav.Screen
 import com.mocalovak.cp.presentation.nav.navigateSingleTopTo
 import com.mocalovak.cp.ui.theme.topContainer
+import com.mocalovak.cp.utils.CustomToastHost
+import com.mocalovak.cp.utils.ToastState
 import kotlinx.coroutines.coroutineScope
 
 @Composable
@@ -39,11 +44,12 @@ fun MainScreen() {
     val context = LocalContext.current
     val window = (context as Activity).window
 
+    //смена иконок на светлые
     SideEffect {
         window.statusBarColor = topContainer.toArgb()
         window.navigationBarColor = topContainer.toArgb()
         WindowCompat.getInsetsController(window, window.decorView).apply {
-            isAppearanceLightStatusBars = false // светлые иконки
+            isAppearanceLightStatusBars = false
             isAppearanceLightNavigationBars = false
         }
 
@@ -54,10 +60,10 @@ fun MainScreen() {
         bottomBar = {
             BottomBar(navController = navController)
         }
-    ) { padding ->
+    ) { innerPadding ->
         AppNavHost(
             navHostController = navController,
-            modifier = Modifier.padding(padding)
+            modifier = Modifier.padding(innerPadding)
         )
     }
 }
@@ -87,7 +93,7 @@ fun BottomBar(navController: NavController, scaffoldVM: ScaffoldViewModel = hilt
                                 id = if (selected) screen.activeIconRes else screen.notActiveIconRes
                             ),
                             contentDescription = screen.title,
-                            tint = Color.Unspecified // чтобы не затирало цвет из ресурса
+                            tint = Color.Unspecified
                         )
                     },
                     selected = selected,
@@ -107,7 +113,7 @@ fun BottomBar(navController: NavController, scaffoldVM: ScaffoldViewModel = hilt
                         }
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = Color.Transparent // убираем фон выделения
+                        indicatorColor = Color.Transparent
                     )
                 )
             }

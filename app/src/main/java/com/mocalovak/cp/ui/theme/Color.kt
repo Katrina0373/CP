@@ -34,6 +34,7 @@ var dropMenuBackColor = Color(0xff272C6D)
 val ExpandedListBackColor = Color(0xFF292B4B)
 val ExpandedListFocusedColor = Color(0xFF32345C)
 val ErrorRed = Color(0xFF76112A)
+val Green5C = Color(0xFF0C8E5C)
 
 val gradientButton = Brush.linearGradient(
     colors = listOf(Color(0xFF3103AF), Color(0xFF9805B6)),
