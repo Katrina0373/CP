@@ -19,27 +19,35 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,9 +62,12 @@ import com.mocalovak.cp.domain.model.Source
 import com.mocalovak.cp.domain.model.takeString
 import com.mocalovak.cp.ui.theme.BrightPurple
 import com.mocalovak.cp.ui.theme.LightGreen
+import com.mocalovak.cp.ui.theme.backColor
+import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.filterButtonBack
 import com.mocalovak.cp.ui.theme.halfAppWhite
+import com.mocalovak.cp.ui.theme.hptems
 import com.mocalovak.cp.ui.theme.otherContainer
 import com.mocalovak.cp.ui.theme.unfocusedFilterButtonBack
 import com.mocalovak.cp.utils.NameConverter
@@ -78,7 +89,7 @@ fun SkillsList(vm: CharacterViewModel = hiltViewModel(),
         Source.Profession,
     )
 
-    Column {
+    Column(modifier = Modifier.padding(horizontal = 10.dp)) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
@@ -88,7 +99,7 @@ fun SkillsList(vm: CharacterViewModel = hiltViewModel(),
                 FilterChip(
                     selected = selectedFilters[filter]!!,
                     onClick = {
-                        vm.updateEquipmentFilter(filter)
+                        vm.updateSkillsFilter(filter)
                     },
                     label = { Text(
                         text = NameConverter(filter),
@@ -106,10 +117,12 @@ fun SkillsList(vm: CharacterViewModel = hiltViewModel(),
         }
         Spacer(Modifier.height(5.dp))
 
-        val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
+        val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.fillMaxSize()) {
+            modifier = Modifier.fillMaxSize()
+                .padding(end = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally) {
             items(skills) { skill:Skill ->
                 val expanded = expandedStates[skill.id] ?: false
                 ExpandableSkillCard(
@@ -117,19 +130,33 @@ fun SkillsList(vm: CharacterViewModel = hiltViewModel(),
                     expanded = expanded,
                     onExpandChange = { newState ->
                         expandedStates[skill.id] = newState
-                    }
+                    },
+                    onDeleteClick = { vm.deleteSkill(skill.id) }
                 )
+                HorizontalDivider(//modifier = Modifier.padding(top = 10.dp),
+                    color = hptems
+                )
+            }
+            item {
+                Button(onClick = {
+                    openLibrary()
+                }, colors = ButtonDefaults.buttonColors(containerColor = button2),
+                    modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                    Text("Добавить из библиотеки", color= Color.White )
+                }
             }
         }
     }
-
 }
 
 @Composable
 fun ExpandableSkillCard(
     skill: Skill,
     expanded: Boolean,
-    onExpandChange: (Boolean) -> Unit
+    onExpandChange: (Boolean) -> Unit,
+    withAdd:Boolean = false,
+    onAddClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {},
 ) {
 
     val rotationState by animateFloatAsState(
@@ -137,8 +164,21 @@ fun ExpandableSkillCard(
         label = "arrowRotation"
     )
 
+    var showDeletingDialog by remember { mutableStateOf(false) }
+
+
+    if (showDeletingDialog) {
+        DeleteAcceptDialog(text = "Удалить навык ${skill.name}?",
+            onDeleteClick = {
+                onDeleteClick()
+                showDeletingDialog = false
+            }) {
+            showDeletingDialog = false
+        }
+    }
+
     Card(
-        colors = CardDefaults.cardColors(containerColor = containerColor),
+        colors = CardDefaults.cardColors(containerColor = if(withAdd) backColor else containerColor),
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize()
@@ -180,26 +220,69 @@ fun ExpandableSkillCard(
                 Spacer(Modifier.height(8.dp))
 
                 Column(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
-
+                    skill.usageTime?.let { ParameterView("Время использования", it) }
                     skill.check?.let { ParameterView("Проверка", it) }
-                    Spacer(Modifier.height(5.dp))
                     skill.damage?.let { ParameterView("Урон", it) }
-                    Spacer(Modifier.height(5.dp))
+                    skill.savingThrow?.let { ParameterView("Спасбросок", it) }
+                    skill.difficulty?.let { ParameterView("Сложность", it.toString()) }
                     skill.actionTime?.let { ParameterView("Время действия", it) }
-                    Spacer(Modifier.height(5.dp))
                     skill.recharge?.let { ParameterView("Перезарядка", it) }
-                    Spacer(Modifier.height(5.dp))
                     skill.mana?.let { ParameterView("Затрата маны", it.toString()) }
-                    Spacer(Modifier.height(5.dp))
-
+                }
+                if(withAdd){
+                    Text(
+                        text = "Добавить",
+                        modifier = Modifier.padding(8.dp)
+                            .clip(RoundedCornerShape(38.dp))
+                            .clickable { onAddClick() }
+                            .background(otherContainer)
+                            .padding(horizontal = 20.dp, vertical = 5.dp),
+                        color = Color.White
+                    )
+                }
+                else {
+                    Icon(
+                        painter = painterResource(R.drawable.delete_ic),
+                        "delete icon",
+                        tint = Color.Unspecified,
+                        modifier = Modifier
+                            .padding(top = 8.dp)
+                            .clip(CircleShape)
+                            .align(Alignment.End)
+                            .clickable {
+                                showDeletingDialog = true
+                            }
+                    )
                 }
             }
-
-            Spacer(Modifier.height(10.dp))
         }
-
-
     }
+}
+
+@Preview
+@Composable
+fun prevSkillItem(){
+    val sk = Skill(
+        "01",
+        "Огненный шар",
+        description = "Запускает огненный снаряд в противника",
+        type = ActivePassive.Active,
+        useType = CombatMagic.Magic,
+        source = Source.Profession,
+        accessLevel = 1,
+        check = "magic",
+        savingThrow = null,
+        difficulty = null,
+        recharge = null,
+        damage = "1d6",
+        actionTime = null,
+        usageTime = "1 действие",
+        passiveEffect = null,
+        mana = 1
+    )
+
+    ExpandableSkillCard(skill = sk, expanded = false, {}, true, {}, {})
 }

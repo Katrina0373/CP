@@ -70,7 +70,7 @@ class MainActivity : ComponentActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             characterImporter.importIfNeeded()
             equipmentImporter.importIfNeeded()
-            //skillsImporter.importIfNeeded()
+            skillsImporter.importIfNeeded()
         }
 
         setContent {

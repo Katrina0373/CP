@@ -14,6 +14,7 @@ import com.mocalovak.cp.domain.model.Equipment
 import com.mocalovak.cp.domain.model.Skill
 import com.mocalovak.cp.domain.model.Source
 import com.mocalovak.cp.domain.usecase.DeleteItemUseCase
+import com.mocalovak.cp.domain.usecase.DeleteSkillUseCase
 import com.mocalovak.cp.domain.usecase.EquipItemUseCase
 import com.mocalovak.cp.domain.usecase.GetAllEquipment
 import com.mocalovak.cp.domain.usecase.GetCharacterUseCase
@@ -39,6 +40,7 @@ class CharacterViewModel @Inject constructor(
     private val updateCharacterUseCase: UpdateCharacterUseCase,
     private val equipItemUseCase: EquipItemUseCase,
     private val deleteItemUseCase: DeleteItemUseCase,
+    private val deleteSkillUseCase: DeleteSkillUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -127,7 +129,7 @@ class CharacterViewModel @Inject constructor(
     val skillsFilters:StateFlow<Map<Any, Boolean>> = _skillsFilters
 
     val filteredSkills: StateFlow<List<Skill>> =
-        combine(_skills, _equipmentFilters) { skills, filt ->
+        combine(_skills, _skillsFilters) { skills, filt ->
             val activeTypes = filt.filter { it.value }.keys.filterIsInstance<ActivePassive>()
             val activeUseTypes = filt.filter { it.value }.keys.filterIsInstance<CombatMagic>()
             val activeSource = filt.filter { it.value }.keys.filterIsInstance<Source>()
@@ -217,6 +219,12 @@ class CharacterViewModel @Inject constructor(
     fun UnEquipItem(itemId: String){
         viewModelScope.launch(Dispatchers.IO) {
             equipItemUseCase.unEquipItem(itemId)
+        }
+    }
+
+    fun deleteSkill(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteSkillUseCase(skillId = id, characterId = characterId)
         }
     }
 

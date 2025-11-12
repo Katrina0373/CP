@@ -6,7 +6,7 @@ import javax.inject.Inject
 class AddSkillUseCase @Inject constructor(
     private val repo: SkillRepository
 ){
-    operator fun invoke(characterId:Int, skillId:Int){
+    operator fun invoke(characterId:Int, skillId:String){
         repo.addSkillToCharacter(characterId, skillId)
     }
 }

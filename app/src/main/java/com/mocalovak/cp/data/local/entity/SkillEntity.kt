@@ -14,8 +14,8 @@ import org.intellij.lang.annotations.MagicConstant
 
 @Entity(tableName = "skills")
 data class SkillEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: String = "0",
     val name: String,
     val description: String,
     val type: ActivePassive, //active_passive
@@ -23,9 +23,12 @@ data class SkillEntity(
     val source: Source,
     val accessLevel: Int,
     val check: String?, //checking value magic, strength, and else
+    val savingThrow: String?, //спасбросок
+    val difficulty: Int?, //сложность спасброска
     val recharge: String?, //перезарядка
     val damage: String?, //урон
     val actionTime: String?,
+    val usageTime: String?,
     val passiveEffect: List<PassiveEffect>?,
     val mana :Int?,
 )
@@ -51,11 +54,11 @@ data class SkillEntity(
 )
 data class SkillCharacterCrossRef(
     val characterId:Int,
-    val skillId: Int
+    val skillId: String
 )
 
 fun SkillEntity.toDomain(): Skill {
     return Skill(
-        id,name, description, type, useType, source, accessLevel, check, recharge, damage, actionTime, passiveEffect, mana
+        id, name, description, type, useType, source, accessLevel, check, savingThrow, difficulty, recharge, damage, actionTime, usageTime, passiveEffect, mana
     )
 }

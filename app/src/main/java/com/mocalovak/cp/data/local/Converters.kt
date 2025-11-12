@@ -3,6 +3,7 @@ package com.mocalovak.cp.data.local
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.mocalovak.cp.domain.model.ActivePassive
 import com.mocalovak.cp.domain.model.ArmorWeight
@@ -10,7 +11,20 @@ import com.mocalovak.cp.domain.model.BodyPart
 import com.mocalovak.cp.domain.model.CombatMagic
 import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.domain.model.PassiveEffect
+import com.mocalovak.cp.domain.model.PassiveEffectWithCondition
 import com.mocalovak.cp.domain.model.Source
+import com.mocalovak.cp.utils.RuntimeTypeAdapterFactory
+
+val passiveEffectAdapterFactory: RuntimeTypeAdapterFactory<PassiveEffect> =
+    RuntimeTypeAdapterFactory(
+        baseType = PassiveEffect::class.java,
+        typeFieldName = "type") // ключевое поле в JSON
+        .registerSubtype(PassiveEffect::class.java, "base")
+        .registerSubtype(PassiveEffectWithCondition::class.java, "with_condition")
+
+val gson: Gson = GsonBuilder()
+    .registerTypeAdapterFactory(passiveEffectAdapterFactory)
+    .create()
 
 class Converters {
     private val gson = Gson()

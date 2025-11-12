@@ -14,6 +14,7 @@ import com.mocalovak.cp.presentation.CharacterList.CharacterList
 import com.mocalovak.cp.presentation.CharacterRedaction.RedactionCharacterScreen
 import com.mocalovak.cp.presentation.HomePage.HomeScreen
 import com.mocalovak.cp.presentation.Libraries.EquipmentExplorer
+import com.mocalovak.cp.presentation.Libraries.SkillExplorer
 import kotlin.math.max
 
 @Composable
@@ -57,6 +58,7 @@ fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifi
         }
         composable("SkillLibraryWithAdding/{characterId}", arguments = listOf(navArgument("characterId") { type = NavType.IntType })){ backStackEntry ->
             val characterId = backStackEntry.arguments?.getInt("characterId")
+             SkillExplorer(characterId = characterId, onBackClick = {navHostController.popBackStack()})
         }
         composable("CharacterRedaction/{characterId}", arguments = listOf(navArgument("characterId") { type = NavType.IntType })) { backStackEntry ->
             val characterId = backStackEntry.arguments?.getInt("characterId")

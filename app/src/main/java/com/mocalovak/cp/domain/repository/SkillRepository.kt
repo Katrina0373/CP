@@ -8,5 +8,7 @@ interface SkillRepository {
 
     fun getCharactersSkills(characterId: Int): Flow<List<Skill>>
 
-    fun addSkillToCharacter(characterId: Int, skillId: Int)
+    fun addSkillToCharacter(characterId: Int, skillId: String)
+
+    fun deleteSkill(characterId: Int, skillId: String)
 }

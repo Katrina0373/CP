@@ -215,7 +215,7 @@ fun BodyPartAskingDialog(
 
 @Composable
 fun DeleteAcceptDialog(
-    name:String,
+    text: String,
     onDeleteClick: () -> Unit,
     onDismiss: () -> Unit
 ){
@@ -232,7 +232,7 @@ fun DeleteAcceptDialog(
                     tint = halfAppWhite,
                     modifier = Modifier.clickable { onDismiss() }
                         .align(Alignment.End))
-                Text(text = "Выбросить $name из багажа?",
+                Text(text = text,
                     color = Color.White,
                     modifier = Modifier.fillMaxWidth()
                         .padding(vertical = 10.dp, horizontal = 15.dp),
@@ -296,7 +296,7 @@ fun ExpandableEquipmentCard(
     }
 
     if (showDeleteAcceptDialog) {
-        DeleteAcceptDialog(name = equipment.name,
+        DeleteAcceptDialog(text = "Выбросить ${equipment.name} из багажа?",
             onDeleteClick = {
                 onDeleteClick()
                 showDeleteAcceptDialog = false
@@ -619,5 +619,5 @@ fun EquipListPreview(){
 //        onAddClick = {},
 //        onDeleteClick = {}
 //    )
-    DeleteAcceptDialog(name = "Кинжал", {})  { }
+    DeleteAcceptDialog(text = "Выбросить Кинжал из багажа?", {})  { }
 }

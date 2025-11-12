@@ -23,8 +23,6 @@ interface SkillDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(skills: List<SkillEntity>)
-
-
 }
 
 @Dao

@@ -22,7 +22,11 @@ class SkillRepositoryImpl @Inject constructor(
         return dao.getCharactersSkills(characterId).map { list -> list.map { it.toDomain() }}
     }
 
-    override fun addSkillToCharacter(characterId: Int, skillId: Int){
-        return refDao.insertOne(SkillCharacterCrossRef(characterId, skillId))
+    override fun addSkillToCharacter(characterId: Int, skillId: String){
+        refDao.insertOne(SkillCharacterCrossRef(characterId, skillId))
+    }
+
+    override fun deleteSkill(characterId: Int, skillId: String) {
+        refDao.deleteSkillCharacterCrossRef(SkillCharacterCrossRef(characterId, skillId))
     }
 }

@@ -1,35 +1,94 @@
 [
-    {
-    "name": "Firebolt",
-    "description": "Shoots a small flame that burns the enemy.",
-    "type": "Magic",
-    "source": "Arcane",
+  {
+    "id": "com01",
+    "name": "Очарование",
+    "description": "Способность вызвать благосклонность другого персонажа. Очарованный согласится выполнить мелкую просьбу, но не может нанести себе урон.",
+    "type": "Active",
+    "useType": "Magic",
+    "source": "Common",
     "accessLevel": 1,
-    "check": 12,
-    "recharge": "1d6 rounds",
-    "actionTime": "1 action",
-    "mana": 5
+    "check": null,
+    "recharge": "до 3 раз в день",
+    "damage": null,
+    "actionTime": "1 час",
+    "usageTime": "1 действие",
+    "passiveEffect": null,
+    "mana": 1
   },
   {
-    "name": "Healing Word",
-    "description": "Heals a friendly target with a quick word.",
-    "type": "Divine",
-    "source": "Cleric",
-    "accessLevel": 2,
-    "check": 10,
-    "recharge": "Short rest",
-    "actionTime": "Bonus action",
-    "mana": 3
+    "id": "war1",
+    "name": "Перехват",
+    "description": "Если союзник, стоящий в радиусе 3 клеток, получает урон, игрок может взять на себя половину этого урона. Применяется как контр-действие.",
+    "type": "Active",
+    "useType": "Combat",
+    "source": "Profession",
+    "accessLevel": 5,
+    "check": null,
+    "recharge": "1 раз в 2 раунда",
+    "damage": null,
+    "actionTime": "мгновенно",
+    "usageTime": "контрдействие",
+    "passiveEffect": null,
+    "mana": null
   },
   {
-    "name": "Shield Block",
-    "description": "Raises shield to block incoming damage.",
-    "type": "Physical",
-    "source": "Fighter",
-    "accessLevel": 1,
-    "check": 14,
-    "recharge": "Every turn",
-    "actionTime": "Reaction",
-    "mana": 0
+    "id": "rog01",
+    "name": "Прирождённый убийца",
+    "description": "Если противник не ожидает удара, внезапное нападение дает вероятность критической атаки. В лоб — 10%, сбоку — 20%, в спину — 50% к шансу на критическую атаку. Эффект работает только на оружие, имеющее шанс критической атаки.",
+    "type": "Passive",
+    "useType": "Combat",
+    "source": "Profession",
+    "accessLevel": 7,
+    "check": null,
+    "recharge": null,
+    "damage": null,
+    "actionTime": null,
+    "usageTime": null,
+    "passiveEffect": [
+      {
+        "parameter": "critical attack",
+        "bonus": 0.1,
+        "description": "вероятность критической атаки: В лоб — 10%, сбоку — 20%, в спину — 50% к шансу на критическую атаку.",
+        "condition": "только при использовании оружия, имеющее шанс на крит. атаку"
+      }
+    ],
+    "mana": null
+  },
+
+  {
+    "id": "thi01",
+    "name": "Владение оружием",
+    "description": "Увеличивает шанс на оглушение и критическую атаку на 10% при использовании соответствующего оружия. Добавляет +2 к урону любого выбранного типа оружия.",
+    "type": "Passive",
+    "useType": "Combat",
+    "source": "Profession",
+    "accessLevel": 11,
+    "check": null,
+    "recharge": null,
+    "damage": null,
+    "actionTime": null,
+    "usageTime": null,
+    "passiveEffect": [
+      {
+        "parameter": "critical attack",
+        "bonus": 0.1,
+        "description": "+10% к шансу критической атаки",
+        "condition": "при использовании соответствующего оружия"
+      },
+      {
+        "parameter": "stunning",
+        "bonus": 0.1,
+        "description": "+10% к шансу оглушения",
+        "condition": "при использовании соответствующего оружия"
+      },
+      {
+        "parameter": "attack",
+        "bonus": 2,
+        "description": "+2 к урону",
+        "condition": "для выбранного типа оружия"
+      }
+
+    ],
+    "mana": null
   }
 ]
