@@ -158,15 +158,14 @@ fun CharacterView(
                 Box(contentAlignment = Alignment.TopStart,
                     modifier = Modifier.fillMaxWidth()
                         .padding(7.dp)
-                        .background(
-                            color = containerColor,
-                            shape = RoundedCornerShape(cornerRadius)
-                        )
+                        .clip(RoundedCornerShape(cornerRadius))
+                        .background(color = containerColor)
                         .clickable { showLanguagesDialog = true }
                         .padding(vertical = 13.dp, horizontal = 20.dp)) {
                     Text(
-                        ("Языки: " + character.languages?.joinToString(", ")),
-                        maxLines = 1
+                        ("Языки: " + if(character.languages.isNullOrEmpty()) "" else character.languages.joinToString(", ")),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
                 BottomActionButtons(onCheckClick = {
@@ -362,7 +361,9 @@ fun ExpandableBox(
             Icon(
                 painter = painterResource(R.drawable.row_up_icon),
                 contentDescription = "row",
-                modifier = Modifier.rotate(rotationState)
+                modifier = Modifier
+                    .clip(shape = CircleShape)
+                    .rotate(rotationState)
                     .clickable(onClick = {expanded = !expanded})
             )
         }
@@ -392,12 +393,12 @@ fun ExpandableBox(
                             modifier = Modifier.padding(top = 5.dp)
                                 .clickable { onHealthClick() })
 
-                        Text(text = "${character.currentHP}", fontSize = 20.sp)
+                        Text(text = "${character.currentHP}".uppercase(), fontSize = 20.sp)
                     }
 
                     Box(contentAlignment = Alignment.Center){
                         Image(painterResource(R.drawable.sheildicon), contentDescription = "background")
-                        Text(text = "${floor(character.armorClass).toInt()}", fontSize = 20.sp)
+                        Text(text = "${floor(character.armorClass).toInt()}".uppercase(), fontSize = 20.sp)
                     }
 
                     Box(contentAlignment = Alignment.Center){
@@ -405,7 +406,7 @@ fun ExpandableBox(
                             contentDescription = "background",
                             modifier = Modifier.padding(top = 3.dp)
                         )
-                        Text(text = "${character.speed}", fontSize = 20.sp,
+                        Text(text = "${character.speed}".uppercase(), fontSize = 20.sp,
                             modifier = Modifier.padding(end = 12.dp))
                     }
                 }
@@ -418,7 +419,7 @@ fun ExpandableBox(
                         modifier = Modifier.padding(end = 5.dp)
                         ){
                         Column(horizontalAlignment = Alignment.CenterHorizontally){
-                            Text("${character.gold}",
+                            Text("${character.gold}".uppercase(),
                                 textAlign = TextAlign.Center,
                                 maxLines = 1,
                                 modifier = Modifier
@@ -436,7 +437,7 @@ fun ExpandableBox(
                     Box(contentAlignment = Alignment.TopCenter) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("${character.level}", fontSize = 23.sp)
+                            Text("${character.level}".uppercase(), fontSize = 23.sp)
                             Icon(painterResource(R.drawable.arrow_up_icon),
                                 tint = Color.White,
                                 contentDescription = "levelup",
@@ -461,7 +462,7 @@ fun ExpandableBox(
                                         .clip(CircleShape)
                                         .clickable {decreaseMana()})
 
-                                Text("${character.currentMana}",
+                                Text("${character.currentMana}".uppercase(),
                                     textAlign = TextAlign.Center,
                                     maxLines = 1,
                                     modifier = Modifier
@@ -494,7 +495,7 @@ fun ExpandableBox(
                     contentDescription = "health icon",
                     modifier = Modifier.size(25.dp))
                 Spacer(modifier = Modifier.width(9.dp))
-                Text("${character.currentHP}")
+                Text("${character.currentHP}".uppercase())
 
                 Spacer(modifier = Modifier.width(18.dp))
 
@@ -502,7 +503,7 @@ fun ExpandableBox(
                     contentDescription = "shield icon",
                     modifier = Modifier.size(25.dp))
                 Spacer(modifier = Modifier.width(9.dp))
-                Text("${floor(character.armorClass).toInt()}")
+                Text("${floor(character.armorClass).toInt()}".uppercase())
 
                 Spacer(modifier = Modifier.width(18.dp))
 
@@ -510,7 +511,7 @@ fun ExpandableBox(
                     contentDescription = "speed icon",
                     modifier = Modifier.size(25.dp))
                 Spacer(modifier = Modifier.width(9.dp))
-                Text("${character.speed}")
+                Text("${character.speed}".uppercase())
             }
         }
     }
@@ -607,19 +608,19 @@ fun StatsContent(character: Character) {
             Text("Выносливость", color = Color.White)
         }
         Column(verticalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxHeight()) {
-            Text("${character.strength}", color = Color.White,
+            Text("${character.strength}".uppercase(), color = Color.White,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 10.dp))
-            Text("${character.dexterity}", color = Color.White,
+            Text("${character.dexterity}".uppercase(), color = Color.White,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 10.dp))
-            Text("${character.perception}", color = Color.White,
+            Text("${character.perception}".uppercase(), color = Color.White,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 10.dp))
-            Text("${character.constitution}", color = Color.White,
+            Text("${character.constitution}".uppercase(), color = Color.White,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 10.dp))
@@ -631,15 +632,15 @@ fun StatsContent(character: Character) {
             Text("")
         }
         Column(verticalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxHeight()) {
-            Text("${character.magic}", color = Color.White,
+            Text("${character.magic}".uppercase(), color = Color.White,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 10.dp))
-            Text("${character.intelligence}", color = Color.White,
+            Text("${character.intelligence}".uppercase(), color = Color.White,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 10.dp))
-            Text("${character.charisma}", color = Color.White,
+            Text("${character.charisma}".uppercase(), color = Color.White,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
                     .padding(horizontal = 10.dp))
@@ -724,7 +725,7 @@ fun ChangingDialog(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = currentValue.toString(),
+                                            text = currentValue.toString().uppercase(),
                                             color = Color.White,
                                             textAlign = TextAlign.Center,
                                         )
@@ -758,7 +759,7 @@ fun ChangingDialog(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = maxValue.toString(),
+                                            text = maxValue.toString().uppercase(),
                                             color = halfAppWhite,
                                             textAlign = TextAlign.Center,
                                         )
@@ -784,7 +785,7 @@ fun ChangingDialog(
                             fontSize = 13.sp,
                             color = subTextColor)
                         BasicTextField(
-                            value = decreaseValue,
+                            value = decreaseValue.uppercase(),
                             onValueChange = { decreaseValue = it },
                             modifier = Modifier
                                 .size(height = 30.dp, width = 50.dp)
@@ -818,7 +819,7 @@ fun ChangingDialog(
                                 color = subTextColor
                             )
                             BasicTextField(
-                                value = increaseValue,
+                                value = increaseValue.uppercase(),
                                 onValueChange = { increaseValue = it },
                                 modifier = Modifier
                                     .size(height = 30.dp, width = 50.dp)

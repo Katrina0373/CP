@@ -36,6 +36,7 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -72,6 +73,7 @@ import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.filterButtonBack
 import com.mocalovak.cp.ui.theme.halfAppWhite
 import com.mocalovak.cp.ui.theme.hptems
+import com.mocalovak.cp.ui.theme.letterTextStyle
 import com.mocalovak.cp.ui.theme.otherContainer
 import com.mocalovak.cp.ui.theme.subButton
 import com.mocalovak.cp.ui.theme.topContainer
@@ -225,26 +227,35 @@ fun DeleteAcceptDialog(
             colors = CardDefaults.cardColors(containerColor = topContainer)){
             Column(horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(10.dp)) {
-
                 Icon(Icons.Default.Close,
                     "",
                     tint = halfAppWhite,
                     modifier = Modifier.clickable { onDismiss() }
                         .align(Alignment.End))
-                    Text("Удалить $name из багажа?", color = Color.White,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center,
-                        fontSize = 18.sp)
+                Text(text = "Выбросить $name из багажа?",
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(vertical = 10.dp, horizontal = 15.dp),
+                    textAlign = TextAlign.Center,
+                    fontSize = 18.sp)
+
                 Spacer(Modifier.height(10.dp))
                 Row(horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.fillMaxWidth()) {
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 15.dp)) {
                     Button(onClick = {onDeleteClick()},
-                        colors = ButtonDefaults.buttonColors(containerColor = button2)){
+                        colors = ButtonDefaults.buttonColors(containerColor = button2),
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(cornerRadius)
+                    ){
                         Text(text = "Да")
                     }
-
+                    Spacer(Modifier.width(10.dp))
                     Button(onClick = {onDismiss()},
-                        colors = ButtonDefaults.buttonColors(containerColor = subButton)){
+                        colors = ButtonDefaults.buttonColors(containerColor = subButton),
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(cornerRadius)
+                    ){
                         Text(text = "Нет")
                     }
 
@@ -599,14 +610,14 @@ fun EquipListPreview(){
         )
     )
 
-    ExpandableEquipmentCard(
-        equipList[3], true, {},
-        withEquip = true,
-        onEquipClick = {},
-        onUnEquipClick = {},
-        withAdd = false,
-        onAddClick = {},
-        onDeleteClick = {}
-    )
-    //DeleteAcceptDialog(name = "Кинжал", {})  { }
+//    ExpandableEquipmentCard(
+//        equipList[3], true, {},
+//        withEquip = true,
+//        onEquipClick = {},
+//        onUnEquipClick = {},
+//        withAdd = false,
+//        onAddClick = {},
+//        onDeleteClick = {}
+//    )
+    DeleteAcceptDialog(name = "Кинжал", {})  { }
 }

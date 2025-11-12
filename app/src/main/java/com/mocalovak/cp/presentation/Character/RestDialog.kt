@@ -58,7 +58,7 @@ fun RestDialog(level:Int,
             Column(modifier = Modifier.fillMaxWidth()
                 .padding(vertical = 5.dp, horizontal = 17.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
                 ){
 
                 Icon(imageVector = Icons.Default.Close,

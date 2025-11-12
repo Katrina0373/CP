@@ -174,7 +174,6 @@ fun CharacterItemWithMenu(character: Character,
                         expanded = expanded,
                         onDismissRequest = { expanded = false },
                         modifier = Modifier
-                            .clip(RoundedCornerShape(cornerRadius))
                             .background(color = dropMenuBackColor)
                     ) {
                         DropdownMenuItem(

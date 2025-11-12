@@ -68,9 +68,6 @@ fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifi
 fun NavController.navigateSingleTopTo(route: String) {
     val hasArguments = route.contains("/")
     this.navigate(route) {
-        popUpTo(this@navigateSingleTopTo.graph.startDestinationId) {
-            saveState = true
-        }
         launchSingleTop = !hasArguments
         restoreState = !hasArguments
     }

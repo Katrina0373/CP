@@ -1,14 +1,8 @@
 package com.mocalovak.cp.presentation.Character
 
-import androidx.compose.animation.AnimatedVisibility
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,15 +14,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
@@ -46,7 +42,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.boundsInWindow
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,15 +61,14 @@ import com.mocalovak.cp.domain.model.PassiveEffect
 import com.mocalovak.cp.domain.model.PassiveEffectWithCondition
 import com.mocalovak.cp.domain.model.Race
 import com.mocalovak.cp.domain.model.Skill
-import com.mocalovak.cp.presentation.CharacterRedaction.EditDropdownMenu
 import com.mocalovak.cp.ui.theme.CPTheme
-import com.mocalovak.cp.ui.theme.ExpandedListBackColor
-import com.mocalovak.cp.ui.theme.ExpandedListFocusedColor
 import com.mocalovak.cp.ui.theme.Green5C
+import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.dropMenuBackColor
 import com.mocalovak.cp.ui.theme.gradientButton
 import com.mocalovak.cp.ui.theme.halfAppWhite
 import com.mocalovak.cp.ui.theme.topContainer
+import com.mocalovak.cp.utils.CustomDropdownMenu
 import kotlin.random.Random
 
 
@@ -84,6 +82,7 @@ enum class Dices(val number:Int, val icRes: Int) {
     d100( 100, R.drawable.d100_ic),
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiceChecking(onDismiss: () -> Unit,
                  paddingValues: PaddingValues,
@@ -93,6 +92,7 @@ fun DiceChecking(onDismiss: () -> Unit,
 
     var chosenDice by remember { mutableStateOf(Dices.d20) }
     var sum by remember { mutableIntStateOf(Random.nextInt(chosenDice.number) + 1) }
+    val scrollState = rememberScrollState()
 
     val modifiers = mapOf(
         Modification.STRENGTH to character.strength,
@@ -105,126 +105,163 @@ fun DiceChecking(onDismiss: () -> Unit,
     )
     var chosenModifier by remember { mutableStateOf<Modification?>(null) }
 
-
-    Column(modifier = Modifier
+    Card(modifier = Modifier
         .fillMaxSize()
         .padding(top = paddingValues.calculateTopPadding())
-        .padding(10.dp)
-        .background(color = topContainer, shape = RoundedCornerShape(cornerRadius))
-        .padding(17.dp),
-        verticalArrangement = Arrangement.spacedBy(7.dp),) {
-
-        Text("Проверка",
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleMedium,
-            color = Color.White)
-        Spacer(Modifier.height(10.dp))
-        Row(modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
-            EditDropDownMenu(
-                options = Dices.entries.map { it.name },
-                onValueChange = {name -> chosenDice = Dices.valueOf(name)},
-                currentValue = 0,
-                modifier = Modifier.width(220.dp),
-            )
-            Spacer(Modifier.width(10.dp))
-            GradientButton(
-                text = "Бросить",
-                gradient = gradientButton,
-                onClick = {
-                    sum = Random.nextInt(chosenDice.number) + 1
-                },
-                modifier = Modifier.height(58.dp).width(130.dp)
-            )
+        .padding(10.dp),
+        colors = CardDefaults.cardColors(containerColor = topContainer),
+        shape = RoundedCornerShape(cornerRadius)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 10.dp, end = 10.dp),
+            contentAlignment = Alignment.TopEnd
+        ) {
+            Icon(imageVector = Icons.Default.Close,
+                contentDescription = "close",
+                tint = halfAppWhite,
+                modifier = Modifier.clip(CircleShape)
+                    .clickable { onDismiss() })
         }
-        EditDropDownMenu(
-            options = modifiers.keys.map { it.title }.toList(),
-            onValueChange = {name -> chosenModifier = Modification.entries.find { it.title == name }},
-            currentValue = -1,
-            placeholder = { Text("Выбрать модификатор...")},
-            modifier = Modifier.fillMaxWidth()
-        )
+        Column(
+            modifier = Modifier.padding(horizontal = 15.dp)
+                .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(7.dp),
+        ) {
 
-        Spacer(Modifier.height(10.dp))
-
-        Row(modifier = Modifier.fillMaxWidth()) {
-
-            Column(modifier = Modifier.weight(1f)
-                .padding(horizontal = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("Кубик", modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleMedium
-                )
-
-                Box(modifier = Modifier.fillMaxWidth()){
-                    Image(painter = painterResource(chosenDice.icRes), "Dice",
-                        modifier = Modifier.align(Alignment.Center))
-                    Text(sum.toString(),
-                        modifier = Modifier.align(Alignment.Center),
-                        fontSize = 14.sp)
-                }
-            }
-            Column(modifier = Modifier.weight(1f)
-                .padding(horizontal = 10.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text("Сумма", modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    color = Color.White,
-                    style = MaterialTheme.typography.titleMedium)
-
-                Box(modifier = Modifier.fillMaxWidth()){
-                    Image(painter = painterResource(R.drawable.sum_back_ic), "Dice",
-                        modifier = Modifier.align(Alignment.Center))
-                    Text((sum + (modifiers[chosenModifier] ?: 0)).toString(),
-                        modifier = Modifier.align(Alignment.Center),
-                        fontSize = 14.sp)
-                }
-            }
-        }
-        val effects = character.hasUnregisterPassiveEffects(skills, equipment)
-        if (effects.isNotEmpty()){
+            Text(
+                "Проверка",
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleMedium,
+                color = Color.White
+            )
             Spacer(Modifier.height(10.dp))
-            Row {
-                Icon(
-                    painter = painterResource(R.drawable.info_ic),
-                    contentDescription = "info",
-                    tint = Green5C
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                EditDropDownMenu(
+                    options = Dices.entries.map { it.name },
+                    onValueChange = { name -> chosenDice = Dices.valueOf(name) },
+                    currentValue = 0,
+                    modifier = Modifier.width(210.dp),
                 )
                 Spacer(Modifier.width(10.dp))
-                Column {
-                    Text("Не забудьте добавить пассивные эффекты")
-                    effects.forEach {
-                        if(it.parameter.equals(chosenModifier?.name, ignoreCase = true)//если параметр пассивки соответствует выбранному модификатору
-                                || Modification.entries.none {mod -> mod.name.equals(it.parameter, ignoreCase = true)}) { //или если это вообще не модификатор
-                            Text(
-                                text = "• " + it.description +
-                                        if (it is PassiveEffectWithCondition)
-                                            " " + it.condition
-                                        else ""
-                            )
-                        }
+                GradientButton(
+                    text = "Бросить",
+                    gradient = gradientButton,
+                    onClick = {
+                        sum = Random.nextInt(chosenDice.number) + 1
+                    },
+                    modifier = Modifier.height(55.dp).width(140.dp)
+                )
+            }
+            EditDropDownMenu(
+                options = modifiers.keys.map { it.title }.toList(),
+                onValueChange = { name ->
+                    chosenModifier = Modification.entries.find { it.title == name }
+                },
+                currentValue = -1,
+                placeholder = { Text("Выбрать модификатор...") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(10.dp))
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+
+                Column(
+                    modifier = Modifier.weight(1f)
+                        .padding(horizontal = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        "Кубик", modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Image(
+                            painter = painterResource(chosenDice.icRes), "Dice",
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                        Text(
+                            sum.toString().uppercase(),
+                            modifier = Modifier.align(Alignment.Center),
+                            fontSize = 20.sp
+                        )
+                    }
+                }
+                Column(
+                    modifier = Modifier.weight(1f)
+                        .padding(horizontal = 10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(
+                        "Сумма", modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        color = Color.White,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    Box(modifier = Modifier.fillMaxWidth()) {
+                        Image(
+                            painter = painterResource(R.drawable.sum_back_ic), "Dice",
+                            modifier = Modifier.align(Alignment.Center)
+                        )
+                        Text(
+                            (sum + (modifiers[chosenModifier] ?: 0)).toString().uppercase(),
+                            modifier = Modifier.align(Alignment.Center),
+                            fontSize = 20.sp
+                        )
                     }
                 }
             }
+            val effects = character.hasUnregisterPassiveEffects(skills, equipment)
+            if (effects.isNotEmpty()) {
+                Spacer(Modifier.height(10.dp))
+                Row {
+                    Icon(
+                        painter = painterResource(R.drawable.info_ic),
+                        contentDescription = "info",
+                        tint = Green5C
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Column {
+                        Text("Не забудьте добавить пассивные эффекты")
+                        effects.forEach {
+                            if (it.parameter.equals(
+                                    chosenModifier?.name,
+                                    ignoreCase = true
+                                )//если параметр пассивки соответствует выбранному модификатору
+                                || Modification.entries.none { mod ->
+                                    mod.name.equals(
+                                        it.parameter,
+                                        ignoreCase = true
+                                    )
+                                }
+                            ) { //или если это вообще не модификатор
+                                Text(
+                                    text = "• " + it.description +
+                                            if (it is PassiveEffectWithCondition)
+                                                " " + it.condition
+                                            else ""
+                                )
+                            }
+                        }
+                    }
+                }
 
+            }
         }
-    }
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .padding(15.dp)
-        .padding(top = paddingValues.calculateTopPadding()),
-        contentAlignment = Alignment.TopEnd) {
-        Icon(imageVector = Icons.Default.Close,
-            contentDescription = "close",
-            tint = halfAppWhite,
-            modifier = Modifier.clip(CircleShape)
-                .clickable { onDismiss() })
+
     }
 }
 
@@ -236,77 +273,63 @@ fun EditDropDownMenu(options: List<String>,
                      modifier: Modifier = Modifier,
                      placeholder: @Composable() (() -> Unit)? = null) {
     var expanded by remember { mutableStateOf(false) }
-
     var selectedOption by remember(options, currentValue) { mutableStateOf(options.getOrNull(currentValue)) }
 
     val rotationState by animateFloatAsState(
         targetValue = if (!expanded) 180f else 0f,
         label = "arrowRotation"
     )
+    var textFieldRect by remember { mutableStateOf<Rect?>(null) }
 
-    Column {
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
-        ) {
-            // Поле, по которому нажимаем
-            TextField(
-                value = selectedOption ?: "",
-                onValueChange = {  },
-                modifier = Modifier
-                    .padding(top = 4.dp)
-                    .menuAnchor()
-                    .then(modifier),
-                readOnly = true,
-                trailingIcon = {
-                    Icon(painterResource(R.drawable.row_up_icon),
-                        "",
-                        modifier = Modifier.rotate(rotationState),
-                        tint = Color.White)
-                },
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = dropMenuBackColor,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    cursorColor = Color.White,
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White,
-                    disabledIndicatorColor = Color.Transparent,
-                    ),
-                singleLine = true,
-                shape = RoundedCornerShape(cornerRadius),
-                placeholder = placeholder
-            )
-
-            AnimatedVisibility(
-                visible = expanded,
-                enter = fadeIn(animationSpec = tween(200)) + expandVertically(),
-                exit = fadeOut(animationSpec = tween(150)) + shrinkVertically()
-            ) {
-                ExposedDropdownMenu(
-                    expanded = true, // важно: всегда true, т.к. AnimatedVisibility управляет показом
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.clip(RoundedCornerShape(cornerRadius))
-                        .background(color = ExpandedListBackColor)
-                ) {
-                    options.forEach { option ->
-                        val isSelected = option == selectedOption
-                        val backgroundColor =
-                            if (isSelected) Color(0xFF3E4499)
-                            else Color.Transparent
-                        DropdownMenuItem(
-                            text = { Text(option) },
-                            onClick = {
-                                selectedOption = option
-                                onValueChange(option)
-                                expanded = false
-                            },
-                            modifier = Modifier.background(color = Color(0xff3E459A))
-                        )
-                    }
-                }
-            }
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = {expanded = !expanded
+            println("expanded = $expanded")
         }
+    ) {
+        TextField(
+            value = selectedOption ?: "Выбрать модификатор...",
+            onValueChange = { },
+            modifier = Modifier
+                .padding(top = 4.dp)
+                .onGloballyPositioned { coordinates ->
+                    textFieldRect = coordinates.boundsInWindow()
+                }
+                .menuAnchor()
+                .then(modifier),
+            readOnly = true,
+            trailingIcon = {
+                Icon(
+                    painterResource(R.drawable.row_up_icon),
+                    "",
+                    modifier = Modifier.rotate(rotationState),
+                    tint = Color.White
+                )
+            },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = dropMenuBackColor,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                cursorColor = Color.White,
+                focusedTextColor = Color.White,
+                unfocusedTextColor = Color.White,
+                disabledIndicatorColor = Color.Transparent,
+            ),
+            singleLine = true,
+            shape = RoundedCornerShape(cornerRadius),
+            placeholder = placeholder
+        )
+        CustomDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false},
+            anchorBounds = textFieldRect,
+            options = options,
+            selectedOption = selectedOption ?: "",
+            onSelect = {selectedOption = it
+                       onValueChange(it)},
+            backColor = Color(0xFF353A7F),
+            focusedItemColor = Color(0xFF3E4499),
+        )
     }
 }
 

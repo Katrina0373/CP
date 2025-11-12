@@ -33,7 +33,7 @@ import com.mocalovak.cp.R
 import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.utils.CharacterItem
 import com.mocalovak.cp.presentation.HomePage.components.TelegramRef
-import com.mocalovak.cp.presentation.HomePage.components.TypoVidget
+import com.mocalovak.cp.presentation.HomePage.components.ContentWidget
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -93,7 +93,7 @@ fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowChar
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             item {
-                TypoVidget(
+                ContentWidget(
                     picture = painterResource(R.drawable.heroes),
                     title = "Книга правил",
                     description = "Общие понятия, описания рас и классов и прочее",
@@ -101,7 +101,7 @@ fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowChar
                 )
             }
             item {
-                TypoVidget(
+                ContentWidget(
                     picture = painterResource(R.drawable.cool_mage),
                     title = "Навыки",
                     description = "Общие, магические, боевые, расовые",
@@ -109,7 +109,7 @@ fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowChar
                 )
             }
             item {
-                TypoVidget(
+                ContentWidget(
                     picture = painterResource(R.drawable.war_hammer),
                     title = "Инвентарь",
                     description = "Броня, артефакты, оружие",
@@ -152,7 +152,7 @@ fun ScrollableCardRow() {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                TypoVidget(
+                ContentWidget(
                     picture = painterResource(R.drawable.ic_launcher_foreground),
                     title = "Книга правил",
                     description = "Общие понятия, описания рас и классов и прочее",
@@ -160,7 +160,7 @@ fun ScrollableCardRow() {
                 )
             }
             item {
-                TypoVidget(
+                ContentWidget(
                     picture = painterResource(R.drawable.ic_launcher_foreground),
                     title = "Навыки",
                     description = "Общие, магические, боевые, расовые",
@@ -168,7 +168,7 @@ fun ScrollableCardRow() {
                 )
             }
             item {
-                TypoVidget(
+                ContentWidget(
                     picture = painterResource(R.drawable.ic_launcher_foreground),
                     title = "Инвентарь",
                     description = "Броня, артефакты, оружие",

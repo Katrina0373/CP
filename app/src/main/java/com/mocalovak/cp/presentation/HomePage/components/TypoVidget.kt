@@ -1,12 +1,10 @@
 package com.mocalovak.cp.presentation.HomePage.components
 
-import android.graphics.Picture
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -34,7 +31,7 @@ import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.halfAppWhite
 
 @Composable
-fun TypoVidget(picture: Painter, title:String, description:String, buttonText:String){
+fun ContentWidget(picture: Painter, title:String, description:String, buttonText:String){
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
@@ -75,7 +72,7 @@ fun TypoVidget(picture: Painter, title:String, description:String, buttonText:St
                 Box(modifier = Modifier.fillMaxSize().align(Alignment.End)) {
                     Button(
                         onClick = { /* действие */ },
-                        modifier = Modifier.size(100.dp, 35.dp).align(Alignment.BottomStart),
+                        modifier = Modifier.height(35.dp)/*.size(100.dp, 35.dp)*/.align(Alignment.BottomStart),
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(containerColor = Color.White)
                     ) {
@@ -90,7 +87,7 @@ fun TypoVidget(picture: Painter, title:String, description:String, buttonText:St
 @Preview
 @Composable
 fun prevVid(){
-    TypoVidget(picture = painterResource(R.drawable.heroes),
+    ContentWidget(picture = painterResource(R.drawable.heroes),
         title = "Книга правил",
         description = "Общие понятия, описания",
         buttonText = "Читать"

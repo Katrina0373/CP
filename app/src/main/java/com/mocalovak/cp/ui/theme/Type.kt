@@ -10,7 +10,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.mocalovak.cp.R
 
-val numberTextStyle = TextStyle(
+val letterTextStyle = TextStyle(
     fontFamily = FontFamily(
         Font(R.font.raleway_medium, weight = FontWeight.Normal),
         Font(R.font.raleway_mediumitalic, weight = FontWeight.Normal, style = FontStyle.Italic),
@@ -22,13 +22,27 @@ val numberTextStyle = TextStyle(
     color = Color.White
 )
 
+val numberTextStyle = TextStyle(
+    fontFamily = FontFamily(
+        Font(R.font.raleway_medium, weight = FontWeight.Normal),
+        Font(R.font.raleway_mediumitalic, weight = FontWeight.Normal, style = FontStyle.Italic),
+    ),
+    fontWeight = FontWeight.Normal,
+    fontSize = 16.sp,
+    letterSpacing = 0.5.sp,
+    lineHeight = 24.sp,
+    color = Color.White,
+)
+
+
+
 // Set of Material typography styles to start with
 val Typography = Typography(
-    bodyLarge = numberTextStyle,
-    bodyMedium = numberTextStyle,
-    labelMedium = numberTextStyle,
-titleLarge = numberTextStyle.copy(fontSize = 22.sp, lineHeight = 28.sp, letterSpacing = 0.sp),
-    titleMedium = numberTextStyle.copy(fontSize = 20.sp)
+    bodyLarge = letterTextStyle,
+    bodyMedium = letterTextStyle,
+    labelMedium = letterTextStyle,
+titleLarge = letterTextStyle.copy(fontSize = 22.sp, lineHeight = 28.sp, letterSpacing = 0.sp),
+    titleMedium = letterTextStyle.copy(fontSize = 20.sp)
 //    bodyLarge = TextStyle(
 //        fontFamily = FontFamily.Default,
 //        fontWeight = FontWeight.Normal,

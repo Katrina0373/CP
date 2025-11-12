@@ -32,18 +32,18 @@ sealed class Race(val name:String, val passiveEffect: List<PassiveEffect>) {
     ))
     object Dwarf: Race("Дварф", listOf(
         PassiveEffectWithCondition("perception", 1f, "+1 к воприятию", "в темноте"),
-        PassiveEffectWeapon("intelligence", 1f, "+1 к интеллекту", { it.name.contains("пистолет", ignoreCase = true) || it.name.contains("ружьё", ignoreCase = true) }),
-        PassiveEffectWeapon("strength", 1f, "+1 к силе",  {it.name.contains("молот", ignoreCase = true)}),
-        PassiveEffectWeapon("stunning", 0.1f, "+10% к шансу оглушения") {it.name.contains("молот", ignoreCase = true)}
+        PassiveEffectWeapon("intelligence", 1f, "+1 к интеллекту при использовании огнестрельного оружия", { it.name.contains("пистолет", ignoreCase = true) || it.name.contains("ружьё", ignoreCase = true) }),
+        PassiveEffectWeapon("strength", 1f, "+1 к силе при использовании молота",  {it.name.contains("молот", ignoreCase = true)}),
+        PassiveEffectWeapon("stunning", 0.1f, "+10% к шансу оглушения при использовании молота") {it.name.contains("молот", ignoreCase = true)}
     ))
     data object Tabaksi: Race("Табакси", listOf(
-        PassiveEffectWithCondition("dexterity", 1f, "+1 к ловкости", "проверка скрытности"),
-        PassiveEffectWithCondition("dexterity", 1f, "+1 к ловкости", "попытка взлома"),
-        PassiveEffectWithCondition("dexterity", 1f, "+1 к ловкости", "скрытая атака"),
-        PassiveEffectWithCondition("critical attack", 0.1f, "+10% к шансу критической атаки с оружием", "") //Потом исправить!
+        PassiveEffectWithCondition("dexterity", 1f, "+1 к ловкости", "при проверках скрытности"),
+        PassiveEffectWithCondition("dexterity", 1f, "+1 к ловкости", "при попытках взлома"),
+        PassiveEffectWithCondition("dexterity", 1f, "+1 к ловкости", "при скрытой атаке"),
+        PassiveEffectWithCondition("critical attack", 0.1f, "+10% к шансу критической атаки с оружием", "") //Потом исправить тип!
     ))
     object Lizardman: Race("Людоящер", listOf(
-        PassiveEffectWithCondition("constitution", 3f, "+3 к спасброску телосложения", "спасбросок от яда"),
+        PassiveEffectWithCondition("constitution", 3f, "+3 к спасброску телосложения", "при спасбросоках от яда"),
         PassiveEffectWeapon("strength", 1f, "+1 к попаданию и урону при использовании щита") {it.name.contains("Щит", ignoreCase = true)},
         PassiveEffectMagic("magic", 1f, "+1 к магии при использовании заклинаний воды") {it.magicType == MagicType.Water}
     ))
