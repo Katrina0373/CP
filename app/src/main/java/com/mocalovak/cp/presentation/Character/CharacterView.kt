@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -90,6 +91,7 @@ import kotlin.math.floor
 import kotlin.math.min
 
 val cornerRadius = 14.dp
+val buttonHeight = 50.dp
 enum class ChangingValues{ Health, Mana, Gold}
 
 @Composable
@@ -238,7 +240,7 @@ fun CharacterView(
             DiceChecking(onDismiss = {showDiceChecking = false},
                 character = character,
                 equipment = charVM.allEquipment.collectAsState().value,
-                skills = emptyList(),
+                skills = charVM.allSkills.collectAsState().value,
                 paddingValues = padding
             )
         }
@@ -267,7 +269,6 @@ fun BottomActionButtons(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             GradientButton(
                 text = "Проверка",
@@ -275,15 +276,15 @@ fun BottomActionButtons(
                 gradient = Brush.horizontalGradient(
                     listOf(button2, button2)
                 ),
-                modifier = Modifier.weight(1f).padding(end = 8.dp),
+                modifier = Modifier.height(buttonHeight).weight(1f),
                 onClick = onCheckClick
             )
-
+            Spacer(Modifier.width(10.dp))
             GradientButton(
                 text = "Атака",
                 icon = painterResource(id = R.drawable.swords_icon), // ⚔️ твоя иконка
                 gradient = gradientButton,
-                modifier = Modifier.weight(1f).padding(start = 8.dp),
+                modifier = Modifier.height(buttonHeight).weight(1f),
                 onClick = onAttackClick
             )
         }
@@ -300,7 +301,6 @@ fun GradientButton(
 ) {
     Box(
         modifier = modifier
-            .height(48.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(gradient)
             .clickable(onClick = onClick),
@@ -309,10 +309,14 @@ fun GradientButton(
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-            //modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier
+                .defaultMinSize(minWidth = ButtonDefaults.MinWidth,
+                    minHeight = ButtonDefaults.MinHeight)
+                .padding(ButtonDefaults.ContentPadding)
         ) {
             Text(text, color = Color.White,
-                textAlign = TextAlign.Center)
+                textAlign = TextAlign.Center,
+                overflow = TextOverflow.Clip)
             if(icon != null) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
@@ -378,7 +382,7 @@ fun ExpandableBox(
                         .clickable {
                             onRestDialogClick()
                         }
-                        .padding(5.dp)
+                        .padding(7.dp)
                         .size(17.dp))
             }
             Column(modifier = Modifier.padding(13.dp)) {
@@ -439,7 +443,7 @@ fun ExpandableBox(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text("${character.level}".uppercase(), fontSize = 23.sp)
                             Icon(painterResource(R.drawable.arrow_up_icon),
-                                tint = Color.White,
+                                tint = Color.Unspecified,
                                 contentDescription = "levelup",
                                 modifier = Modifier.padding(start = 7.dp)
                                     .clip(CircleShape)
@@ -457,6 +461,7 @@ fun ExpandableBox(
                             Row(verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier.padding(bottom = 4.dp)) {
                                 Icon(painter = painterResource(R.drawable.minus_icon),
+                                    tint = Color.Unspecified,
                                     contentDescription = "minus",
                                     modifier = Modifier.padding(end = 5.dp)
                                         .clip(CircleShape)
@@ -473,6 +478,7 @@ fun ExpandableBox(
                                         .sizeIn(minWidth = 40.dp, maxWidth = 80.dp))
 
                                 Icon(painter = painterResource(R.drawable.plus_icon),
+                                    tint = Color.Unspecified,
                                     contentDescription = "plus",
                                     modifier = Modifier.padding(start = 5.dp)
                                         .clip(CircleShape)
@@ -711,7 +717,7 @@ fun ChangingDialog(
                                     IconButton(onClick = onDecrease, modifier = Modifier.size(20.dp)) {
                                         Icon(painterResource(R.drawable.minus_icon),
                                             contentDescription = null,
-                                            tint = Color.White,
+                                            tint = Color.Unspecified,
                                             modifier = Modifier.clip(CircleShape))
                                     }
                                     Box(
@@ -733,7 +739,7 @@ fun ChangingDialog(
                                     IconButton(onClick = onIncrease, modifier = Modifier.size(20.dp)) {
                                         Icon(painterResource(R.drawable.plus_icon),
                                             contentDescription = null,
-                                            tint = Color.White,
+                                            tint = Color.Unspecified,
                                             modifier = Modifier.clip(CircleShape))
                                     }
                                 }
@@ -868,7 +874,9 @@ fun ChangingDialog(
                     onConfirm(result)
                     onDismiss()
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .height(buttonHeight)
+                    .fillMaxWidth()
             )
         }
     }
@@ -895,7 +903,7 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
                     )
                     Text(
                         "${character.classification} ${character.profession1 ?: ""} ${character.race.name}",
-                        fontSize = 16.sp,
+                        fontSize = 14.sp,
                         color = halfAppWhite
                     )
 
@@ -963,16 +971,16 @@ fun PrevChar(){
             )
         //ExpandableBox(true, character, {}, {}, {}, {}, {}, {})
 
-        ChangingDialog(
-            {},
-            onConfirm = {},
-            label = "Здоровье",
-            changingValue = ChangingValues.Health,
-            currentValue = character.currentHP,
-            maxValue = character.maxHP,
-            {} ,{}
-        )
-
+//        ChangingDialog(
+//            {},
+//            onConfirm = {},
+//            label = "Здоровье",
+//            changingValue = ChangingValues.Health,
+//            currentValue = character.currentHP,
+//            maxValue = character.maxHP,
+//            {} ,{}
+//        )
+        BottomActionButtons({}) { }
     }
 
 }

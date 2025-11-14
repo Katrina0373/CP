@@ -18,23 +18,9 @@ val letterTextStyle = TextStyle(
     fontWeight = FontWeight.Normal,
     fontSize = 16.sp,
     letterSpacing = 0.5.sp,
-    lineHeight = 24.sp,
+    lineHeight = 20.sp,
     color = Color.White
 )
-
-val numberTextStyle = TextStyle(
-    fontFamily = FontFamily(
-        Font(R.font.raleway_medium, weight = FontWeight.Normal),
-        Font(R.font.raleway_mediumitalic, weight = FontWeight.Normal, style = FontStyle.Italic),
-    ),
-    fontWeight = FontWeight.Normal,
-    fontSize = 16.sp,
-    letterSpacing = 0.5.sp,
-    lineHeight = 24.sp,
-    color = Color.White,
-)
-
-
 
 // Set of Material typography styles to start with
 val Typography = Typography(

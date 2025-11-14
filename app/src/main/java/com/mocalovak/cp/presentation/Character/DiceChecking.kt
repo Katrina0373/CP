@@ -3,21 +3,27 @@ package com.mocalovak.cp.presentation.Character
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -58,6 +64,7 @@ import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.domain.model.Equipment
 import com.mocalovak.cp.domain.model.Modification
 import com.mocalovak.cp.domain.model.PassiveEffect
+import com.mocalovak.cp.domain.model.PassiveEffectBasic
 import com.mocalovak.cp.domain.model.PassiveEffectWithCondition
 import com.mocalovak.cp.domain.model.Race
 import com.mocalovak.cp.domain.model.Skill
@@ -67,6 +74,7 @@ import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.dropMenuBackColor
 import com.mocalovak.cp.ui.theme.gradientButton
 import com.mocalovak.cp.ui.theme.halfAppWhite
+import com.mocalovak.cp.ui.theme.letterTextStyle
 import com.mocalovak.cp.ui.theme.topContainer
 import com.mocalovak.cp.utils.CustomDropdownMenu
 import kotlin.random.Random
@@ -82,13 +90,12 @@ enum class Dices(val number:Int, val icRes: Int) {
     d100( 100, R.drawable.d100_ic),
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiceChecking(onDismiss: () -> Unit,
                  paddingValues: PaddingValues,
                  character: Character,
-                 equipment: List<Equipment>,
-                 skills: List<Skill>) {
+                 equipment: List<Equipment>?,
+                 skills: List<Skill>?) {
 
     var chosenDice by remember { mutableStateOf(Dices.d20) }
     var sum by remember { mutableIntStateOf(Random.nextInt(chosenDice.number) + 1) }
@@ -112,31 +119,35 @@ fun DiceChecking(onDismiss: () -> Unit,
         colors = CardDefaults.cardColors(containerColor = topContainer),
         shape = RoundedCornerShape(cornerRadius)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 10.dp, end = 10.dp),
-            contentAlignment = Alignment.TopEnd
-        ) {
-            Icon(imageVector = Icons.Default.Close,
-                contentDescription = "close",
-                tint = halfAppWhite,
-                modifier = Modifier.clip(CircleShape)
-                    .clickable { onDismiss() })
-        }
+
         Column(
             modifier = Modifier.padding(horizontal = 15.dp)
                 .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(7.dp),
         ) {
 
-            Text(
-                "Проверка",
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.titleMedium,
-                color = Color.White
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(),
+            ) {
+                Text(
+                    "Проверка",
+                    modifier = Modifier.align(Alignment.Center)
+                        .padding(top = 20.dp),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.White,
+
+                )
+                Icon(imageVector = Icons.Default.Close,
+                    contentDescription = "close",
+                    tint = halfAppWhite,
+                    modifier = Modifier
+                        .padding(top = 10.dp)
+                        .clip(CircleShape)
+                        .clickable { onDismiss() }
+                        .align(Alignment.TopEnd))
+            }
             Spacer(Modifier.height(10.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -147,7 +158,7 @@ fun DiceChecking(onDismiss: () -> Unit,
                     options = Dices.entries.map { it.name },
                     onValueChange = { name -> chosenDice = Dices.valueOf(name) },
                     currentValue = 0,
-                    modifier = Modifier.width(210.dp),
+                    modifier = Modifier.weight(1f)
                 )
                 Spacer(Modifier.width(10.dp))
                 GradientButton(
@@ -156,7 +167,6 @@ fun DiceChecking(onDismiss: () -> Unit,
                     onClick = {
                         sum = Random.nextInt(chosenDice.number) + 1
                     },
-                    modifier = Modifier.height(55.dp).width(140.dp)
                 )
             }
             EditDropDownMenu(
@@ -165,7 +175,6 @@ fun DiceChecking(onDismiss: () -> Unit,
                     chosenModifier = Modification.entries.find { it.title == name }
                 },
                 currentValue = -1,
-                placeholder = { Text("Выбрать модификатор...") },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -249,10 +258,7 @@ fun DiceChecking(onDismiss: () -> Unit,
                                 }
                             ) { //или если это вообще не модификатор
                                 Text(
-                                    text = "• " + it.description +
-                                            if (it is PassiveEffectWithCondition)
-                                                " " + it.condition
-                                            else ""
+                                    text = it.toString()
                                 )
                             }
                         }
@@ -270,8 +276,7 @@ fun DiceChecking(onDismiss: () -> Unit,
 fun EditDropDownMenu(options: List<String>,
                      onValueChange: (String) -> Unit,
                      currentValue: Int,
-                     modifier: Modifier = Modifier,
-                     placeholder: @Composable() (() -> Unit)? = null) {
+                     modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember(options, currentValue) { mutableStateOf(options.getOrNull(currentValue)) }
 
@@ -283,41 +288,41 @@ fun EditDropDownMenu(options: List<String>,
 
     ExposedDropdownMenuBox(
         expanded = expanded,
-        onExpandedChange = {expanded = !expanded
-            println("expanded = $expanded")
-        }
+        onExpandedChange = {expanded = !expanded },
+        modifier = modifier
     ) {
-        TextField(
+        BasicTextField(
             value = selectedOption ?: "Выбрать модификатор...",
             onValueChange = { },
             modifier = Modifier
-                .padding(top = 4.dp)
                 .onGloballyPositioned { coordinates ->
                     textFieldRect = coordinates.boundsInWindow()
                 }
-                .menuAnchor()
-                .then(modifier),
+                .clip(RoundedCornerShape(cornerRadius))
+                .background(color = dropMenuBackColor)
+                .menuAnchor(),
             readOnly = true,
-            trailingIcon = {
-                Icon(
-                    painterResource(R.drawable.row_up_icon),
-                    "",
-                    modifier = Modifier.rotate(rotationState),
-                    tint = Color.White
-                )
+            decorationBox = { innerText ->
+              Row(modifier = Modifier.fillMaxWidth()
+                  .defaultMinSize(minWidth = ButtonDefaults.MinWidth,
+                      minHeight = ButtonDefaults.MinHeight)
+                  .padding(ButtonDefaults.ContentPadding),
+                  verticalAlignment = Alignment.CenterVertically,
+                  horizontalArrangement = Arrangement.SpaceBetween
+                  ){
+                  Box(modifier = Modifier.weight(1f)) { // текст займет оставшееся место внутри поля
+                      innerText()
+                  }
+                  Icon(
+                      painterResource(R.drawable.row_up_icon),
+                      "",
+                      modifier = Modifier.rotate(rotationState),
+                      tint = Color.White
+                  )
+              }
             },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = dropMenuBackColor,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = Color.White,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White,
-                disabledIndicatorColor = Color.Transparent,
-            ),
             singleLine = true,
-            shape = RoundedCornerShape(cornerRadius),
-            placeholder = placeholder
+            textStyle = letterTextStyle
         )
         CustomDropdownMenu(
             expanded = expanded,
@@ -382,7 +387,7 @@ fun prevCheck() {
             description = "Лёгкие перчатки для воришек и лазутчиков",
             slot = listOf(BodyPart.RightHand),
             isEquipped = null,
-            passiveEffects = listOf(PassiveEffect("armorClass", 1f, "+1 к КБ")),
+            passiveEffects = listOf(PassiveEffectBasic("armorClass", 1f, "+1 к КБ")),
             armorWeight = ArmorWeight.Light,
             tir = 1
         ),
@@ -399,7 +404,7 @@ fun prevCheck() {
             description = "Золотое колечко как раз по вашему пальцу",
             isSet = true,
             passiveEffects = listOf(
-                PassiveEffect(
+                PassiveEffectBasic(
                 "intellegence",
                 1f,
                 "Заставляет ваших противников сомневаться в своей правоте")

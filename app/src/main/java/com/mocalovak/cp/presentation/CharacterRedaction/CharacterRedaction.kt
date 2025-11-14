@@ -32,6 +32,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -78,6 +79,7 @@ import com.mocalovak.cp.ui.theme.backColor
 import com.mocalovak.cp.ui.theme.borderColor
 import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.gradientButton
+import com.mocalovak.cp.ui.theme.letterTextStyle
 import com.mocalovak.cp.ui.theme.selectedBorderColor
 import com.mocalovak.cp.ui.theme.selectedButtonColor
 import com.mocalovak.cp.ui.theme.topContainer
@@ -85,6 +87,7 @@ import com.mocalovak.cp.utils.CustomToastHost
 import com.mocalovak.cp.utils.ToastState
 import com.mocalovak.cp.utils.ToastType
 import kotlin.math.floor
+import kotlin.math.sin
 
 @Composable
 fun RedactionCharacterScreen(
@@ -105,6 +108,7 @@ fun RedactionCharacterScreen(
     }
 }
 
+val labelRedactionSize = 13.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -186,7 +190,7 @@ fun EditCharacterScreen(character: Character,
                 .verticalScroll(scrollState)
                 .padding(top = innerPadding.calculateTopPadding())
                 .padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Spacer(Modifier.height(10.dp))
             Text(
@@ -224,7 +228,9 @@ fun EditCharacterScreen(character: Character,
 
 
             // Классы
-            Text("Класс", color = Color.White, modifier = Modifier.padding(top = 12.dp))
+            Text("Класс", color = Color.White,
+                fontSize = labelRedactionSize,
+                modifier = Modifier.padding(start = 7.dp))
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -259,7 +265,9 @@ fun EditCharacterScreen(character: Character,
                 }
 
             // Портрет
-            Text("Портрет", color = Color.White, modifier = Modifier.padding(top = 12.dp))
+            Text("Портрет", color = Color.White,
+                fontSize = labelRedactionSize,
+                modifier = Modifier.padding(start = 7.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -272,8 +280,6 @@ fun EditCharacterScreen(character: Character,
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add portrait", tint = borderColor)
             }
-
-            Spacer(Modifier.height(20.dp))
 
             Row(modifier = Modifier.fillMaxWidth()){
                 Column(modifier = Modifier.weight(1f)
@@ -292,6 +298,7 @@ fun EditCharacterScreen(character: Character,
                 }
             }
 
+            Spacer(Modifier.height(10.dp))
             // Параметры
             Text("Характеристики",
                 color = Color.White,
@@ -318,7 +325,7 @@ fun EditCharacterScreen(character: Character,
                         onIncrease = { characterCopy = characterCopy.copy(dexterity = characterCopy.dexterity + 1) }
                     )
                     StatStepper(
-                        "Выносл.",
+                        "Вынос.",
                         characterCopy.constitution,
                         onDecrease = { characterCopy = characterCopy.copy(constitution = characterCopy.constitution - 1) },
                         onIncrease = { characterCopy = characterCopy.copy(constitution = characterCopy.constitution + 1) }
@@ -411,27 +418,31 @@ fun convertFromString(value: String, errorMassage:String): Int {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharacterTextField(label: String, value: String, onValueChange: (String) -> Unit) {
     Column(Modifier.fillMaxWidth()) {
-        Text(label, color = Color.White)
-        TextField(
+        Text(label, color = Color.White,
+            fontSize = labelRedactionSize,
+            modifier = Modifier.padding(start = 7.dp))
+
+        Spacer(Modifier.height(4.dp))
+        BasicTextField(
             value = value,
             onValueChange = onValueChange,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 4.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = containerColor,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = Color.White,
-                focusedTextColor = Color.White,
-                unfocusedTextColor = Color.White
-            ),
+                .height(ButtonDefaults.MinHeight)
+                .clip(RoundedCornerShape(cornerRadius))
+                .background(color = containerColor),
             singleLine = true,
-            shape = RoundedCornerShape(cornerRadius)
+            textStyle = letterTextStyle,
+            decorationBox = { innerText ->
+                Box(modifier = Modifier.fillMaxSize()
+                    .padding(start = 15.dp),
+                    contentAlignment = Alignment.CenterStart){
+                    innerText()
+                }
+            }
         )
     }
 }
@@ -446,8 +457,9 @@ fun StatStepper(label: String, value: Int, onIncrease: () -> Unit, onDecrease: (
             .then(ColModifier)
     ) {
         Text(label, color = Color.White,
-            fontSize = 14.sp)
-        Spacer(modifier = Modifier.width(10.dp))
+            fontSize = labelRedactionSize,
+            modifier = Modifier.padding(start = 7.dp))
+        //Spacer(modifier = Modifier.width(10.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -455,10 +467,10 @@ fun StatStepper(label: String, value: Int, onIncrease: () -> Unit, onDecrease: (
             IconButton(onClick = onDecrease, modifier = Modifier.size(20.dp)) {
                 Icon(painterResource(R.drawable.minus_icon),
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = Color.Unspecified,
                     modifier = Modifier.clip(CircleShape))
             }
-            Text(value.toString().uppercase(), color = Color.White,
+            Text(value.toString(), color = Color.White,
                 fontSize = 16.sp,
                 modifier = Modifier
                     .width(40.dp)
@@ -469,7 +481,7 @@ fun StatStepper(label: String, value: Int, onIncrease: () -> Unit, onDecrease: (
             IconButton(onClick = onIncrease, modifier = Modifier.size(20.dp)) {
                 Icon(painterResource(R.drawable.plus_icon),
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = Color.Unspecified ,
                     modifier = Modifier.clip(CircleShape))
             }
         }
@@ -487,11 +499,12 @@ fun ModifiedStats(label:String,
             .fillMaxWidth()
     ) {
         Text(label, color = Color.White,
-            fontSize = 14.sp,
-            modifier = Modifier.weight(0.6f))
+            fontSize = labelRedactionSize,
+            modifier = Modifier.weight(0.6f)
+                .padding(start = 7.dp))
         Spacer(modifier = Modifier.width(10.dp))
             BasicTextField(
-                value = value.uppercase(),
+                value = value,
                 onValueChange = { onStatChange(it)},
                 modifier = Modifier
                     .width(50.dp)
@@ -529,34 +542,41 @@ fun EditDropdownMenu(label:String,
     )
 
     Column(modifier = Modifier.fillMaxWidth()) {
-        Text(label, color = Color.White)
-
+        Text(label, color = Color.White,
+            fontSize = labelRedactionSize,
+            modifier = Modifier.padding(start = 7.dp))
+        Spacer(Modifier.height(4.dp))
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
         ) {
             Column {
-                TextField(
+                BasicTextField(
                     value = selectedOption,
                     onValueChange = {},
                     modifier = Modifier
                         .fillMaxWidth()
+                        .height(ButtonDefaults.MinHeight)
+                        .clip(RoundedCornerShape(cornerRadius))
+                        .background(color = containerColor)
                         .menuAnchor(),
                     readOnly = true,
-                    trailingIcon = {
-                        Icon(
-                            painterResource(R.drawable.row_up_icon),
-                            null,
-                            modifier = Modifier.rotate(rotationState)
-                        )
+                    decorationBox = { innerText ->
+                        Box(modifier = Modifier.fillMaxSize()
+                            .padding(horizontal = 15.dp),
+                            contentAlignment = Alignment.CenterStart){
+                            innerText()
+                            Icon(
+                                painterResource(R.drawable.row_up_icon),
+                                null,
+                                modifier = Modifier
+                                    .rotate(rotationState)
+                                    .align(Alignment.CenterEnd)
+                            )
+                        }
                     },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = containerColor,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
                     singleLine = true,
-                    shape = RoundedCornerShape(cornerRadius)
+                    textStyle = letterTextStyle
                 )
                 Spacer(Modifier.height(5.dp))
                 // Кастомное меню без Popup

@@ -1,7 +1,5 @@
 package com.mocalovak.cp.presentation.Character
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -30,13 +28,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -50,7 +45,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -64,6 +58,7 @@ import com.mocalovak.cp.domain.model.BodyPart
 import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.domain.model.Equipment
 import com.mocalovak.cp.domain.model.PassiveEffect
+import com.mocalovak.cp.domain.model.PassiveEffectBasic
 import com.mocalovak.cp.domain.model.takeString
 import com.mocalovak.cp.ui.theme.BrightPurple
 import com.mocalovak.cp.ui.theme.LightGreen
@@ -73,7 +68,6 @@ import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.filterButtonBack
 import com.mocalovak.cp.ui.theme.halfAppWhite
 import com.mocalovak.cp.ui.theme.hptems
-import com.mocalovak.cp.ui.theme.letterTextStyle
 import com.mocalovak.cp.ui.theme.otherContainer
 import com.mocalovak.cp.ui.theme.subButton
 import com.mocalovak.cp.ui.theme.topContainer
@@ -99,8 +93,6 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel(),
     )
 
     val selectedFilters by vm.equipmentFilters.collectAsState()
-    val context = LocalContext.current
-
 
     Column(modifier = Modifier.padding(10.dp)) {
         Row(
@@ -193,20 +185,27 @@ fun BodyPartAskingDialog(
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         fontSize = 18.sp)
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(20.dp))
                 Row(horizontalArrangement = Arrangement.SpaceAround,
-                    modifier = Modifier.fillMaxWidth()) {
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = 15.dp)) {
                     Button(onClick = {onEquipClick(slots[0])},
-                        colors = ButtonDefaults.buttonColors(containerColor = button2)){
+                        colors = ButtonDefaults.buttonColors(containerColor = button2),
+                        shape = RoundedCornerShape(cornerRadius),
+                        modifier = Modifier.weight(1f)
+                    ){
                         Text(text = NameConverter(slots[0]))
                     }
-
+                    Spacer(Modifier.width(10.dp))
                     Button(onClick = {onEquipClick(slots[1])},
-                            colors = ButtonDefaults.buttonColors(containerColor = subButton)){
+                        colors = ButtonDefaults.buttonColors(containerColor = subButton),
+                        shape = RoundedCornerShape(cornerRadius),
+                        modifier = Modifier.weight(1f)){
                             Text(text = NameConverter(slots[1]))
                     }
 
                 }
+                Spacer(Modifier.height(10.dp))
             }
         }
     }
@@ -214,9 +213,9 @@ fun BodyPartAskingDialog(
 
 
 @Composable
-fun DeleteAcceptDialog(
+fun AcceptingDialog(
     text: String,
-    onDeleteClick: () -> Unit,
+    onConfirm: () -> Unit,
     onDismiss: () -> Unit
 ){
 
@@ -243,7 +242,7 @@ fun DeleteAcceptDialog(
                 Row(horizontalArrangement = Arrangement.SpaceAround,
                     modifier = Modifier.fillMaxWidth()
                         .padding(horizontal = 15.dp)) {
-                    Button(onClick = {onDeleteClick()},
+                    Button(onClick = {onConfirm()},
                         colors = ButtonDefaults.buttonColors(containerColor = button2),
                         modifier = Modifier.weight(1f),
                         shape = RoundedCornerShape(cornerRadius)
@@ -258,8 +257,8 @@ fun DeleteAcceptDialog(
                     ){
                         Text(text = "Нет")
                     }
-
                 }
+                Spacer(Modifier.height(10.dp))
             }
         }
     }
@@ -281,7 +280,6 @@ fun ExpandableEquipmentCard(
 
     var showBodyPartAsk by remember { mutableStateOf(false) }
     var showDeleteAcceptDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
 
     if (showBodyPartAsk) {
         BodyPartAskingDialog(
@@ -296,8 +294,8 @@ fun ExpandableEquipmentCard(
     }
 
     if (showDeleteAcceptDialog) {
-        DeleteAcceptDialog(text = "Выбросить ${equipment.name} из багажа?",
-            onDeleteClick = {
+        AcceptingDialog(text = "Выбросить ${equipment.name} из багажа?",
+            onConfirm = {
                 onDeleteClick()
                 showDeleteAcceptDialog = false
             }) {
@@ -382,7 +380,7 @@ fun ExpandableEquipmentCard(
                                 ParameterView("Шанс", "${(it * 100).toInt()}%")
                             }
                             equipment.passiveEffects?.let {
-                                ParameterView("Пассивно:", it.takeString())
+                                ParameterView("Пассивно", it.takeString())
                             }
                         }
                     }
@@ -394,11 +392,11 @@ fun ExpandableEquipmentCard(
                         ) {
 
                             ParameterView(
-                                "Тип брони: ",
+                                "Тип брони ",
                                 NameConverter(equipment.armorWeight ?: "—")
                             )
                             ParameterView(
-                                "Пассивно: ",
+                                "Пассивно ",
                                 equipment.passiveEffects?.takeString() ?: "—"
                             )
 
@@ -407,7 +405,7 @@ fun ExpandableEquipmentCard(
 
                     is Equipment.Artifact -> {
                         ParameterView(
-                            "Пассивный эффект: ",
+                            "Пассивный эффект ",
                             equipment.passiveEffects.takeString()
                         )
                     }
@@ -418,7 +416,7 @@ fun ExpandableEquipmentCard(
                             verticalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
                             equipment.effect?.let {
-                                ParameterView("Эффект: ", equipment.effect)
+                                ParameterView("Эффект ", equipment.effect)
                             }
                         }
                     }
@@ -451,6 +449,7 @@ fun ExpandableEquipmentCard(
                                 )
                                 Text(
                                     text = "Снять",
+                                    fontSize = 15.sp,
                                     modifier = Modifier.padding(8.dp)
                                         .clip(RoundedCornerShape(38.dp))
                                         .clickable { onUnEquipClick() }
@@ -517,7 +516,7 @@ fun ExpandableEquipmentCard(
                 if (withAdd) {
                     Text(
                         text = "Добавить",
-                        modifier = Modifier.padding(8.dp)
+                        modifier = Modifier.padding(vertical = 8.dp)
                             .clip(RoundedCornerShape(38.dp))
                             .clickable { onAddClick() }
                             .background(otherContainer)
@@ -610,14 +609,14 @@ fun EquipListPreview(){
         )
     )
 
-//    ExpandableEquipmentCard(
-//        equipList[3], true, {},
-//        withEquip = true,
-//        onEquipClick = {},
-//        onUnEquipClick = {},
-//        withAdd = false,
-//        onAddClick = {},
-//        onDeleteClick = {}
-//    )
-    DeleteAcceptDialog(text = "Выбросить Кинжал из багажа?", {})  { }
+    ExpandableEquipmentCard(
+        equipList[1], true, {},
+        withEquip = true,
+        onEquipClick = {},
+        onUnEquipClick = {},
+        withAdd = false,
+        onAddClick = {},
+        onDeleteClick = {}
+    )
+    //AcceptingDialog(text = "Выбросить Кинжал из багажа?", {})  { }
 }

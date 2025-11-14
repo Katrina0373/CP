@@ -3,10 +3,12 @@ package com.mocalovak.cp.presentation.Scaffold
 import android.app.Activity
 import androidx.annotation.RestrictTo
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -79,11 +81,12 @@ fun BottomBar(navController: NavController, scaffoldVM: ScaffoldViewModel = hilt
         modifier = Modifier
             .fillMaxWidth(),
         shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
-        shadowElevation = 8.dp
+        shadowElevation = 8.dp,
     ) {
         NavigationBar(
-            containerColor = topContainer
+            containerColor = topContainer,
         ) {
+            Spacer(Modifier.width(10.dp))
             items.forEach { screen ->
                 val selected = currentRoute == screen.route
                 NavigationBarItem(
@@ -99,7 +102,6 @@ fun BottomBar(navController: NavController, scaffoldVM: ScaffoldViewModel = hilt
                     selected = selected,
                     onClick = {
                         val id = scaffoldVM.lastCharacterId.value
-                        println("id scaffold: $id")
                         if (currentRoute != screen.route) {
                             if(screen is Screen.Character) {
                                 navController.navigateSingleTopTo(screen.createRoute(id))
@@ -113,10 +115,11 @@ fun BottomBar(navController: NavController, scaffoldVM: ScaffoldViewModel = hilt
                         }
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = Color.Transparent
+                        indicatorColor = Color.Transparent,
                     )
                 )
             }
+            Spacer(Modifier.width(10.dp))
         }
     }
 }

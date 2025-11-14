@@ -105,6 +105,7 @@ class CharacterViewModel @Inject constructor(
         )
 
     val allEquipment = _equipment.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    val allSkills = _skills.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun updateEquipmentFilter(filter: Any){
         _equipmentFilters.update { current ->

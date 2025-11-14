@@ -55,17 +55,17 @@ fun RestDialog(level:Int,
             colors = CardDefaults.cardColors(containerColor = topContainer)
         ){
 
+            Icon(imageVector = Icons.Default.Close,
+                tint = halfAppWhite,
+                contentDescription = "close icon",
+                modifier = Modifier.align(Alignment.End)
+                    .clickable { onDismiss() })
+
             Column(modifier = Modifier.fillMaxWidth()
                 .padding(vertical = 5.dp, horizontal = 17.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(12.dp),
+                verticalArrangement = Arrangement.spacedBy(17.dp),
                 ){
-
-                Icon(imageVector = Icons.Default.Close,
-                    tint = halfAppWhite,
-                    contentDescription = "close icon",
-                    modifier = Modifier.align(Alignment.End)
-                        .clickable { onDismiss() })
 
                 Text("Ваши кубики\n восстановления за отдых",
                     fontSize = 16.sp,
@@ -79,7 +79,7 @@ fun RestDialog(level:Int,
                     modifier = Modifier.fillMaxWidth()
                         .background(color = otherContainer,
                             shape = RoundedCornerShape(cornerRadius))
-                        .padding(10.dp),
+                        .padding(horizontal = 13.dp, vertical = 20.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ){
@@ -115,8 +115,7 @@ fun RestDialog(level:Int,
                     ) {
                         Text("Да")
                     }
-
-                    Spacer(Modifier.width(5.dp))
+                    Spacer(Modifier.width(10.dp))
                     Button(
                         onClick = onDismiss,
                         colors = ButtonDefaults.buttonColors(containerColor = subButton),
@@ -126,6 +125,7 @@ fun RestDialog(level:Int,
                         Text("Отмена")
                     }
                 }
+                Spacer(Modifier.height(10.dp))
             }
         }
     }
