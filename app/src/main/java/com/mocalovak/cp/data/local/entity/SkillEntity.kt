@@ -23,8 +23,8 @@ data class SkillEntity(
     val source: Source,
     val accessLevel: Int,
     val check: String?, //checking value magic, strength, and else
-    val savingThrow: String?, //спасбросок
-    val difficulty: Int?, //сложность спасброска
+    val savingThrow: String? = null, //спасбросок
+    val difficulty: Int? = null, //сложность спасброска
     val recharge: String?, //перезарядка
     val damage: String?, //урон
     val actionTime: String?,
