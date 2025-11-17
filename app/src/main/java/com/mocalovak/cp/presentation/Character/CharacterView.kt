@@ -175,7 +175,7 @@ fun CharacterView(
                         .clickable { showLanguagesDialog = true }
                         .padding(vertical = 13.dp, horizontal = 20.dp)) {
                     Text(
-                        ("Языки: " + if(character.languages.isNullOrEmpty()) "Нажмите, чтобы выбрать известные языки" else character.languages.joinToString(", ")),
+                        ("Языки: " + if(character.languages.isNullOrEmpty()) "Нажмите, чтобы выбрать" else character.languages.joinToString(", ")),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -258,7 +258,6 @@ fun CharacterView(
                 paddingValues = padding
             )
         }
-        CustomToastHost()
     }
 }
 
@@ -945,6 +944,7 @@ fun ChangingDialog(
                     .fillMaxWidth()
             )
         }
+        CustomToastHost()
     }
 }
 

@@ -1,7 +1,12 @@
 package com.mocalovak.cp.presentation.Character
 
 import android.util.Log
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.repeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,6 +21,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,11 +40,13 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -67,11 +75,13 @@ import com.mocalovak.cp.domain.model.PassiveEffect
 import com.mocalovak.cp.domain.model.PassiveEffectWithCondition
 import com.mocalovak.cp.domain.model.Race
 import com.mocalovak.cp.domain.model.Skill
+import com.mocalovak.cp.presentation.CharacterRedaction.StatStepper
 import com.mocalovak.cp.ui.theme.CPTheme
 import com.mocalovak.cp.ui.theme.ExpandedListBackColor
 import com.mocalovak.cp.ui.theme.ExpandedListFocusedColor
 import com.mocalovak.cp.ui.theme.Green5C
 import com.mocalovak.cp.ui.theme.button2
+import com.mocalovak.cp.ui.theme.containerColor
 import com.mocalovak.cp.ui.theme.dropMenuBackColor
 import com.mocalovak.cp.ui.theme.gradientButton
 import com.mocalovak.cp.ui.theme.halfAppWhite
@@ -112,6 +122,9 @@ fun DiceChecking(onDismiss: () -> Unit,
         Modification.CHARISMA to character.charisma
     )
     var chosenModifier by remember { mutableStateOf<Modification?>(null) }
+    var dicesCount by remember { mutableIntStateOf(1) }
+    var shakeTrigger by remember { mutableStateOf(false) }
+
 
     Card(modifier = Modifier
         .fillMaxSize()
@@ -162,13 +175,36 @@ fun DiceChecking(onDismiss: () -> Unit,
                     modifier = Modifier.weight(1f)
                 )
                 Spacer(Modifier.width(10.dp))
-                GradientButton(
-                    text = "Бросить",
-                    gradient = gradientButton,
-                    onClick = {
-                        sum = Random.nextInt(chosenDice.number) + 1
-                    },
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    IconButton(onClick = {if(dicesCount >1) dicesCount -= 1}, modifier = Modifier.size(20.dp)) {
+                        Icon(painterResource(R.drawable.minus_icon),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.clip(CircleShape))
+                    }
+                    Box(modifier = Modifier
+                        .size(width = 60.dp, height = ButtonDefaults.MinHeight)
+                        .clip(RoundedCornerShape(cornerRadius))
+                        .background(dropMenuBackColor),
+                        contentAlignment = Alignment.Center) {
+                        Text(
+                            dicesCount.toString(), color = Color.White,
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .padding(horizontal = 6.dp, vertical = 7.dp),
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                    IconButton(onClick = {dicesCount += 1}, modifier = Modifier.size(20.dp)) {
+                        Icon(painterResource(R.drawable.plus_icon),
+                            contentDescription = null,
+                            tint = Color.Unspecified ,
+                            modifier = Modifier.clip(CircleShape))
+                    }
+                }
             }
             if(chosenDice != Dices.d100) {
                 EditDropDownMenu(
@@ -180,6 +216,21 @@ fun DiceChecking(onDismiss: () -> Unit,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
+            Spacer(Modifier.height(10.dp))
+
+            GradientButton(
+                text = "Бросить кубик",
+                gradient = gradientButton,
+                onClick = {
+                    shakeTrigger = !shakeTrigger
+                    sum = 0
+                    repeat(dicesCount) {
+                        sum += Random.nextInt(chosenDice.number) + 1
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 50.dp)
+            )
 
             Spacer(Modifier.height(10.dp))
 
@@ -198,17 +249,11 @@ fun DiceChecking(onDismiss: () -> Unit,
                         style = MaterialTheme.typography.titleMedium
                     )
 
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        Image(
-                            painter = painterResource(chosenDice.icRes), "Dice",
-                            modifier = Modifier.align(Alignment.Center)
-                        )
-                        Text(
-                            sum.toString().uppercase(),
-                            modifier = Modifier.align(Alignment.Center),
-                            fontSize = 20.sp
-                        )
-                    }
+                    ShakingDice(
+                        sum,
+                        chosenDice.icRes,
+                        shakeTrigger
+                    )
                 }
                 Column(
                     modifier = Modifier.weight(1f)
@@ -274,6 +319,47 @@ fun DiceChecking(onDismiss: () -> Unit,
 
     }
 }
+
+@Composable
+fun ShakingDice(
+    sum: Int,
+    diceRes: Int,
+    trigger: Boolean
+) {
+    val shakeAnim = remember { Animatable(0f) }
+
+    LaunchedEffect(trigger) {
+        shakeAnim.animateTo(
+            targetValue = 1f,
+            animationSpec = repeatable(
+                iterations = 6,
+                animation = tween(
+                    durationMillis = 50,
+                    easing = LinearEasing
+                ),
+                repeatMode = RepeatMode.Reverse
+            )
+        )
+        shakeAnim.snapTo(0f)
+    }
+
+    Box(
+        modifier = Modifier.offset(x = (shakeAnim.value * 8).dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(diceRes),
+            contentDescription = null
+        )
+        Text(
+            sum.toString(),
+            color = Color.White,
+            fontSize = 20.sp
+        )
+    }
+}
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
