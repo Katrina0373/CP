@@ -48,6 +48,7 @@ import com.mocalovak.cp.ui.theme.filterButtonBack
 import com.mocalovak.cp.ui.theme.halfAppWhite
 import com.mocalovak.cp.ui.theme.hptems
 import com.mocalovak.cp.ui.theme.numBack
+import com.mocalovak.cp.ui.theme.selectedBorderColor
 import com.mocalovak.cp.ui.theme.unfocusedFilterButtonBack
 import com.mocalovak.cp.utils.NameConverter
 
@@ -125,7 +126,11 @@ fun SkillExplorer(vm: SkillExplorerViewModel = hiltViewModel(),
                         selectedContainerColor = filterButtonBack
                     ),
                     shape = RoundedCornerShape(cornerRadius),
-                    border = null
+                    border = FilterChipDefaults.filterChipBorder(enabled = true,
+                        selected = selectedFilters.getValue(filter),
+                        borderColor = Color.Transparent,
+                        selectedBorderColor = selectedBorderColor
+                    )
                 )
             }
         }

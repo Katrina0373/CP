@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -56,12 +57,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -85,6 +92,8 @@ import com.mocalovak.cp.ui.theme.otherContainer
 import com.mocalovak.cp.ui.theme.subTextColor
 import com.mocalovak.cp.ui.theme.topContainer
 import com.mocalovak.cp.utils.CustomToastHost
+import com.mocalovak.cp.utils.ToastState
+import com.mocalovak.cp.utils.ToastType
 import com.mocalovak.cp.utils.loadImageFromAssets
 import kotlinx.coroutines.launch
 import kotlin.math.floor
@@ -123,6 +132,7 @@ fun CharacterView(
     var showLanguagesDialog by remember { mutableStateOf(false) }
     var showRestDialog by remember { mutableStateOf(false) }
     var showDiceChecking by remember { mutableStateOf(false) }
+    var showLevelUpConfirm by remember { mutableStateOf(false) }
 
     Scaffold(topBar = {TopBarCharacter(character, onBackClick)}, modifier = Modifier.fillMaxSize()) { padding ->
 
@@ -139,7 +149,7 @@ fun CharacterView(
                     onGoldClick = { showGoldDialog = true },
                     increaseMana = { charVM.updateMana(character.currentMana + 1) },
                     decreaseMana = { charVM.updateMana(character.currentMana - 1) },
-                    levelUp = { charVM.levelUp() },
+                    levelUp = { showLevelUpConfirm = true },
                     onRestDialogClick = { showRestDialog = true }
                 )
 
@@ -165,7 +175,7 @@ fun CharacterView(
                         .clickable { showLanguagesDialog = true }
                         .padding(vertical = 13.dp, horizontal = 20.dp)) {
                     Text(
-                        ("Языки: " + if(character.languages.isNullOrEmpty()) "" else character.languages.joinToString(", ")),
+                        ("Языки: " + if(character.languages.isNullOrEmpty()) "Нажмите, чтобы выбрать известные языки" else character.languages.joinToString(", ")),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -184,8 +194,6 @@ fun CharacterView(
                         changingValue = ChangingValues.Health,
                         currentValue = character.currentHP,
                         maxValue = character.maxHP,
-                        onIncrease = { charVM.updateHP(character.currentHP + 1) },
-                        onDecrease = { charVM.updateHP(character.currentHP - 1) }
                     )
                 }
                 if (showManaDialog) {
@@ -196,8 +204,6 @@ fun CharacterView(
                         changingValue = ChangingValues.Mana,
                         currentValue = character.currentMana,
                         maxValue = character.maxMana,
-                        onIncrease = { charVM.updateMana(character.currentMana + 1) },
-                        onDecrease = { charVM.updateMana(character.currentMana - 1) }
                     )
                 }
                 if (showGoldDialog) {
@@ -208,8 +214,6 @@ fun CharacterView(
                         changingValue = ChangingValues.Gold,
                         currentValue = character.gold,
                         maxValue = null,
-                        onIncrease = { charVM.updateGold(character.gold + 1) },
-                        onDecrease = { charVM.updateGold(character.gold - 1) }
                     )
                 }
 
@@ -232,6 +236,16 @@ fun CharacterView(
                             charVM.updateMana(min(character.currentMana + mana, character.maxMana))
                             showRestDialog = false
                         })
+                }
+
+                if (showLevelUpConfirm) {
+                    AcceptingDialog(
+                        text = "Хотите перейти на следующий уровень?",
+                        onConfirm = { charVM.levelUp()
+                            showLevelUpConfirm = false
+                        },
+                        onDismiss = { showLevelUpConfirm = false }
+                    )
                 }
 
             }
@@ -447,7 +461,9 @@ fun ExpandableBox(
                                 contentDescription = "levelup",
                                 modifier = Modifier.padding(start = 7.dp)
                                     .clip(CircleShape)
-                                    .clickable(onClick = levelUp))
+                                    .clickable(
+
+                                        onClick = levelUp))
                         }
                             Text("Уровень",
                                 color = subTextColor,
@@ -614,22 +630,26 @@ fun StatsContent(character: Character) {
             Text("Выносливость", color = Color.White)
         }
         Column(verticalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxHeight()) {
-            Text("${character.strength}".uppercase(), color = Color.White,
+            Text("${character.strength}", color = Color.White,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
-                    .padding(horizontal = 10.dp))
-            Text("${character.dexterity}".uppercase(), color = Color.White,
+                    .width(40.dp))
+            Text("${character.dexterity}", color = Color.White,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
-                    .padding(horizontal = 10.dp))
-            Text("${character.perception}".uppercase(), color = Color.White,
+                    .width(40.dp))
+            Text("${character.perception}", color = Color.White,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
-                    .padding(horizontal = 10.dp))
-            Text("${character.constitution}".uppercase(), color = Color.White,
+                    .width(40.dp))
+            Text("${character.constitution}", color = Color.White,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
-                    .padding(horizontal = 10.dp))
+                    .width(40.dp))
         }
         Column(verticalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxHeight()) {
             Text("Магия", color = Color.White)
@@ -638,18 +658,21 @@ fun StatsContent(character: Character) {
             Text("")
         }
         Column(verticalArrangement = Arrangement.SpaceAround, modifier = Modifier.fillMaxHeight()) {
-            Text("${character.magic}".uppercase(), color = Color.White,
+            Text("${character.magic}", color = Color.White,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
-                    .padding(horizontal = 10.dp))
-            Text("${character.intelligence}".uppercase(), color = Color.White,
+                    .width(40.dp))
+            Text("${character.intelligence}", color = Color.White,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
-                    .padding(horizontal = 10.dp))
-            Text("${character.charisma}".uppercase(), color = Color.White,
+                    .width(40.dp))
+            Text("${character.charisma}", color = Color.White,
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .background(color = numBack, shape = RoundedCornerShape(8.dp))
-                    .padding(horizontal = 10.dp))
+                    .width(40.dp))
             Text("")
         }
     }
@@ -662,19 +685,18 @@ fun ChangingDialog(
     label: String,
     changingValue: ChangingValues,
     currentValue:Int, maxValue:Int?,
-    onIncrease: () -> Unit,
-    onDecrease: () -> Unit,
 ) {
-    var increaseValue by remember { mutableStateOf("0") }
-    var decreaseValue by remember { mutableStateOf("0") }
+    val focusManager = LocalFocusManager.current
+    var increaseValue by remember { mutableStateOf("") }
+    var decreaseValue by remember { mutableStateOf("") }
+    var currentValueTemp by remember { mutableStateOf(currentValue.toString()) }
     Dialog(onDismissRequest = onDismiss) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Card(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 10.dp),
+                    .fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = topContainer
@@ -714,29 +736,44 @@ fun ChangingDialog(
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-                                    IconButton(onClick = onDecrease, modifier = Modifier.size(20.dp)) {
+                                    IconButton(onClick = {
+                                        currentValueTemp = (currentValueTemp.toInt() - 1).toString()
+                                                         }, modifier = Modifier.size(20.dp)) {
                                         Icon(painterResource(R.drawable.minus_icon),
                                             contentDescription = null,
                                             tint = Color.Unspecified,
                                             modifier = Modifier.clip(CircleShape))
                                     }
-                                    Box(
+
+                                    BasicTextField(
+                                        value = currentValueTemp,
+                                        onValueChange = {currentValueTemp = it},
                                         modifier = Modifier
-                                            .height(30.dp)
+                                            .size(width = 50.dp, height = 30.dp)
                                             .background(
                                                 color = numBack,
                                                 shape = RoundedCornerShape(8.dp)
-                                            )
-                                            .padding(horizontal = 10.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            text = currentValue.toString().uppercase(),
+                                            ),
+                                        textStyle = LocalTextStyle.current.copy(
                                             color = Color.White,
-                                            textAlign = TextAlign.Center,
-                                        )
-                                    }
-                                    IconButton(onClick = onIncrease, modifier = Modifier.size(20.dp)) {
+                                            textAlign = TextAlign.Center
+                                        ),
+                                        singleLine = true,
+                                        decorationBox = { innerTextField ->
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                modifier = Modifier.fillMaxWidth()
+                                            ){
+                                                innerTextField()
+                                            }
+
+                                        },
+                                        cursorBrush = SolidColor(Color.White),
+                                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                                    )
+                                    IconButton(onClick = {
+                                        currentValueTemp = (currentValueTemp.toInt() + 1).toString()
+                                    }, modifier = Modifier.size(20.dp)) {
                                         Icon(painterResource(R.drawable.plus_icon),
                                             contentDescription = null,
                                             tint = Color.Unspecified,
@@ -791,7 +828,7 @@ fun ChangingDialog(
                             fontSize = 13.sp,
                             color = subTextColor)
                         BasicTextField(
-                            value = decreaseValue.uppercase(),
+                            value = decreaseValue,
                             onValueChange = { decreaseValue = it },
                             modifier = Modifier
                                 .size(height = 30.dp, width = 50.dp)
@@ -811,9 +848,19 @@ fun ChangingDialog(
                                         tint = Color.Red,
                                         modifier = Modifier.padding(horizontal = 3.dp)
                                     )
-                                    innerTextField()
+                                    Box(contentAlignment = Alignment.Center,
+                                        modifier = Modifier.weight(1f)) {
+                                        if (decreaseValue.isBlank()) {
+                                            Text(
+                                                "0",
+                                                color = Color.White.copy(alpha = 0.4f),
+                                            )
+                                        } else
+                                        innerTextField()
+                                    }
                                 }
                             },
+                            cursorBrush = SolidColor(Color.White),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
                     }
@@ -825,7 +872,7 @@ fun ChangingDialog(
                                 color = subTextColor
                             )
                             BasicTextField(
-                                value = increaseValue.uppercase(),
+                                value = increaseValue,
                                 onValueChange = { increaseValue = it },
                                 modifier = Modifier
                                     .size(height = 30.dp, width = 50.dp)
@@ -844,9 +891,19 @@ fun ChangingDialog(
                                             tint = Color.Green,
                                             modifier = Modifier.padding(horizontal = 3.dp)
                                         )
-                                        innerTextField()
+                                        Box(contentAlignment = Alignment.Center,
+                                            modifier = Modifier.weight(1f)) {
+                                            if (increaseValue.isBlank()) {
+                                                Text(
+                                                    "0",
+                                                    color = Color.White.copy(alpha = 0.4f),
+                                                )
+                                            } else
+                                                innerTextField()
+                                        }
                                     }
                                 },
+                                cursorBrush = SolidColor(Color.White),
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                             )
                         }
@@ -856,6 +913,7 @@ fun ChangingDialog(
                             onClick = {
                                 if (maxValue != null) {
                                     onConfirm(maxValue)
+                                    currentValueTemp = maxValue.toString()
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = button2)
@@ -865,14 +923,22 @@ fun ChangingDialog(
                     }
                 }
             }
+            Spacer(Modifier.height(10.dp))
             GradientButton(
                 text = "Подтвердить",
                 gradient = gradientButton,
                 onClick = {
-                    val result =
-                        currentValue - (if (decreaseValue.isNotBlank()) decreaseValue.toInt() else 0) + (if (increaseValue.isNotBlank()) increaseValue.toInt() else 0)
-                    onConfirm(result)
-                    onDismiss()
+                    try {
+                        val result =
+                            currentValueTemp.toInt() - (if (decreaseValue.isNotBlank()) decreaseValue.toInt() else 0) + (if (increaseValue.isNotBlank()) increaseValue.toInt() else 0)
+                        currentValueTemp = result.toString()
+                        onConfirm(result)
+                    } catch (e:Exception){
+                        ToastState.message = "Введены неверные данные"
+                        ToastState.toastType = ToastType.ERROR
+                        ToastState.showToast = true
+                    }
+                    //onDismiss()
                 },
                 modifier = Modifier
                     .height(buttonHeight)
@@ -884,8 +950,7 @@ fun ChangingDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
-                    character: Character,
+fun TopBarCharacter(character: Character,
                     onBackClick: () -> Unit
 ){
     val context = LocalContext.current
@@ -893,34 +958,23 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
         windowInsets = WindowInsets(0,4,0,0),
         title = {
                 Column(modifier = Modifier.fillMaxWidth().
-                    padding(end = 30.dp),
+                    padding(vertical = 5.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Top) {
+                    verticalArrangement = Arrangement.SpaceAround) {
                     Text(
                         character.name,
                         color = Color.White,
                         fontSize = 20.sp
                     )
                     Text(
-                        "${character.classification} ${character.profession1 ?: ""} ${character.race.name}",
+                        "${character.classification} ${character.profession2 ?: character.profession1 ?: ""} ${character.race.name}",
                         fontSize = 14.sp,
-                        color = halfAppWhite
+                        color = halfAppWhite,
+                        lineHeight = 16.sp
                     )
 
                 }
-            Box(modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.CenterEnd){
-                val painter = loadImageFromAssets(context, character.imagePath) ?:  rememberVectorPainter(Icons.Default.AccountCircle)
-                Image(
-                    painter = painter,
-                    contentDescription = "View",
-                    modifier = Modifier
-                        .padding(3.dp)
-                        .size(55.dp)
-                        .clip(CircleShape)
-                        .padding(2.dp)
-                )
-            }},
+            },
         navigationIcon = {
             IconButton(
                 onClick = onBackClick,
@@ -932,6 +986,21 @@ fun TopBarCharacter(//charVM: CharacterViewModel = hiltViewModel(),
                         )
                 }
                 ) },
+        actions = {
+            Box(//modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.CenterEnd){
+                val painter = loadImageFromAssets(context, character.imagePath) ?:  rememberVectorPainter(Icons.Default.AccountCircle)
+                Image(
+                    painter = painter,
+                    contentDescription = "View",
+                    modifier = Modifier
+                        .padding(3.dp)
+                        .size(55.dp)
+                        .clip(CircleShape)
+                        .padding(2.dp)
+                )
+            }
+        },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = topContainer),
         )
 
@@ -971,16 +1040,17 @@ fun PrevChar(){
             )
         //ExpandableBox(true, character, {}, {}, {}, {}, {}, {})
 
-//        ChangingDialog(
-//            {},
-//            onConfirm = {},
-//            label = "Здоровье",
-//            changingValue = ChangingValues.Health,
-//            currentValue = character.currentHP,
-//            maxValue = character.maxHP,
-//            {} ,{}
-//        )
-        BottomActionButtons({}) { }
+        ChangingDialog(
+            {},
+            onConfirm = {},
+            label = "Здоровье",
+            changingValue = ChangingValues.Health,
+            currentValue = character.currentHP,
+            maxValue = character.maxHP,
+        )
+        //StatsContent(character)
+        //BottomActionButtons({}) { }
+        //TopBarCharacter(character) { }
     }
 
 }

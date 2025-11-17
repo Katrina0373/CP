@@ -29,8 +29,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import com.mocalovak.cp.R
 import com.mocalovak.cp.presentation.Character.cornerRadius
 import com.mocalovak.cp.ui.theme.ErrorRed
@@ -59,22 +61,20 @@ object ToastState {
         showToast = false
     }
 }
-
 @Composable
 fun CustomToastHost(
-    modifier: Modifier = Modifier,
     durationMillis: Long = 1500L
 ) {
     if (ToastState.showToast) {
-        // авто-скрытие после задержки
+
         LaunchedEffect(ToastState.message) {
             delay(durationMillis)
             ToastState.hide()
         }
 
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter
+        Popup(
+            alignment = Alignment.BottomCenter,
+            offset = IntOffset(0, -40)   // поднимает toast над нижним краем
         ) {
             AnimatedVisibility(
                 visible = ToastState.showToast,
@@ -85,7 +85,6 @@ fun CustomToastHost(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
-                        .fillMaxWidth()
                         .padding(horizontal = 20.dp, vertical = 30.dp)
                         .background(
                             ToastState.toastType.backcolor,

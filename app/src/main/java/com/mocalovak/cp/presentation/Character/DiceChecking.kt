@@ -64,11 +64,12 @@ import com.mocalovak.cp.domain.model.Character
 import com.mocalovak.cp.domain.model.Equipment
 import com.mocalovak.cp.domain.model.Modification
 import com.mocalovak.cp.domain.model.PassiveEffect
-import com.mocalovak.cp.domain.model.PassiveEffectBasic
 import com.mocalovak.cp.domain.model.PassiveEffectWithCondition
 import com.mocalovak.cp.domain.model.Race
 import com.mocalovak.cp.domain.model.Skill
 import com.mocalovak.cp.ui.theme.CPTheme
+import com.mocalovak.cp.ui.theme.ExpandedListBackColor
+import com.mocalovak.cp.ui.theme.ExpandedListFocusedColor
 import com.mocalovak.cp.ui.theme.Green5C
 import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.dropMenuBackColor
@@ -169,14 +170,16 @@ fun DiceChecking(onDismiss: () -> Unit,
                     },
                 )
             }
-            EditDropDownMenu(
-                options = modifiers.keys.map { it.title }.toList(),
-                onValueChange = { name ->
-                    chosenModifier = Modification.entries.find { it.title == name }
-                },
-                currentValue = -1,
-                modifier = Modifier.fillMaxWidth()
-            )
+            if(chosenDice != Dices.d100) {
+                EditDropDownMenu(
+                    options = modifiers.keys.map { it.title }.toList(),
+                    onValueChange = { name ->
+                        chosenModifier = Modification.entries.find { it.title == name }
+                    },
+                    currentValue = -1,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
 
             Spacer(Modifier.height(10.dp))
 
@@ -225,8 +228,9 @@ fun DiceChecking(onDismiss: () -> Unit,
                             painter = painterResource(R.drawable.sum_back_ic), "Dice",
                             modifier = Modifier.align(Alignment.Center)
                         )
+                        val bonus: Int? = if(chosenDice != Dices.d100) (modifiers[chosenModifier]) else 0
                         Text(
-                            (sum + (modifiers[chosenModifier] ?: 0)).toString().uppercase(),
+                            (sum + (bonus ?: 0)).toString().uppercase(),
                             modifier = Modifier.align(Alignment.Center),
                             fontSize = 20.sp
                         )
@@ -243,7 +247,7 @@ fun DiceChecking(onDismiss: () -> Unit,
                         tint = Green5C
                     )
                     Spacer(Modifier.width(10.dp))
-                    Column {
+                    Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
                         Text("Не забудьте добавить пассивные эффекты")
                         effects.forEach {
                             if (it.parameter.equals(
@@ -332,8 +336,8 @@ fun EditDropDownMenu(options: List<String>,
             selectedOption = selectedOption ?: "",
             onSelect = {selectedOption = it
                        onValueChange(it)},
-            backColor = Color(0xFF353A7F),
-            focusedItemColor = Color(0xFF3E4499),
+            backColor = ExpandedListBackColor,
+            focusedItemColor = ExpandedListFocusedColor,
         )
     }
 }
@@ -387,7 +391,7 @@ fun prevCheck() {
             description = "Лёгкие перчатки для воришек и лазутчиков",
             slot = listOf(BodyPart.RightHand),
             isEquipped = null,
-            passiveEffects = listOf(PassiveEffectBasic("armorClass", 1f, "+1 к КБ")),
+            passiveEffects = listOf(PassiveEffect("armorClass", 1f, "+1 к КБ")),
             armorWeight = ArmorWeight.Light,
             tir = 1
         ),
@@ -404,7 +408,7 @@ fun prevCheck() {
             description = "Золотое колечко как раз по вашему пальцу",
             isSet = true,
             passiveEffects = listOf(
-                PassiveEffectBasic(
+                PassiveEffect(
                 "intellegence",
                 1f,
                 "Заставляет ваших противников сомневаться в своей правоте")

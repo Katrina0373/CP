@@ -56,6 +56,7 @@ import com.mocalovak.cp.ui.theme.filterButtonBack
 import com.mocalovak.cp.ui.theme.halfAppWhite
 import com.mocalovak.cp.ui.theme.hptems
 import com.mocalovak.cp.ui.theme.otherContainer
+import com.mocalovak.cp.ui.theme.selectedBorderColor
 import com.mocalovak.cp.ui.theme.unfocusedFilterButtonBack
 import com.mocalovak.cp.utils.NameConverter
 
@@ -98,7 +99,11 @@ fun SkillsList(vm: CharacterViewModel = hiltViewModel(),
                         selectedContainerColor = filterButtonBack
                     ),
                     shape = RoundedCornerShape(18.dp),
-                    border = null
+                    border = FilterChipDefaults.filterChipBorder(enabled = true,
+                        selected = selectedFilters.getValue(filter),
+                        borderColor = Color.Transparent,
+                        selectedBorderColor = selectedBorderColor
+                    )
                 )
             }
         }

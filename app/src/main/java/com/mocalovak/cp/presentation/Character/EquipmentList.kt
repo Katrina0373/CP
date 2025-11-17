@@ -58,7 +58,6 @@ import com.mocalovak.cp.domain.model.BodyPart
 import com.mocalovak.cp.domain.model.EquipType
 import com.mocalovak.cp.domain.model.Equipment
 import com.mocalovak.cp.domain.model.PassiveEffect
-import com.mocalovak.cp.domain.model.PassiveEffectBasic
 import com.mocalovak.cp.domain.model.takeString
 import com.mocalovak.cp.ui.theme.BrightPurple
 import com.mocalovak.cp.ui.theme.LightGreen
@@ -69,6 +68,7 @@ import com.mocalovak.cp.ui.theme.filterButtonBack
 import com.mocalovak.cp.ui.theme.halfAppWhite
 import com.mocalovak.cp.ui.theme.hptems
 import com.mocalovak.cp.ui.theme.otherContainer
+import com.mocalovak.cp.ui.theme.selectedBorderColor
 import com.mocalovak.cp.ui.theme.subButton
 import com.mocalovak.cp.ui.theme.topContainer
 import com.mocalovak.cp.ui.theme.unfocusedFilterButtonBack
@@ -115,7 +115,10 @@ fun EquipmentList(vm: CharacterViewModel = hiltViewModel(),
                         selectedContainerColor = filterButtonBack,
                     ),
                     shape = RoundedCornerShape(18.dp),
-                    border = null
+                    border = FilterChipDefaults.filterChipBorder(enabled = true,
+                        selected = selectedFilters.getValue(filter),
+                        borderColor = Color.Transparent,
+                        selectedBorderColor = selectedBorderColor)
                 )
             }
         }

@@ -515,7 +515,8 @@ fun ModifiedStats(label:String,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 textStyle = TextStyle.Default.copy(color = Color.White,
                     textAlign = TextAlign.Center,
-                    fontSize = 16.sp)
+                    fontSize = 16.sp),
+                singleLine = true
             )
     }
 }

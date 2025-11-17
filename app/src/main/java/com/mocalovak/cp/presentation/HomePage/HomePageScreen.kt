@@ -90,7 +90,7 @@ fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowChar
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             item {
                 ContentWidget(
@@ -194,5 +194,5 @@ fun ScrollableCardRow() {
 @Preview
 @Composable
 fun PrevHome(){
-    //HomePage(emptyList())
+    HomePage(emptyList(), {}, {})
 }
