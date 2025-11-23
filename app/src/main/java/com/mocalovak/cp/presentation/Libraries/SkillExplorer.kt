@@ -55,8 +55,10 @@ import com.mocalovak.cp.utils.NameConverter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SkillExplorer(vm: SkillExplorerViewModel = hiltViewModel(),
-                  characterId: Int?,
-                  onBackClick: () -> Unit){
+                  withAdd: Boolean = false,
+                  characterId: Int? = null,
+                  onBackClick: () -> Unit,
+                  withDelete: Boolean = false){
 
     val skills by vm.filteredSkills.collectAsState()
 
@@ -95,13 +97,14 @@ fun SkillExplorer(vm: SkillExplorerViewModel = hiltViewModel(),
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.White
+                    unfocusedLabelColor = Color.White,
                 ),
                 shape = RoundedCornerShape(cornerRadius),
-                placeholder = { Text(" Найти снаряжение...", color = numBack) },
+                placeholder = { Text(" Найти навык...", color = numBack) },
                 trailingIcon = {
                     Icon(painterResource(R.drawable.search_ic), contentDescription = "search")
                 },
+
                 modifier = Modifier.weight(1f)
             )
         }
@@ -149,7 +152,8 @@ fun SkillExplorer(vm: SkillExplorerViewModel = hiltViewModel(),
                     onExpandChange = { newState ->
                         expandedStates[skill.id] = newState
                     },
-                    withAdd = true,
+                    withAdd = withAdd,
+                    withDelete = withDelete,
                     onAddClick = { vm.addSkill(skill.id) }
                 )
                 HorizontalDivider(//modifier = Modifier.padding(top = 10.dp),

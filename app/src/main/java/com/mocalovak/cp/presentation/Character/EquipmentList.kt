@@ -312,7 +312,7 @@ fun ExpandableEquipmentCard(
     )
 
     Card(
-        colors = CardDefaults.cardColors(containerColor = if(withAdd) backColor else containerColor),
+        colors = CardDefaults.cardColors(containerColor = if(!withEquip) backColor else containerColor),
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize()
@@ -448,7 +448,15 @@ fun ExpandableEquipmentCard(
                                     modifier = Modifier.size(15.dp)
                                 )
                                 Text(
-                                    "Надето", color = LightGreen,
+                                    text = if(equipment is Equipment.Weapon){
+                                        if(equipment.isEquipped == BodyPart.LeftHand)
+                                            "В левой руке"
+                                        else if(equipment.isEquipped == BodyPart.RightHand)
+                                            "В правой руке"
+                                        else
+                                            "Надето"
+                                    } else
+                                        "Надето", color = LightGreen,
                                 )
                                 Text(
                                     text = "Снять",
@@ -572,7 +580,7 @@ fun EquipListPreview(){
             description = "атака d4, легко метнуть, шанс на критическую атаку 10%",
             damage = "1d4",
             slot = listOf(BodyPart.RightHand),
-            isEquipped = null,
+            isEquipped = BodyPart.LeftHand,
             passiveEffects = null,
             activeEffect = "шанс на критическую атаку",
             chance = 0.1f,
@@ -613,7 +621,7 @@ fun EquipListPreview(){
     )
 
     ExpandableEquipmentCard(
-        equipList[1], true, {},
+        equipList[0], true, {},
         withEquip = true,
         onEquipClick = {},
         onUnEquipClick = {},

@@ -100,7 +100,6 @@ class EquipmentExplorerViewModel @Inject constructor(
     }
 
     fun addEquipmentToCharacter(equipmentId:String){
-        println("character id: $characterId \nequipment id: $equipmentId")
         viewModelScope.launch(Dispatchers.IO) {
             addEquipmentToCharacter(equipmentId = equipmentId, characterId = characterId)
         }

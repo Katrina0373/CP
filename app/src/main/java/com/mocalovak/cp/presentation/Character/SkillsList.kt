@@ -123,7 +123,8 @@ fun SkillsList(vm: CharacterViewModel = hiltViewModel(),
                     onExpandChange = { newState ->
                         expandedStates[skill.id] = newState
                     },
-                    onDeleteClick = { vm.deleteSkill(skill.id) }
+                    onDeleteClick = { vm.deleteSkill(skill.id) },
+                    withDelete = true
                 )
                 HorizontalDivider(//modifier = Modifier.padding(top = 10.dp),
                     color = hptems
@@ -149,6 +150,7 @@ fun ExpandableSkillCard(
     withAdd:Boolean = false,
     onAddClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
+    withDelete: Boolean = false
 ) {
 
     val rotationState by animateFloatAsState(
@@ -170,7 +172,7 @@ fun ExpandableSkillCard(
     }
 
     Card(
-        colors = CardDefaults.cardColors(containerColor = if(withAdd) backColor else containerColor),
+        colors = CardDefaults.cardColors(containerColor = if(!withDelete) backColor else containerColor),
         modifier = Modifier
             .fillMaxWidth()
             .animateContentSize()
@@ -236,7 +238,7 @@ fun ExpandableSkillCard(
                         color = Color.White
                     )
                 }
-                else {
+                else if(withDelete) {
                     Icon(
                         painter = painterResource(R.drawable.delete_ic),
                         "delete icon",
@@ -278,5 +280,5 @@ fun prevSkillItem(){
         mana = 1
     )
 
-    ExpandableSkillCard(skill = sk, expanded = false, {}, true, {}, {})
+    ExpandableSkillCard(skill = sk, expanded = true, {}, false, {}, {})
 }

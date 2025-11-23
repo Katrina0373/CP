@@ -31,7 +31,8 @@ import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.halfAppWhite
 
 @Composable
-fun ContentWidget(picture: Painter, title:String, description:String, buttonText:String){
+fun ContentWidget(picture: Painter, title:String, description:String, buttonText:String,
+                  onClick:() -> Unit){
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
@@ -71,7 +72,7 @@ fun ContentWidget(picture: Painter, title:String, description:String, buttonText
 
                 Box(modifier = Modifier.fillMaxSize().align(Alignment.End)) {
                     Button(
-                        onClick = { /* действие */ },
+                        onClick = onClick,
                         modifier = Modifier.height(35.dp)/*.size(100.dp, 35.dp)*/.align(Alignment.BottomStart),
                         shape = RoundedCornerShape(50),
                         colors = ButtonDefaults.buttonColors(containerColor = Color.White)
@@ -90,6 +91,6 @@ fun prevVid(){
     ContentWidget(picture = painterResource(R.drawable.heroes),
         title = "Книга правил",
         description = "Общие понятия, описания",
-        buttonText = "Читать"
+        buttonText = "Читать", {}
     )
 }

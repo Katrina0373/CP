@@ -47,7 +47,7 @@ fun activatePassiveEffects(
     skills: List<Skill>
 ): Character {
     // Собираем все пассивки
-    val actualPassives:List<PassiveEffect>? = buildList {
+    val actualPassives: List<PassiveEffect>? = buildList {
         equipment.forEach {
             when (it) {
                 is Equipment.Clothes -> if (it.isEquipped != null) it.passiveEffects?.let(::addAll)
@@ -58,6 +58,15 @@ fun activatePassiveEffects(
         }
         skills.forEach {
             if (it.type == ActivePassive.Passive) it.passiveEffect?.let(::addAll)
+        }
+        when(character.hasArmorSet(equipment)){
+            ArmorWeight.Light -> (PassiveEffect(parameter = "speed", bonus = 1f, description = "+1 к передвижению")).run(::add)
+            ArmorWeight.Heavy ->  listOf(
+                PassiveEffect(parameter = "armorClass", bonus = 1f, description = "+1 к броне"),
+                PassiveEffect("speed", -1f, "-1 к показателю передвижения"),
+                PassiveEffect("dexterity", 0f, "проверки на скрытностое перемещение совершаются с помехой")).run(::addAll)
+            ArmorWeight.Magic -> (PassiveEffect(parameter = "armorClass", bonus = 2f, description = "+1 к показателю брони")).run(::add)
+            else -> {}
         }
     }
 

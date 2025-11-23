@@ -6,7 +6,7 @@ enum class CombatMagic { Combat, Magic }
 
 enum class Source { Race, Common, Profession}
 
-enum class MagicType { Air, Light, Dark, Fire, Water}
+enum class MagicType { air, light, dark, fire, water}
 
 open class Skill(
     val id: String,

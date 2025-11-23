@@ -52,17 +52,14 @@ class SkillExplorerViewModel @Inject constructor(
             val activeUseTypes = filt.filter { it.value }.keys.filterIsInstance<CombatMagic>()
             val activeSource = filt.filter { it.value }.keys.filterIsInstance<Source>()
             val q = query.trim()
-            // Если фильтры не выбраны — показываем всё
-            if (activeTypes.isEmpty() && activeUseTypes.isEmpty() && activeSource.isEmpty()) return@combine skills
 
             skills.filter { item ->
-                val typeMatch =  (item.type in activeTypes)
-                val useTypeMatch = (item.useType in activeUseTypes)
-                val sourceMatch = (item.source in activeSource)
-
+                val typeMatch = activeTypes.isEmpty() || item.type in activeTypes
+                val useTypeMatch = activeUseTypes.isEmpty() || item.useType in activeUseTypes
+                val sourceMatch = activeSource.isEmpty() || item.source in activeSource
                 val searchContain = q.isBlank() || item.name.contains(q, ignoreCase = true)
 
-                (typeMatch || useTypeMatch || sourceMatch) && searchContain
+                typeMatch && useTypeMatch && sourceMatch && searchContain
             }
         }.stateIn(
             viewModelScope,

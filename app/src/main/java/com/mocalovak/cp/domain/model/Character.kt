@@ -57,7 +57,29 @@ data class Character(
         val fromRace = race.passiveEffect.filter {
             it is PassiveEffectWeapon || it is PassiveEffectWithCondition || it is PassiveEffectMagic
         }
+        val set: List<PassiveEffect> = equipment?.let {
+            if (hasArmorSet(equipment) == ArmorWeight.Heavy){
+                listOf(PassiveEffect("dexterity", 0f, "проверки скрытности совершаются с помехой"))
+            }
+            else
+                emptyList()
+        } ?: emptyList()
 
-        return fromEquipment + fromSkills + fromRace
+        return fromEquipment + fromSkills + fromRace + set
+    }
+    fun hasArmorSet(equipment: List<Equipment>?): ArmorWeight? {
+
+        if(equipment.isNullOrEmpty()) return null
+        val armor = equipment.firstOrNull{ it is Equipment.Clothes && it.isEquipped != null }
+        return if(armor != null) {
+            val armorWeight = (armor as Equipment.Clothes).armorWeight
+            val equippedArmor = equipment.filterIsInstance<Equipment.Clothes>().filter{ it.isEquipped != null}
+
+            if(equippedArmor.all { it.armorWeight == armorWeight } && equippedArmor.size == 5)
+                armorWeight
+            else null
+        } else {
+            null
+        }
     }
 }

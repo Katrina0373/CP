@@ -2,7 +2,6 @@ package com.mocalovak.cp.presentation.nav
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.substring
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -15,7 +14,6 @@ import com.mocalovak.cp.presentation.CharacterRedaction.RedactionCharacterScreen
 import com.mocalovak.cp.presentation.HomePage.HomeScreen
 import com.mocalovak.cp.presentation.Libraries.EquipmentExplorer
 import com.mocalovak.cp.presentation.Libraries.SkillExplorer
-import kotlin.math.max
 
 @Composable
 fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifier){
@@ -30,7 +28,13 @@ fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifi
                 navHostController.navigateSingleTopTo(Screen.Character.createRoute(0))
             }, onShowCharClick = { characterId ->
                 navHostController.navigateSingleTopTo(Screen.Character.createRoute(characterId))
-            })
+            },
+                onOpenEquipLibClick = {
+                    navHostController.navigateSingleTopTo("EquipmentLibrary")
+                },
+                onOpenSkillLibClick = {
+                    navHostController.navigateSingleTopTo("SkillLibrary")
+                })
         }
         composable(Screen.Search.route){
             //CharacterListScreen()
@@ -58,11 +62,17 @@ fun AppNavHost(navHostController: NavHostController, modifier: Modifier = Modifi
         }
         composable("SkillLibraryWithAdding/{characterId}", arguments = listOf(navArgument("characterId") { type = NavType.IntType })){ backStackEntry ->
             val characterId = backStackEntry.arguments?.getInt("characterId")
-             SkillExplorer(characterId = characterId, onBackClick = {navHostController.popBackStack()})
+             SkillExplorer(characterId = characterId, onBackClick = {navHostController.popBackStack()}, withAdd = true)
         }
         composable("CharacterRedaction/{characterId}", arguments = listOf(navArgument("characterId") { type = NavType.IntType })) { backStackEntry ->
             val characterId = backStackEntry.arguments?.getInt("characterId")
             RedactionCharacterScreen(characterId = characterId, onBackClick = { navHostController.popBackStack() })
+        }
+        composable("EquipmentLibrary"){
+            EquipmentExplorer(withAdding = false, onBackClick = { navHostController.popBackStack() })
+        }
+        composable("SkillLibrary") {
+            SkillExplorer(onBackClick = {navHostController.popBackStack()}, withAdd = false, withDelete = false)
         }
     }
 }

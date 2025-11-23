@@ -80,8 +80,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.mocalovak.cp.R
+import com.mocalovak.cp.domain.model.ArmorWeight
+import com.mocalovak.cp.domain.model.BodyPart
 import com.mocalovak.cp.domain.model.Character
+import com.mocalovak.cp.domain.model.Equipment
 import com.mocalovak.cp.domain.model.Race
+import com.mocalovak.cp.domain.model.activatePassiveEffects
 import com.mocalovak.cp.ui.theme.CPTheme
 import com.mocalovak.cp.ui.theme.button2
 import com.mocalovak.cp.ui.theme.containerColor
@@ -1038,17 +1042,76 @@ fun PrevChar(){
                 languages = emptyList(),
                 initiative = 20
             )
+        val equipment = listOf(
+            Equipment.Clothes(
+                id = "some",
+                name = "Тяжёлые перчатки",
+                description = "",
+                tir = 1,
+                slot = listOf(BodyPart.TwoHands),
+                isEquipped = BodyPart.TwoHands,
+                passiveEffects = null,
+                armorWeight = ArmorWeight.Light,
+            ),
+            Equipment.Clothes(
+                id = "some",
+                name = "Тяжёлые латы",
+                description = "",
+                tir = 1,
+                slot = listOf(BodyPart.TwoHands),
+                isEquipped = BodyPart.Body,
+                passiveEffects = null,
+                armorWeight = ArmorWeight.Light,
+            ),Equipment.Clothes(
+                id = "some",
+                name = "Тяжёлые поножны",
+                description = "",
+                tir = 1,
+                slot = listOf(BodyPart.TwoHands),
+                isEquipped = BodyPart.Legs,
+                passiveEffects = null,
+                armorWeight = ArmorWeight.Light,
+            ),Equipment.Clothes(
+                id = "some",
+                name = "Тяжёлые ботинки",
+                description = "",
+                tir = 1,
+                slot = listOf(BodyPart.TwoHands),
+                isEquipped = BodyPart.Foots,
+                passiveEffects = null,
+                armorWeight = ArmorWeight.Light,
+            ),Equipment.Clothes(
+                id = "some",
+                name = "Тяжёлый шлем",
+                description = "",
+                tir = 1,
+                slot = listOf(BodyPart.TwoHands),
+                isEquipped = BodyPart.Head,
+                passiveEffects = null,
+                armorWeight = ArmorWeight.Light,
+            ),
+        )
         //ExpandableBox(true, character, {}, {}, {}, {}, {}, {})
 
-        ChangingDialog(
-            {},
-            onConfirm = {},
-            label = "Здоровье",
-            changingValue = ChangingValues.Health,
-            currentValue = character.currentHP,
-            maxValue = character.maxHP,
+//        ChangingDialog(
+//            {},
+//            onConfirm = {},
+//            label = "Здоровье",
+//            changingValue = ChangingValues.Health,
+//            currentValue = character.currentHP,
+//            maxValue = character.maxHP,
+//        )
+        ExpandableBox(
+            character = activatePassiveEffects(character, equipment, emptyList()),
+            isExpanded = true,
+            onHealthClick = {},
+            onManaClick = {},
+            onGoldClick = {},
+            increaseMana = {},
+            decreaseMana = {},
+            levelUp = {},
+            onRestDialogClick = {},
         )
-        //StatsContent(character)
         //BottomActionButtons({}) { }
         //TopBarCharacter(character) { }
     }

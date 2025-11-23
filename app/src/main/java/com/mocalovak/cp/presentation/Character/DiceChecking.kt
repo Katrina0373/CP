@@ -216,7 +216,7 @@ fun DiceChecking(onDismiss: () -> Unit,
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(4.dp))
 
             GradientButton(
                 text = "Бросить кубик",
@@ -313,10 +313,8 @@ fun DiceChecking(onDismiss: () -> Unit,
                         }
                     }
                 }
-
             }
         }
-
     }
 }
 

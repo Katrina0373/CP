@@ -19,14 +19,20 @@ class GetCharacterUseCase @Inject constructor(
     private val skillRepository: SkillRepository
 ) {
     operator fun invoke(id: Int, withPassives:Boolean = true): Flow<Character> {
-        val equipmentFlow = equipmentRepository.getCharactersEquipment(id)
-        val skillsFlow = skillRepository.getCharactersSkills(id)
+
         val characterFlow = characterRepository.getCharacter(id)
 
         // Объединяем все три потока
-        if(withPassives)
-        return combine(characterFlow, equipmentFlow, skillsFlow) { character, equipment, skills ->
-            activatePassiveEffects(character, equipment, skills)
+        if(withPassives) {
+            val equipmentFlow = equipmentRepository.getCharactersEquipment(id)
+            val skillsFlow = skillRepository.getCharactersSkills(id)
+            return combine(
+                characterFlow,
+                equipmentFlow,
+                skillsFlow
+            ) { character, equipment, skills ->
+                activatePassiveEffects(character, equipment, skills)
+            }
         }
         else {
             return characterFlow

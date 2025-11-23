@@ -40,18 +40,34 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun HomeScreen(viewModel: HomePageViewModel = hiltViewModel(),  onShowAllClick: () -> Unit, onShowCharClick: (Int) -> Unit) {
+fun HomeScreen(viewModel: HomePageViewModel = hiltViewModel(),
+               onShowAllClick: () -> Unit,
+               onOpenEquipLibClick: () -> Unit,
+               onOpenSkillLibClick: () -> Unit,
+               onShowCharClick: (Int) -> Unit) {
     val uiState by viewModel.uiState.collectAsState()
     when (uiState) {
         is HomePageUiState.Loading -> CircularProgressIndicator()
         is HomePageUiState.Success -> HomePage((uiState as HomePageUiState.Success).characters,
-            onShowAllClick, onShowCharClick)
-        is HomePageUiState.Error -> HomePage(emptyList(), onShowAllClick, onShowCharClick)
+            onShowAllClick,
+            onShowCharClick,
+            onOpenEquipLibClick,
+            onOpenSkillLibClick,
+            )
+        is HomePageUiState.Error -> HomePage(emptyList(),
+            onShowAllClick,
+            onShowCharClick,
+            onOpenEquipLibClick,
+            onOpenSkillLibClick)
     }
 }
 
 @Composable
-fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowCharClick: (Int) -> Unit,
+fun HomePage(characters: List<Character>,
+             onShowAllClick: () -> Unit,
+             onShowCharClick: (Int) -> Unit,
+             onOpenEquipLibClick: () -> Unit,
+             onOpenSkillLibClick: () -> Unit,
              viewModel: HomePageViewModel = hiltViewModel()
 ){
 
@@ -89,8 +105,7 @@ fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowChar
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                .padding(horizontal = 8.dp)
         ) {
             item {
                 ContentWidget(
@@ -98,7 +113,7 @@ fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowChar
                     title = "Книга правил",
                     description = "Общие понятия, описания рас и классов и прочее",
                     buttonText = "Читать"
-                )
+                ) {}
             }
             item {
                 ContentWidget(
@@ -106,7 +121,7 @@ fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowChar
                     title = "Навыки",
                     description = "Общие, магические, боевые, расовые",
                     buttonText = "Искать"
-                )
+                ) { onOpenSkillLibClick() }
             }
             item {
                 ContentWidget(
@@ -114,7 +129,7 @@ fun HomePage(characters: List<Character>, onShowAllClick: () -> Unit, onShowChar
                     title = "Инвентарь",
                     description = "Броня, артефакты, оружие",
                     buttonText = "Искать"
-                )
+                ) { onOpenEquipLibClick() }
             }
         }
         Box(modifier = Modifier.fillMaxSize().padding(10.dp),
@@ -156,8 +171,8 @@ fun ScrollableCardRow() {
                     picture = painterResource(R.drawable.ic_launcher_foreground),
                     title = "Книга правил",
                     description = "Общие понятия, описания рас и классов и прочее",
-                    buttonText = "Читать"
-                )
+                    buttonText = "Читать",
+                ) {}
             }
             item {
                 ContentWidget(
@@ -165,7 +180,7 @@ fun ScrollableCardRow() {
                     title = "Навыки",
                     description = "Общие, магические, боевые, расовые",
                     buttonText = "Искать"
-                )
+                ) {}
             }
             item {
                 ContentWidget(
@@ -173,7 +188,7 @@ fun ScrollableCardRow() {
                     title = "Инвентарь",
                     description = "Броня, артефакты, оружие",
                     buttonText = "Искать"
-                )
+                ) {}
             }
         }
 
@@ -194,5 +209,5 @@ fun ScrollableCardRow() {
 @Preview
 @Composable
 fun PrevHome(){
-    HomePage(emptyList(), {}, {})
+    HomePage(emptyList(), {}, {}, {}, {})
 }

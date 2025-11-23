@@ -60,7 +60,7 @@ fun RestDialog(level:Int,
                 contentDescription = "close icon",
                 modifier = Modifier.align(Alignment.End)
                     .clickable { onDismiss() }
-                    .padding(top = 7.dp, end = 7.dp))
+                    .padding(top = 9.dp, end = 9.dp))
 
             Column(modifier = Modifier.fillMaxWidth()
                 .padding(vertical = 5.dp, horizontal = 17.dp),
@@ -126,6 +126,7 @@ fun RestDialog(level:Int,
                         Text("Отмена")
                     }
                 }
+                Spacer(Modifier.height(5.dp))
             }
         }
     }
