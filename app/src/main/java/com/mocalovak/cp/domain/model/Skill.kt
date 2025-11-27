@@ -16,8 +16,8 @@ open class Skill(
     val useType: CombatMagic,
     val source: Source,
     val accessLevel: Int,
-    val check: String?,
-    val savingThrow: String?,
+    val check: Modification?,
+    val savingThrow: Modification?,
     val difficulty: Int?,
     val recharge: String?,
     val damage: String?, //урон
@@ -29,7 +29,7 @@ open class Skill(
 
 class MagicSkill(
     id: String, name: String, description: String, type: ActivePassive, useType: CombatMagic,
-    source: Source, accessLevel: Int, check: String?, savingThrow: String?, difficulty: Int?, recharge: String?, damage: String?,
+    source: Source, accessLevel: Int, check: Modification?, savingThrow: Modification?, difficulty: Int?, recharge: String?, damage: String?,
     actionTime: String?, usageTime: String?, passiveEffect: List<PassiveEffect>?, mana: Int?,
     val magicType: MagicType
 

@@ -47,6 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mocalovak.cp.R
 import com.mocalovak.cp.domain.model.ActivePassive
 import com.mocalovak.cp.domain.model.CombatMagic
+import com.mocalovak.cp.domain.model.Modification
 import com.mocalovak.cp.domain.model.Skill
 import com.mocalovak.cp.domain.model.Source
 import com.mocalovak.cp.ui.theme.backColor
@@ -218,9 +219,9 @@ fun ExpandableSkillCard(
                     verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
                     skill.usageTime?.let { ParameterView("Время использования", it) }
-                    skill.check?.let { ParameterView("Проверка", it) }
+                    skill.check?.let { ParameterView("Проверка", it.title) }
                     skill.damage?.let { ParameterView("Урон", it) }
-                    skill.savingThrow?.let { ParameterView("Спасбросок", it) }
+                    skill.savingThrow?.let { ParameterView("Спасбросок", it.title) }
                     skill.difficulty?.let { ParameterView("Сложность", it.toString()) }
                     skill.actionTime?.let { ParameterView("Время действия", it) }
                     skill.recharge?.let { ParameterView("Перезарядка", it) }
@@ -269,13 +270,13 @@ fun prevSkillItem(){
         useType = CombatMagic.Magic,
         source = Source.Profession,
         accessLevel = 1,
-        check = "magic",
+        check = Modification.MAGIC,
         savingThrow = null,
         difficulty = null,
         recharge = null,
         damage = "1d6",
         actionTime = null,
-        usageTime = "1 действие",
+        usageTime = "действие",
         passiveEffect = null,
         mana = 1
     )

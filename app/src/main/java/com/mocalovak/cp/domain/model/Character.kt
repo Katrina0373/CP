@@ -1,5 +1,11 @@
 package com.mocalovak.cp.domain.model
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+
 enum class Modification(val title: String) {
     STRENGTH("Сила"),
     DEXTERITY("Ловкость"),
@@ -67,10 +73,11 @@ data class Character(
 
         return fromEquipment + fromSkills + fromRace + set
     }
+
     fun hasArmorSet(equipment: List<Equipment>?): ArmorWeight? {
 
         if(equipment.isNullOrEmpty()) return null
-        val armor = equipment.firstOrNull{ it is Equipment.Clothes && it.isEquipped != null }
+        val armor = equipment.find { it is Equipment.Clothes && it.isEquipped != null }
         return if(armor != null) {
             val armorWeight = (armor as Equipment.Clothes).armorWeight
             val equippedArmor = equipment.filterIsInstance<Equipment.Clothes>().filter{ it.isEquipped != null}

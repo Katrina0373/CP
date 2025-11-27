@@ -23,6 +23,8 @@ import com.mocalovak.cp.domain.usecase.GetCharactersSkillsUseCase
 import com.mocalovak.cp.domain.usecase.UpdateCharacterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -193,12 +195,6 @@ class CharacterViewModel @Inject constructor(
                 updateCharacterUseCase.levelUp(character.value!!.id)
             }
 
-    }
-
-    fun updateCharacter(character: Character){
-        viewModelScope.launch(Dispatchers.IO) {
-            updateCharacterUseCase(character)
-        }
     }
 
     fun equipItem(item: Equipment, slot:BodyPart){

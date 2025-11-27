@@ -38,7 +38,7 @@ fun ContentWidget(picture: Painter, title:String, description:String, buttonText
         modifier = Modifier
             .width(200.dp)
             .height(230.dp)
-            .padding(8.dp),
+            .padding(4.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
         colors = CardDefaults.cardColors(containerColor = button2)
     ) {

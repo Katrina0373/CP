@@ -29,7 +29,6 @@ class HomePageViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<HomePageUiState>(HomePageUiState.Loading)
     val uiState: StateFlow<HomePageUiState> = _uiState
 
-
 //    private val _uiEvent = MutableSharedFlow<String>()
 //    val uiEvent = _uiEvent.asSharedFlow()
 //

@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import androidx.room.util.TableInfo
 import com.mocalovak.cp.domain.model.ActivePassive
 import com.mocalovak.cp.domain.model.CombatMagic
+import com.mocalovak.cp.domain.model.Modification
 import com.mocalovak.cp.domain.model.PassiveEffect
 import com.mocalovak.cp.domain.model.Skill
 import com.mocalovak.cp.domain.model.Source
@@ -59,6 +60,9 @@ data class SkillCharacterCrossRef(
 
 fun SkillEntity.toDomain(): Skill {
     return Skill(
-        id, name, description, type, useType, source, accessLevel, check, savingThrow, difficulty, recharge, damage, actionTime, usageTime, passiveEffect, mana
+        id, name, description, type, useType, source, accessLevel,
+        check?.let { Modification.valueOf(check.uppercase()) },
+        savingThrow?.let { Modification.valueOf(savingThrow.uppercase()) },
+        difficulty, recharge, damage, actionTime, usageTime, passiveEffect, mana
     )
 }
